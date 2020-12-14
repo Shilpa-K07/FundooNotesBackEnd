@@ -4,5 +4,10 @@ module.exports = (app) => {
     /**
      * @description new registration
      */
-    app.post('/registration', user.register);
+    app.post('/registration', user.register)
+
+    /**
+     * @description login
+     */
+    app.post('/login', user.login)
 }
