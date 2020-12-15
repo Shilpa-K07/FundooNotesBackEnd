@@ -18,31 +18,22 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    resetLink: {
+        data: String,
+        default: ''
     }
 }, {
     timestamps: true
 })
 
 UserSchema.pre('save', function (next) {
-    // var user = this;
-
-    // only hash the password if it has been modified (or is new)
+    //console.log("next is: "+next)
+    // only hash the password if it has been modified or is new
     if (!this.isModified('password'))
         return next();
-    // generate a salt
-    /* bcrypt.genSalt(SALT_WORK_FACTOR, function (error, salt) {
-        if (error)
-            return next(error);
 
-        // hash the password using our new salt
-        bcrypt.hash(this.password, salt, function (error, hash) {
-            if (error) 
-            return next(error);
-            // override the cleartext password with the hashed one
-            this.password = hash;
-            next();
-        });
-    }); */
+    // generate a salt and hash password
     bcrypt.hash(this.password, saltRounds, (error, hash) => {
         if (error)
             return next(error);
@@ -75,10 +66,22 @@ class UserModel {
 
     /**
      *@description User login
+     *@method findOne finds document with particular email Id
+     *@method callBack makes call back to the service class method
      */
     login = (userLogindata, callBack) => {
-        console.log("email: " + userLogindata.emailId)
         User.findOne({ emailId: userLogindata.emailId }, (error, data) => {
+            if (error)
+                callBack(error, null)
+            callBack(null, data)
+        })
+    }
+
+    /**
+     * @description Forgot password
+     */
+    forgotPassword = (emailId, callBack) => {
+        User.findOne({emailId: emailId}, (error, data) => {
             if (error)
                 callBack(error, null)
             callBack(null, data)

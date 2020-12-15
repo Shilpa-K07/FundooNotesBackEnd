@@ -10,4 +10,9 @@ module.exports = (app) => {
      * @description login
      */
     app.post('/login', user.login)
+
+    /**
+     * @description forgot password
+     */
+    app.put('/forgot-password', user.forgotPassword)
 }

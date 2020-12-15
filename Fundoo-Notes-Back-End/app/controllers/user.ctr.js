@@ -2,6 +2,8 @@ const userService = require('../services/user.svc.js')
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const logger = require('../../logger.js')
+const jwt = require('jsonwebtoken')
+const nodemailer = require("nodemailer");
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
@@ -36,15 +38,13 @@ class UserController {
             emailId: req.body.emailId,
             password: req.body.password
         }
-        const response = {
-        }
 
         const validationResult = inputPattern.validate(userRegistrationData)
 
         if (validationResult.error) {
+            const response = { success: false, message: validationResult.error.message };
             return res.status(400).send({
-                success: response.success = false,
-                message: response.message = validationResult.error.message
+                response
             });
         }
 
@@ -52,13 +52,14 @@ class UserController {
             if (error) {
                 if (error.name === 'MongoError' && error.code === 11000) {
                     logger.error("User with this email Id is alreday exists")
+                    const response = { success: false, message: "User with this email Id is alreday exists" };
                     return res.status(409).send({
-                        success: response.success = false,
-                        message: response.message = "User with this email Id is alreday exists"
+                        response
                     })
                 }
+
                 logger.error("Some error occured while registering")
-                console.log("error: "+error)
+                const response = { success: false, message: "Some error occured while registering" };
                 return res.status(500).send({
                     success: response.success = false,
                     message: response.message = "Some error occured while registering"
@@ -66,54 +67,112 @@ class UserController {
             }
 
             logger.info("Registration is done successfully !")
+            const response = { success: true, message: "Registration is done successfully !", data: data };
             res.send({
-                success: response.success = true,
-                message: response.message = "Registration is done successfully !",
-                data: response.data = data
+                response
             })
         })
     }
 
     /**
      * @description User login
+     * @method login invoke service class method
      */
     login = (req, res) => {
         const userLoginData = {
             emailId: req.body.emailId,
             password: req.body.password
         }
-        const response = {
-        }
 
         userService.login(userLoginData, (error, data) => {
             if (error) {
                 logger.error("Some error occured while logging in")
-                
+                const response = { success: false, message: "Some error occured while logging in" };
                 return res.status(500).send({
-                    success: response.success = false,
-                    message: response.message = "Some error occured while logging in"
+                    response
                 })
             }
             if (!data) {
+                const response = { success: false, message: "Authorization failed" };
                 return res.status(401).send({
-                    success: response.success = false,
-                    message: response.message = "Authorization failed"
+                    response
                 })
             }
             bcrypt.compare(userLoginData.password, data.password, (eror, result) => {
                 if (result) {
+                    const token = jwt.sign({
+                        emailId: data.emailId,
+                        userId: data._id
+                    },
+                        process.env.JWT_LOGIN_KEY,
+                        {
+                            expiresIn: "20m"
+                        })
+                    const response = { success: true, message: "Login Successfull !", token: token, data: data };
                     logger.info("Login Successfull !")
                     res.send({
-                        success: response.success = true,
-                        message: response.message = "Login Successfull !",
-                        data: response.data = data
+                        response
                     })
                 }
+                const response = { success: false, message: "Authorization failed" };
                 return res.status(401).send({
-                    success: response.success = false,
-                    message: response.message = "Authorization failed"
+                    response
                 })
             });
+        })
+    }
+
+    forgotPassword = (req, res) => {
+        const emailId = req.body.emailId
+
+        userService.forgotPassword(emailId, (error, data) => {
+            if (error) {
+                logger.error("Some error occured")
+                const response = { success: false, message: "Some error occured" };
+                return res.status(500).send({
+                    response
+                })
+            }
+
+            if (!data) {
+                const response = { success: false, message: "Authorization failed" };
+                return res.status(401).send({
+                    response
+                })
+            }
+
+            let mailTransporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'shilpakundapur7@gmail.com',
+                    pass: 'sirideepu7'
+                }
+            });
+
+            let mailDetails = {
+                from: 'shilpakundapur7@gmail.com',
+                to: 'shilpa07udupi@gmail.com',
+                subject: 'Reset Password',
+                html: `<p>Please click on below link to reset password</p>
+                <a>${process.env.URL}</a>`
+            }
+
+            mailTransporter.sendMail(mailDetails, (error, data) => { 
+                if(error) { 
+                    console.log("error: "+error)
+                    const response = { success: false, message: "Some error occurred while sending email" };
+                    return res.status(500).send({
+                        response
+                    })
+                }
+                 
+                const response = { success: true, message: "Email has been sent !"};
+                    logger.info("Email has been sent !")
+                    res.send({
+                        response
+                    })
+            }); 
+
         })
     }
 }

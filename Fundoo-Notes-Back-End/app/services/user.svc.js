@@ -35,7 +35,18 @@ class UserService {
     login = (userLogindata, callBack) => {
         userModel.login(userLogindata, (error, data) => {
             if(error)
-                return callBack(error, data)
+                return callBack(error, null)
+            return callBack(null, data)
+        })
+    }
+
+    /**
+     * @description forgot password
+     */
+    forgotPassword = (emailId, callBack) => {
+        userModel.forgotPassword(emailId, (error, data) => {
+            if(error)
+                return callBack(error, null)
             return callBack(null, data)
         })
     }
