@@ -4,6 +4,7 @@ const Joi = require('joi');
 const logger = require('../../logger.js')
 const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer");
+const _ = require('lodash')
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
@@ -110,7 +111,7 @@ class UserController {
                         })
                     const response = { success: true, message: "Login Successfull !", token: token, data: data };
                     logger.info("Login Successfull !")
-                    res.send({
+                    return res.send({
                         response
                     })
                 }
@@ -125,7 +126,7 @@ class UserController {
     forgotPassword = (req, res) => {
         const emailId = req.body.emailId
 
-        userService.forgotPassword(emailId, (error, data) => {
+        userService.forgotPassword(emailId, (error, user) => {
             if (error) {
                 logger.error("Some error occured")
                 const response = { success: false, message: "Some error occured" };
@@ -134,12 +135,21 @@ class UserController {
                 })
             }
 
-            if (!data) {
+            if (!user) {
                 const response = { success: false, message: "Authorization failed" };
                 return res.status(401).send({
                     response
                 })
             }
+
+            const token = jwt.sign({
+                emailId: user.emailId,
+                userId: user._id
+            },
+                process.env.RESET_PASSWORD_KEY,
+                {
+                    expiresIn: "2h"
+                })
 
             let mailTransporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -154,26 +164,83 @@ class UserController {
                 to: 'shilpa07udupi@gmail.com',
                 subject: 'Reset Password',
                 html: `<p>Please click on below link to reset password</p>
-                <a>${process.env.URL}</a>`
+                <a>${process.env.URL}/resetpassword/${token}</a>`
             }
 
-            mailTransporter.sendMail(mailDetails, (error, data) => { 
-                if(error) { 
-                    console.log("error: "+error)
-                    const response = { success: false, message: "Some error occurred while sending email" };
-                    return res.status(500).send({
+            return user.updateOne({ resetLink: token }, (error, success) => {
+                if (error) {
+                    const response = { success: false, message: "Reset password link error" };
+                    return res.status(400).send({
                         response
                     })
                 }
-                 
-                const response = { success: true, message: "Email has been sent !"};
+
+                mailTransporter.sendMail(mailDetails, (error, data) => {
+                    if (error) {
+                        const response = { success: false, message: "Some error occurred while sending email" };
+                        return res.status(500).send({
+                            response
+                        })
+                    }
+
+                    const response = { success: true, message: "Email has been sent !" };
                     logger.info("Email has been sent !")
                     res.send({
                         response
                     })
-            }); 
-
+                })
+            })
         })
+    }
+
+    resetPassword = (req, res) => {
+        const resetPasswordData = {
+            resetLink: req.body.resetLink,
+            newPassword: req.body.newPassword
+        }
+        
+        if(resetPasswordData.resetLink){
+            jwt.verify(resetPasswordData.resetLink, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
+                if(error){
+                    const response = { success: false, message: "Incorrect token or token is expired" };
+                    return res.status(401).send({
+                        response
+                    })
+                }
+                userService.findResetLink(resetPasswordData.resetLink, (error, user) => {
+                    if(error){
+                        const response = { success: false, message: "Some error occurred" }; 
+                        return res.status(400).send({
+                            response
+                        })
+                    }
+                    const object = {
+                        password: resetPasswordData.newPassword
+                    }
+                   // user = _.extend(user, object)
+                   user.password = resetPasswordData.newPassword
+                    user.save((error, data) => {
+                        if(error){
+                            const response = { success: false, message: "Reset password error"}
+                            return res.status(400).send({
+                                response
+                            })
+                        }
+                        const response = { success: true, message: "Password has been changed"}
+                            return res.send({
+                                response
+                            })
+                        }) 
+                    })
+                })
+            }
+        else{
+        const response = { success: false, message: "Authentication error !" };
+        logger.info("Authentication error !")
+        return res.send({
+            response
+        })
+    }
     }
 }
 module.exports = new UserController();

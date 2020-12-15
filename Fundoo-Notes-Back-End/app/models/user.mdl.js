@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
+const { resetPassword } = require('../controllers/user.ctr');
 const saltRounds = 10;
 const UserSchema = mongoose.Schema({
     firstName: {
@@ -81,7 +82,18 @@ class UserModel {
      * @description Forgot password
      */
     forgotPassword = (emailId, callBack) => {
-        User.findOne({emailId: emailId}, (error, data) => {
+        User.findOne({ emailId: emailId }, (error, data) => {
+            if (error)
+                callBack(error, null)
+            callBack(null, data)
+        })
+    }
+
+    /**
+     * @description Reset password
+     */
+    findResetLink = (resetLink, callBack) => {
+        User.findOne({ resetLink: resetLink }, (error, data) => {
             if (error)
                 callBack(error, null)
             callBack(null, data)

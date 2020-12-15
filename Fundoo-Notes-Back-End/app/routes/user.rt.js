@@ -2,17 +2,22 @@ module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
 
     /**
-     * @description new registration
+     * @description New registration
      */
     app.post('/registration', user.register)
 
     /**
-     * @description login
+     * @description Login
      */
     app.post('/login', user.login)
 
     /**
-     * @description forgot password
+     * @description Forgot password
      */
     app.put('/forgot-password', user.forgotPassword)
+
+    /**
+     * @description Reset password
+     */
+    app.put('/reset-password', user.resetPassword)
 }

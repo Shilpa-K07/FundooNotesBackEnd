@@ -50,5 +50,16 @@ class UserService {
             return callBack(null, data)
         })
     }
+
+    /**
+     * @description Reset password
+     */
+    findResetLink =(resetLink, callBack) => {
+        userModel.findResetLink(resetLink, (error, data) => {
+            if(error)
+                return callBack(error, null)
+            return callBack(null, data)
+        })
+    }
 }
 module.exports = new UserService()
