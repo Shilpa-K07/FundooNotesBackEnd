@@ -1,0 +1,160 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Users For Fundoo Notes",
+        "description": "User API"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "User",
+            "description": "API for User"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/registration": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User registration",
+                "parameters": [
+                    {
+                        "name": "registration",
+                        "in": "body",
+                        "description": "User registration",
+                        "schema": {
+                            "$ref": "#/definations/registration"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration is done successfully",
+                        "schema": {
+                            "$ref": "#/definations/registration"
+                        }
+                    }
+                }
+            }
+        },
+        "/login":{
+            "post":{
+                "tags":[
+                    "User"
+                ],
+                "summary":"User login",
+                "parameters":[
+                    {
+                        "name":"user login",
+                        "in":"body",
+                        "description": "User login",
+                        "schema":{
+                            "$ref":"#/definations/login"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses":{
+                    "200": {
+                        "description":"Successfuuly logged in !",
+                        "schema":{
+                            "$ref":"#/definations/login"
+                        }
+                    }
+                }
+            }
+        },
+        "forgot-password": {
+            "put": {
+                "summary": "Recieve reset password link via email",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in":"body",
+                        "description":"Recieve reset password link via email",
+                        "schema": {
+                            "$ref":"#/definations/forgotPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email has been sent",
+                        "schema":{
+                            "$ref":"#/definations/forgotPassword"
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "definations": {
+        "registration": {
+            "required": [
+                "firstName",
+                "lastName",
+                "emailId",
+                "password"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "emailId": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "login": {
+            "required": [
+                "emailId",
+                "password"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "forgotPassword": {
+            "required": [
+                "emailId"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

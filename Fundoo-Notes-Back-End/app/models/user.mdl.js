@@ -19,17 +19,12 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-    resetLink: {
-        data: String,
-        default: ''
     }
 }, {
     timestamps: true
 })
 
 UserSchema.pre('save', function (next) {
-    //console.log("next is: "+next)
     // only hash the password if it has been modified or is new
     if (!this.isModified('password'))
         return next();
@@ -43,6 +38,7 @@ UserSchema.pre('save', function (next) {
     });
 
 });
+
 const User = mongoose.model('User', UserSchema)
 
 class UserModel {
@@ -92,11 +88,19 @@ class UserModel {
     /**
      * @description Reset password
      */
-    findResetLink = (resetLink, callBack) => {
-        User.findOne({ resetLink: resetLink }, (error, data) => {
+    resetPassword = (resetPasswordData, callBack) => {
+        User.findOne({ emailId: resetPasswordData.emailId }, (error, user) => {
             if (error)
-                callBack(error, null)
-            callBack(null, data)
+                return callBack(new Error("Some error occurred"), null)
+            else {
+                user.password = resetPasswordData.newPassword
+                user.save((error, data) => {
+                    if (error) 
+                        return callBack(new Error("Reset password error"), null)
+                    else
+                    return callBack(null, data)
+                })
+            }
         })
     }
 }

@@ -1,5 +1,6 @@
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
+    const util = require('../utility/user.utl')
 
     /**
      * @description New registration
@@ -19,5 +20,13 @@ module.exports = (app) => {
     /**
      * @description Reset password
      */
-    app.put('/reset-password', user.resetPassword)
+    app.put('/reset-password', (req, res) => {
+        util.verifyToken(req.headers.resetlink, (error, decodeData) => {
+            if (error) {
+                const response = { success: false, message: "Incorrect token or token is expired" };
+                return res.status(401).send(response)
+            }
+            user.resetPassword(req,res,decodeData)
+        })
+    })
 }

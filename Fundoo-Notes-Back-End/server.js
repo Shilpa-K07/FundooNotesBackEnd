@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
-const logger = require('./logger.js')
+const logger = require('./app/logger/logger')
 //create express app
 const app = express()
 
@@ -17,6 +17,15 @@ require('./config/mongoDb.js');
  * @description require user routes
  */
 require('./app/routes/user.rt')(app)
+
+ /**
+ * @description require swagger-ui and swagger.json
+ */
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./app/lib/api-docs.json')
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 /**
  * @description listen for requests
  * @param process.env.PORT is the port number 3000
