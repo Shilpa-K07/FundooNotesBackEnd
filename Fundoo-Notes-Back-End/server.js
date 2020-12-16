@@ -18,6 +18,11 @@ require('./config/mongoDb.js');
  */
 require('./app/routes/user.rt')(app)
 
+/**
+ * @description require note routes
+ */
+require('./app/routes/note.rt')(app)
+
  /**
  * @description require swagger-ui and swagger.json
  */

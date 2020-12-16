@@ -1,8 +1,6 @@
 const userService = require('../services/user.svc.js')
-const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const logger = require('../logger/logger')
-const _ = require('lodash')
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({

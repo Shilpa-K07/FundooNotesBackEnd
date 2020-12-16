@@ -1,6 +1,6 @@
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
-    const util = require('../utility/user.utl')
+    const util = require('../utility/user.utl.js')
 
     /**
      * @description New registration

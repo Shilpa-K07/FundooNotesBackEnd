@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
-const { resetPassword } = require('../controllers/user.ctr');
 const saltRounds = 10;
+
 const UserSchema = mongoose.Schema({
     firstName: {
         type: String,
