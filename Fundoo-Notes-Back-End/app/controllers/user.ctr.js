@@ -1,3 +1,10 @@
+/**
+ * @description Controller class recieves request from routes
+ * @method registration is for new user to register
+ * @method login is for user login
+ * @method forgotPassword sends reset password link to registered user
+ * @method resetPassword updates password
+ */
 const userService = require('../services/user.svc.js')
 const Joi = require('joi');
 const logger = require('../logger/logger')
@@ -24,10 +31,7 @@ const inputPattern = Joi.object({
 })
 
 class UserController {
-    /**
-     * @description new user registration
-     * 
-     */
+    //new user registration
     register = (req, res) => {
         const userRegistrationData = {
             firstName: req.body.firstName,
@@ -62,10 +66,7 @@ class UserController {
         })
     }
 
-    /**
-     * @description User login
-     * @method login invoke service class method
-     */
+    // User login
     login = (req, res) => {
         const userLoginData = {
             emailId: req.body.emailId,
@@ -82,14 +83,18 @@ class UserController {
                 const response = { success: false, message: "Authorization failed" };
                 return res.status(401).send(response)
             }
-            else{
+            else {
                 const response = { success: true, message: "Login Successfull !", token: token, data: data };
-                    logger.info("Login Successfull !")
-                    return res.status(200).send(response)
+                logger.info("Login Successfull !")
+                res.cookie("EmailId", userLoginData.emailId)
+                res.cookie("Password", userLoginData.password)
+                return res.status(200).send(response)
             }
         })
     }
 
+    
+    // Sends resetpassword links to user's emailId
     forgotPassword = (req, res) => {
         const emailId = req.body.emailId
 
@@ -113,6 +118,7 @@ class UserController {
         })
     }
 
+    // New password will get updated after verifying token successfully
     resetPassword = (req, res, decodeData) => {
         const resetPasswordData = {
             emailId: decodeData.emailId,
@@ -131,7 +137,7 @@ class UserController {
                 return res.status(401).send(response)
             }
             else {
-                const response = { success: true, message: "Password has benn changed !" };
+                const response = { success: true, message: "Password has been changed !" };
                 logger.info("Password has benn changed !")
                 res.status(200).send(response)
             }

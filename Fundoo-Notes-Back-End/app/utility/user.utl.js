@@ -38,8 +38,8 @@ class Util {
         })
     }
 
-    verifyToken = (resetLink, callBack) => {
-        jwt.verify(resetLink, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
+    verifyToken = (token, callBack) => {
+        jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) 
                 return callBack(error, null)
             callBack(null, decodeData)

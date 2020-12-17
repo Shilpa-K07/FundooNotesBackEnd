@@ -53,7 +53,36 @@ class NoteController {
             }
 
             logger.error("Successfully retrieved notes !")
-            const response = { success: true, message: "Successfully retrieved notes !", data:data}
+            const response = { success: true, message: "Successfully retrieved notes !", data: data }
+            return res.status(200).send(response)
+        })
+    }
+
+    /**
+     * @description Update Note
+     */
+    update = (req, res) => {
+        const noteData = {
+            noteId: req.body.noteId,
+            title: req.body.title,
+            note: req.body.note
+        }
+
+        noteService.update(noteData, (error, data) => {
+            if (error) {
+                logger.error("Some error occurred while updating note")
+                const response = { success: false, message: "Some error occurred while updating note" }
+                return res.status(500).send(response)
+            }
+
+            if (!data) {
+                logger.error("Note not found with id :" + noteData.noteId)
+                const response = { success: false, message: "Note not found with id :" + noteData.noteId }
+                return res.status(404).send(response)
+            }
+
+            logger.error("Note updated successfully !")
+            const response = { success: true, message: "Note updated successfully !", data: data }
             return res.status(200).send(response)
         })
     }

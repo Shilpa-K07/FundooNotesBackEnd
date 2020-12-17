@@ -1,32 +1,28 @@
+/**
+ * @description Defining routes
+ * @methods post, put are the http methods
+ */
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
     const util = require('../utility/user.utl.js')
 
-    /**
-     * @description New registration
-     */
+    // New registration
     app.post('/registration', user.register)
 
-    /**
-     * @description Login
-     */
+    // Login
     app.post('/login', user.login)
 
-    /**
-     * @description Forgot password
-     */
-    app.put('/forgot-password', user.forgotPassword)
+    // Forgot password
+    app.post('/forgot-password', user.forgotPassword)
 
-    /**
-     * @description Reset password
-     */
+    // Reset password
     app.put('/reset-password', (req, res) => {
-        util.verifyToken(req.headers.resetlink, (error, decodeData) => {
+        util.verifyToken(req.headers.token, (error, decodeData) => {
             if (error) {
                 const response = { success: false, message: "Incorrect token or token is expired" };
                 return res.status(401).send(response)
             }
-            user.resetPassword(req,res,decodeData)
+            user.resetPassword(req, res, decodeData)
         })
     })
 }

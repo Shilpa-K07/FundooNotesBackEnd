@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
+const cookieParser = require('cookie-parser')
 const logger = require('./app/logger/logger')
 //create express app
 const app = express()
@@ -22,6 +23,9 @@ require('./app/routes/user.rt')(app)
  * @description require note routes
  */
 require('./app/routes/note.rt')(app)
+
+// Cookies for session management
+app.use(cookieParser())
 
  /**
  * @description require swagger-ui and swagger.json

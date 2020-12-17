@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "Users For Fundoo Notes",
+        "title": "Fundoo Notes Users",
         "description": "User API"
     },
     "host": "localhost:3000",
@@ -52,36 +52,36 @@
                 }
             }
         },
-        "/login":{
-            "post":{
-                "tags":[
+        "/login": {
+            "post": {
+                "tags": [
                     "User"
                 ],
-                "summary":"User login",
-                "parameters":[
+                "summary": "User login",
+                "parameters": [
                     {
-                        "name":"user login",
-                        "in":"body",
+                        "name": "user login",
+                        "in": "body",
                         "description": "User login",
-                        "schema":{
-                            "$ref":"#/definations/login"
+                        "schema": {
+                            "$ref": "#/definations/login"
                         }
                     }
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "responses":{
+                "responses": {
                     "200": {
-                        "description":"Successfuuly logged in !",
-                        "schema":{
-                            "$ref":"#/definations/login"
+                        "description": "Successfuuly logged in !",
+                        "schema": {
+                            "$ref": "#/definations/login"
                         }
                     }
                 }
             }
         },
-        "forgot-password": {
+        "/forgot-password": {
             "put": {
                 "summary": "Recieve reset password link via email",
                 "tags": [
@@ -90,25 +90,55 @@
                 "parameters": [
                     {
                         "name": "User",
-                        "in":"body",
-                        "description":"Recieve reset password link via email",
+                        "in": "body",
+                        "description": "Recieve reset password link via email",
                         "schema": {
-                            "$ref":"#/definations/forgotPassword"
+                            "$ref": "#/definations/forgotPassword"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Email has been sent",
-                        "schema":{
-                            "$ref":"#/definations/forgotPassword"
+                        "schema": {
+                            "$ref": "#/definations/forgotPassword"
+                        }
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "put": {
+                "summary": "Change password",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "resetLink",
+                        "in": "header",
+                        "description": "resetLink"
+                    },
+                    {
+                        "name": "newPassword",
+                        "in": "body",
+                        "description": "User with new password",
+                        "schema": {
+                            "$ref": "#/definations/resetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password has been changed !",
+                        "schema": {
+                            "$ref": "#/definations/resetPassword"
                         }
                     }
                 }
             }
         }
     },
-
     "definations": {
         "registration": {
             "required": [
@@ -152,6 +182,18 @@
             ],
             "properties": {
                 "emailId": {
+                    "type": "string"
+                }
+            }
+        },
+        "resetPassword": {
+            "required": [
+                "resetLink",
+                "newPassword"
+            ],
+            "properties": {
+                "newPassword": {
+                    "in":"body",
                     "type": "string"
                 }
             }

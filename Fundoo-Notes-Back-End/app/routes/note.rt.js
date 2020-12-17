@@ -4,10 +4,15 @@ module.exports = (app) => {
     /**
      * @description Create new note
      */
-    app.post('/note', note.create)
+    app.post('/notes', note.create)
 
     /**
      * @description Get notes
      */
     app.get('/notes', note.findAll)
+
+    /**
+     * @description Update note
+     */
+    app.put('/notes/:noteID', note.update)
 }
