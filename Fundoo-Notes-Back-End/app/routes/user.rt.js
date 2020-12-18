@@ -16,7 +16,7 @@ module.exports = (app) => {
     app.post('/forgot-password', user.forgotPassword)
 
     // Reset password
-    app.put('/reset-password', (req, res) => {
+    app.put('/reset-password', /*  (req, res) => { 
         util.verifyToken(req.headers.token, (error, decodeData) => {
             if (error) {
                 const response = { success: false, message: "Incorrect token or token is expired" };
@@ -24,5 +24,8 @@ module.exports = (app) => {
             }
             user.resetPassword(req, res, decodeData)
         })
-    })
+    } */ util.verifyToken, user.resetPassword)
+
+    // Get user profile
+    app.get('/users', user.findAll)
 }

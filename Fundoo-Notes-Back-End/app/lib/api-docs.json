@@ -82,7 +82,7 @@
             }
         },
         "/forgot-password": {
-            "put": {
+            "post": {
                 "summary": "Recieve reset password link via email",
                 "tags": [
                     "User"
@@ -115,9 +115,9 @@
                 ],
                 "parameters": [
                     {
-                        "name": "resetLink",
+                        "name": "token",
                         "in": "header",
-                        "description": "resetLink"
+                        "description": "token"
                     },
                     {
                         "name": "newPassword",
@@ -188,7 +188,7 @@
         },
         "resetPassword": {
             "required": [
-                "resetLink",
+                "token",
                 "newPassword"
             ],
             "properties": {

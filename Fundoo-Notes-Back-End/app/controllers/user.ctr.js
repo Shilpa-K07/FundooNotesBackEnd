@@ -8,6 +8,7 @@
 const userService = require('../services/user.svc.js')
 const Joi = require('joi');
 const logger = require('../logger/logger')
+const util = require('../utility/user.utl')
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
@@ -86,8 +87,9 @@ class UserController {
             else {
                 const response = { success: true, message: "Login Successfull !", token: token, data: data };
                 logger.info("Login Successfull !")
-                res.cookie("EmailId", userLoginData.emailId)
-                res.cookie("Password", userLoginData.password)
+                
+               /*  res.cookie("EmailId", userLoginData.emailId)
+                res.cookie("Password", userLoginData.password) */
                 return res.status(200).send(response)
             }
         })
@@ -96,9 +98,9 @@ class UserController {
     
     // Sends resetpassword links to user's emailId
     forgotPassword = (req, res) => {
-        const emailId = req.body.emailId
+        const userData = {emailId: req.body.emailId}
 
-        userService.forgotPassword(emailId, (error, user) => {
+        userService.forgotPassword(userData.emailId, (error, user) => {
             if (error) {
                 logger.error(error.message)
                 const response = { success: false, message: error.message };
@@ -119,9 +121,9 @@ class UserController {
     }
 
     // New password will get updated after verifying token successfully
-    resetPassword = (req, res, decodeData) => {
+    resetPassword = (req, res)/* , decodeData) */ => {
         const resetPasswordData = {
-            emailId: decodeData.emailId,
+            emailId: req.decodeData.emailId,
             newPassword: req.body.newPassword
         }
         userService.resetPassword(resetPasswordData, (error, data) => {
@@ -139,6 +141,27 @@ class UserController {
             else {
                 const response = { success: true, message: "Password has been changed !" };
                 logger.info("Password has benn changed !")
+                res.status(200).send(response)
+            }
+        })
+    }
+
+    // Get user profile
+    findAll = (req, res) => {
+        userService.findAll((error, data) => {
+            if (error) {
+                logger.error(error.message)
+                const response = { success: false, message: error.message };
+                return res.status(500).send(response)
+            }
+            else if (!data) {
+                logger.error("No users found")
+                const response = { success: false, message: "Authorization failed" };
+                return res.status(404).send(response)
+            }
+            else {
+                const response = { success: true, message: "Successfully retrieved user profiles !", data: data };
+                logger.info("Successfully retrieved user profiles !")
                 res.status(200).send(response)
             }
         })

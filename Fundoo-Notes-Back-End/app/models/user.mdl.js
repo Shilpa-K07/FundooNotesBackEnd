@@ -63,7 +63,7 @@ UserSchema.pre('save', function (next) {
         return next();
 
     // generate a salt and hash password
-    bcrypt.hash(this.password, saltRounds, (error, hash) => {console.log("..reached..")
+    bcrypt.hash(this.password, saltRounds, (error, hash) => {
         if (error)
             return next(error);
         this.password = hash;
@@ -71,27 +71,11 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-/* UserSchema.pre('updateOne', function (next) {
-    console.log("ddddddddddddddd")
-    // only hash the password if it has been modified or is new
-    if (!this.isModified('password')){
-        return next();
-    }
-    console.log("fffffffffffff")
-    // generate a salt and hash password
-    bcrypt.hash(this.password, saltRounds, (error, hash) => {
-        if (error)
-            return next(error);
-        this.password = hash;
-        next();
-    });
-}); */
-
 const User = mongoose.model('User', UserSchema)
 
 class UserModel {
-    // New user registration 
-    register = (userRegistrationData, callBack) => {
+    // Add user info
+    create = (userRegistrationData, callBack) => {
         const user = new User({
             firstName: userRegistrationData.firstName,
             lastName: userRegistrationData.lastName,
@@ -106,46 +90,73 @@ class UserModel {
         });
     }
 
-    // User login
-    login = (userLogindata, callBack) => {
-        User.findOne({ emailId: userLogindata.emailId }, (error, data) => {
+    // Find user with emailId
+    findOne = (userData, callBack) => {
+        User.findOne({ emailId: userData.emailId }, (error, user) => {
             if (error)
                 callBack(error, null)
-            callBack(null, data)
+            callBack(null, user)
         })
     }
 
+    // Find user with emailId and update password
+    findOneAndUpdate = (userData, callBack) => {
+        User.findOneAndUpdate({ emailId: userData.emailId }, {$set:{password: userData.newPassword}}, { new: true }, (error, user) => {
+           console.log("error: "+error)
+            if (error)
+                return callBack(error, null)
+            return callBack(null, user)
+        })
+    }
+    // User login
+    /*  login = (userLogindata, callBack) => {
+         User.findOne({ emailId: userLogindata.emailId }, (error, data) => {
+             if (error)
+                 callBack(error, null)
+             callBack(null, data)
+         })
+     } */
+
     // Recieve reset password link on the user's emailId
-    forgotPassword = (emailId, callBack) => {
+    /* forgotPassword = (emailId, callBack) => {
         User.findOne({ emailId: emailId }, (error, data) => {
             if (error)
                 callBack(error, null)
             callBack(null, data)
         })
-    }
+    } */
 
     // Reset password
-    resetPassword = (resetPasswordData, callBack) => {
+    /* resetPassword = (resetPasswordData, callBack) => {
         User.findOne({ emailId: resetPasswordData.emailId }, (error, user) => {
             if (error)
                 return callBack(new Error("Some error occurred"), null)
-            else {
-                // user.password = resetPasswordData.newPassword
-              /*   user.updateOne({ password: resetPasswordData.newPassword }, (error, data) => {
-                    console.log("data: "+data)
-                    if (error)
-                        return callBack(new Error("Reset password error"), null)
-                    else
-                        return callBack(null, data)
-                }) */
-                user.password = resetPasswordData.newPassword
-                user.save({},(error, data) => {
-                    if (error) 
-                        return callBack(new Error("Reset password error"), null)
-                    else
-                    return callBack(null, data)
-                })
-            }
+            else { */
+    // user.password = resetPasswordData.newPassword
+    /*   user.updateOne({ password: resetPasswordData.newPassword }, (error, data) => {
+          console.log("data: "+data)
+          if (error)
+              return callBack(new Error("Reset password error"), null)
+          else
+              return callBack(null, data)
+      }) */
+    /*  user.password = resetPasswordData.newPassword
+     user.save({},(error, data) => {
+         if (error)
+             return callBack(new Error("Reset password error"), null)
+         else
+         return callBack(null, data)
+     })
+ }
+})
+} */
+
+    // Retrieve user profile
+    findAll = (callBack) => {
+        User.find((error, user) => {
+            if (error)
+                return callBack(error, null);
+            return callBack(null, user);
         })
     }
 }

@@ -18,44 +18,43 @@ class UserService {
             return callBack(null, data)
         })
     }
-    
-   /*  encryptPassword = (password, callBack) => {
-        var saltRounds = 10;
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err)
-                return callBack(error, null)
-            return callBack(null, hash)
-        });
-    } */
 
-   // User login
+    /*  encryptPassword = (password, callBack) => {
+         var saltRounds = 10;
+         bcrypt.hash(password, saltRounds, (err, hash) => {
+             if (err)
+                 return callBack(error, null)
+             return callBack(null, hash)
+         });
+     } */
+
+    // User login
     login = (userLoginData, callBack) => {
-        userModel.login(userLoginData, (error, data) => {
+        userModel.findOne(userLoginData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occured while logging in"), null, null)
             else {
                 bcrypt.compare(userLoginData.password, data.password, (error, result) => {
                     if (result) {
-                    const token = util.generateToken(data);
-                    return callBack(null, data, token)
+                        const token = util.generateToken(data);
+                        return callBack(null, data, token)
                     }
-                    return callBack(new Error("Authorization failed"),null,null)
+                    return callBack(new Error("Authorization failed"), null, null)
                 })
             }
         })
     }
 
     // Forgot password
-    forgotPassword = (emailId, callBack) => {
-        userModel.forgotPassword(emailId, (error, data) => {
+    forgotPassword = (userData, callBack) => {
+        userModel.findOne(userData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occurred"), null)
             else {
                 const token = util.generateToken(data);
                 util.nodeEmailSender(token, (error, data) => {
-                    if (error) {
+                    if (error)
                         return callBack(new Error("Some error occurred while sending email"), null)
-                    }
                     return callBack(null, data)
                 })
             }
@@ -64,11 +63,27 @@ class UserService {
 
     // Reset password
     resetPassword = (resetPasswordData, callBack) => {
-        userModel.resetPassword(resetPasswordData, (error, data) => {
+        util.encryptData(resetPasswordData.newPassword, (error, encryptedData) => {
+            if (error)
+                return callBack(new Error("Some error occurred while encrypting password"), null)
+            else {
+                resetPasswordData.newPassword = encryptedData
+                userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
+                    if (error)
+                        return callBack(new Error(("Some error occurred while resetting password"), null))
+                    return callBack(null, data)
+                })
+            }
+        })
+    }
+
+    // Retrieve user profiles 
+    findAll = ((callBack) => {
+        userModel.findAll((error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
         })
-    }
+    })
 }
 module.exports = new UserService()
