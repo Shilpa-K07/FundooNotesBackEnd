@@ -52,7 +52,12 @@ const UserSchema = mongoose.Schema({
             },
             message: props => `${props.value} is not a valid password!`
         }
-    }
+    },
+    notes : /* {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Note"
+    } */[]
+    
 }, {
     timestamps: true
 })
@@ -72,7 +77,7 @@ UserSchema.pre('save', function (next) {
 });
 
 const User = mongoose.model('User', UserSchema)
-
+module.exports = User
 class UserModel {
     // Add user info
     create = (userRegistrationData, callBack) => {
@@ -100,14 +105,14 @@ class UserModel {
     }
 
     // Find user with emailId and update password
-    findOneAndUpdate = (userData, callBack) => {
+    findOneAndUpdates = (userData, callBack) => {
         User.findOneAndUpdate({ emailId: userData.emailId }, {$set:{password: userData.newPassword}}, { new: true }, (error, user) => {
-           console.log("error: "+error)
             if (error)
                 return callBack(error, null)
             return callBack(null, user)
         })
     }
+
     // User login
     /*  login = (userLogindata, callBack) => {
          User.findOne({ emailId: userLogindata.emailId }, (error, data) => {

@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 class UserService {
     // New user registration
     register = (userRegistrationData, callBack) => {
-        userModel.register(userRegistrationData, (error, data) => {
+        userModel.create(userRegistrationData, (error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)

@@ -87,18 +87,19 @@ class UserController {
             else {
                 const response = { success: true, message: "Login Successfull !", token: token, data: data };
                 logger.info("Login Successfull !")
-                
-               /*  res.cookie("EmailId", userLoginData.emailId)
-                res.cookie("Password", userLoginData.password) */
+                res.cookie("EmailId", userLoginData.emailId)
+
+                //res.cookie("userData", data)
+                //res.cookie("Password", userLoginData.password) */
                 return res.status(200).send(response)
             }
         })
     }
 
-    
+
     // Sends resetpassword links to user's emailId
     forgotPassword = (req, res) => {
-        const userData = {emailId: req.body.emailId}
+        const userData = { emailId: req.body.emailId }
 
         userService.forgotPassword(userData.emailId, (error, user) => {
             if (error) {

@@ -5,6 +5,7 @@
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
     const util = require('../utility/user.utl.js')
+    const note = require('../controllers/note.ctr')
 
     // New registration
     app.post('/registration', user.register)
@@ -16,16 +17,14 @@ module.exports = (app) => {
     app.post('/forgot-password', user.forgotPassword)
 
     // Reset password
-    app.put('/reset-password', /*  (req, res) => { 
-        util.verifyToken(req.headers.token, (error, decodeData) => {
-            if (error) {
-                const response = { success: false, message: "Incorrect token or token is expired" };
-                return res.status(401).send(response)
-            }
-            user.resetPassword(req, res, decodeData)
-        })
-    } */ util.verifyToken, user.resetPassword)
+    app.put('/reset-password', util.verifyToken, user.resetPassword)
 
-    // Get user profile
-    app.get('/users', user.findAll)
+     // Create a new note
+    app.post('/notes', note.create)
+
+    // Retrieve all notes
+    app.get('/notes', note.findAll)
+
+   // Update note
+    app.put('/notes/:noteID', note.update)
 }

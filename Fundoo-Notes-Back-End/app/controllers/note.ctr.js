@@ -6,10 +6,10 @@ const inputPattern = Joi.object({
     title: Joi.string().required().messages({
         'string.empty': 'Title can not be empty'
     }),
-    note: Joi.string().required().messages({
+    description: Joi.string().required().messages({
         'string.empty': 'Note can not be empty'
     })
-})
+}).unknown(true)
 
 class NoteController {
     /**
@@ -17,10 +17,12 @@ class NoteController {
      */
     create = (req, res) => {
         const noteData = {
+            emailId: req.body.emailId,
+            password: req.body.password,
             title: req.body.title,
-            note: req.body.note
+            description: req.body.description
         }
-
+        
         const validationResult = inputPattern.validate(noteData)
         if (validationResult.error) {
             const response = { success: false, message: validationResult.error.message };
