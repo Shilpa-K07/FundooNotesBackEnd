@@ -13,9 +13,7 @@ class NoteService {
         })
     }
 
-    /**
-     * @description Retrieve notes
-     */
+    // Retrieve notes
     findAll = (callBack) => {
         noteModel.findAll((error, data) => {
             if (error)
@@ -24,7 +22,25 @@ class NoteService {
         })
     }
 
-    //Validate user
+    // Update note
+    updateNote = (noteData, callBack) => {
+        noteModel.update(noteData, (error, data) => {
+            if(error)
+                return callBack(new Error("Some error occurred while updating note"))
+            return callBack(null, data)
+        })
+    }
+
+    // Delete note
+    deleteNote = (noteData, callBack) => {
+        noteModel.delete(noteData, (error, data) => {
+            if(error)
+                return callBack(new Error("Some error occurred while deleting note"))
+            return callBack(null, data)
+        })
+    }
+
+    // Validate user
     validateUser = (noteData, callBack) => {
         noteModel.findByEmailId(noteData, (error, user) => {
             if(error)

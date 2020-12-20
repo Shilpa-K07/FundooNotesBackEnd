@@ -3,6 +3,7 @@
  * @param noteSchema is the schema for the note created by the users
  */
 const mongoose = require('mongoose')
+const { User } = require('./user.mdl')
 const user = require('./user.mdl')
 
 const NoteSchema = mongoose.Schema({
@@ -29,7 +30,7 @@ const NoteSchema = mongoose.Schema({
 })
 
 const Note = mongoose.model('Note', NoteSchema)
-module.exports = Note
+
 class NoteModel {
     // Create a new note and save
     create = (noteData, callBack) => {
@@ -38,28 +39,70 @@ class NoteModel {
             description: noteData.description
         })
 
-        noteDetails.save({}, (error, data) => {console.log("save error: "+error)
+        noteDetails.save({}, (error, data) => {
+            console.log("save error: " + error)
             if (error) {
                 return callBack(error, null)
             }
             else {
-                user.User.findOneAndUpdate({ emailId: noteData.emailId }, {$push:{notes: data._id}}, { new: true },(error, data) => {
+                user.User.findOneAndUpdate({ emailId: noteData.emailId }, { $push: { notes: data._id } }, { new: true }, (error, data) => {
                     if (error)
                         return callBack(error, null)
                 })
+                return callBack(null, data)
             }
-            return callBack(null, data)
         })
     }
 
-    //
+    // Find user by email Id
     findByEmailId = (noteData, callBack) => {
-        user.User.findOne({emailId: noteData.emailId}, (error, user) => {
-            if(error)
+        user.User.findOne({ emailId: noteData.emailId }, (error, user) => {
+            if (error)
                 return callBack(error, null)
             return callBack(null, user)
         })
     }
+
+    // Update note
+    update = (noteData, callBack) => {
+        user.User.find({ emailId: noteData.emailId, notes: noteData.noteID }, (error, data) => {
+            if (error)
+                return callBack(error, null)
+            else if (data.length < 1)
+                return callBack(error, null)
+            else {
+                Note.findByIdAndUpdate(noteData.noteID, {
+                    title: noteData.title,
+                    description: noteData.description,
+                    isArchived: noteData.isArchived
+                }, { new: true }, (error, data) => {
+                    if (error)
+                        return callBack(error, null)
+                    else
+                        return callBack(null, data)
+                })
+            }
+        })
+    }
+
+    // Delete note
+    delete = (noteData, callBack) => {
+        user.User.find({emailId: noteData.emailId, notes: noteData.noteID}, (error, data) => {
+            if(error)
+                return callBack(error, null)
+            else if(data.length < 1)
+                return callBack(error, null)
+            else {
+                Note.findByIdAndRemove(noteData.noteID, (error, data) => {
+                    if(error)
+                        return callBack(error, null)
+                    else
+                        return callBack(null, data)
+                })
+            }
+        })
+    }
+
     // Find all the notes 
     findAll = (callBack) => {
         Note.find((error, data) => {

@@ -53,10 +53,10 @@ const UserSchema = mongoose.Schema({
             message: props => `${props.value} is not a valid password!`
         }
     },
-    notes:{
+    notes:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Note"
-    } 
+    }]
 }, {
     timestamps: true
 })
@@ -96,7 +96,7 @@ class UserModel {
 
     // Find user with emailId
     findOne = (userData, callBack) => {
-        User.findOne({ emailId: userData.emailId }).populate('Note').exec((error, user) => {
+        User.findOne({ emailId: userData.emailId }).populate('notes').exec((error, user) => {console.log(user)
             if (error)
                 callBack(error, null)
             callBack(null, user)

@@ -19,12 +19,15 @@ module.exports = (app) => {
     // Reset password
     app.put('/reset-password', util.verifyToken, user.resetPassword)
 
-     // Create a new note
+    // Create a new note
     app.post('/notes', note.createNote)
 
     // Retrieve all notes
     app.get('/notes', note.findAll)
 
-   // Update note
-    app.put('/notes/:noteID', note.update)
+    // Update note
+    app.put('/notes/:noteID', note.updateNote)
+
+    // Delete Note
+    app.delete('/notes/:noteID', note.deleteNote)
 }
