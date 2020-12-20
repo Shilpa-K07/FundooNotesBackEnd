@@ -6,13 +6,13 @@
  * @method resetPassword updates password
  */
 
-const userModel = require('../models/user.mdl')
+const user = require('../models/user.mdl')
 const util = require('../utility/user.utl')
 const bcrypt = require('bcrypt');
 class UserService {
     // New user registration
     register = (userRegistrationData, callBack) => {
-        userModel.create(userRegistrationData, (error, data) => {
+        user.userModel.create(userRegistrationData, (error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
@@ -30,7 +30,7 @@ class UserService {
 
     // User login
     login = (userLoginData, callBack) => {
-        userModel.findOne(userLoginData, (error, data) => {
+        user.userModel.findOne(userLoginData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occured while logging in"), null, null)
             else {
@@ -46,10 +46,12 @@ class UserService {
     }
 
     // Forgot password
-    forgotPassword = (userData, callBack) => {
-        userModel.findOne(userData, (error, data) => {
+    forgotPassword = (userData, callBack) => {console.log("data: "+userData.emailId)
+        user.userModel.findOne(userData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occurred"), null)
+            else if (!data)
+                return callBack(new Error("User not found with this email Id"), null)
             else {
                 const token = util.generateToken(data);
                 util.nodeEmailSender(token, (error, data) => {
@@ -68,7 +70,7 @@ class UserService {
                 return callBack(new Error("Some error occurred while encrypting password"), null)
             else {
                 resetPasswordData.newPassword = encryptedData
-                userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
+                user.userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
                     if (error)
                         return callBack(new Error(("Some error occurred while resetting password"), null))
                     return callBack(null, data)
@@ -79,7 +81,7 @@ class UserService {
 
     // Retrieve user profiles 
     findAll = ((callBack) => {
-        userModel.findAll((error, data) => {
+        user.userModel.findAll((error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)

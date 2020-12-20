@@ -53,11 +53,10 @@ const UserSchema = mongoose.Schema({
             message: props => `${props.value} is not a valid password!`
         }
     },
-    notes : /* {
+    notes:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Note"
-    } */[]
-    
+    } 
 }, {
     timestamps: true
 })
@@ -76,8 +75,8 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-const User = mongoose.model('User', UserSchema)
-module.exports = User
+const User = mongoose.model('User', UserSchema) 
+
 class UserModel {
     // Add user info
     create = (userRegistrationData, callBack) => {
@@ -97,7 +96,7 @@ class UserModel {
 
     // Find user with emailId
     findOne = (userData, callBack) => {
-        User.findOne({ emailId: userData.emailId }, (error, user) => {
+        User.findOne({ emailId: userData.emailId }).populate('Note').exec((error, user) => {
             if (error)
                 callBack(error, null)
             callBack(null, user)
@@ -105,8 +104,8 @@ class UserModel {
     }
 
     // Find user with emailId and update password
-    findOneAndUpdates = (userData, callBack) => {
-        User.findOneAndUpdate({ emailId: userData.emailId }, {$set:{password: userData.newPassword}}, { new: true }, (error, user) => {
+    findOneAndUpdate = (userData, callBack) => {
+        User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { password: userData.newPassword } }, { new: true }, (error, user) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, user)
@@ -165,4 +164,7 @@ class UserModel {
         })
     }
 }
-module.exports = new UserModel();
+ module.exports = {
+    userModel: new UserModel(),
+    User: User
+}

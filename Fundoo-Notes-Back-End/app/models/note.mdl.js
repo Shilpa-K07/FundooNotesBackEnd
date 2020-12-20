@@ -3,7 +3,7 @@
  * @param noteSchema is the schema for the note created by the users
  */
 const mongoose = require('mongoose')
-const User = require('./user.mdl')
+const user = require('./user.mdl')
 
 const NoteSchema = mongoose.Schema({
     title: {
@@ -42,20 +42,8 @@ class NoteModel {
             if (error) {
                 return callBack(error, null)
             }
-            else {console.log("no save error: ")
-                /* User.findOne({ emailId: noteData.emailId }, (error, user) => {
-                    console.log(error)
-                    console.log(user)
-                    if (error)
-                        return callBack(error, null)
-                    else{
-                        user.updateOne({ notes: data._id }, (error, data) => {
-                            if(error)
-                                return callBack(error, null)
-                        })
-                    }
-                }) */
-                User.findOneAndUpdate({ emailId: noteData.emailId }, {$push:{notes: data._id}}, { new: true },(error, data) => {
+            else {
+                user.User.findOneAndUpdate({ emailId: noteData.emailId }, {$push:{notes: data._id}}, { new: true },(error, data) => {
                     if (error)
                         return callBack(error, null)
                 })
@@ -64,6 +52,14 @@ class NoteModel {
         })
     }
 
+    //
+    findByEmailId = (noteData, callBack) => {
+        user.User.findOne({emailId: noteData.emailId}, (error, user) => {
+            if(error)
+                return callBack(error, null)
+            return callBack(null, user)
+        })
+    }
     // Find all the notes 
     findAll = (callBack) => {
         Note.find((error, data) => {

@@ -19,11 +19,6 @@ require('./config/mongoDb.js');
  */
 require('./app/routes/user.rt')(app)
 
-/**
- * @description require note routes
- */
-require('./app/routes/note.rt')(app)
-
 // Cookies for session management
 app.use(cookieParser())
 

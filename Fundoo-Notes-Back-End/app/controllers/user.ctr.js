@@ -8,7 +8,6 @@
 const userService = require('../services/user.svc.js')
 const Joi = require('joi');
 const logger = require('../logger/logger')
-const util = require('../utility/user.utl')
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
@@ -101,7 +100,7 @@ class UserController {
     forgotPassword = (req, res) => {
         const userData = { emailId: req.body.emailId }
 
-        userService.forgotPassword(userData.emailId, (error, user) => {
+        userService.forgotPassword(userData, (error, user) => {
             if (error) {
                 logger.error(error.message)
                 const response = { success: false, message: error.message };

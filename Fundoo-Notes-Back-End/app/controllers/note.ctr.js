@@ -15,30 +15,39 @@ class NoteController {
     /**
      * @description Create new note
      */
-    create = (req, res) => {
+    createNote = (req, res) => {
         const noteData = {
             emailId: req.body.emailId,
             password: req.body.password,
             title: req.body.title,
             description: req.body.description
         }
-        
-        const validationResult = inputPattern.validate(noteData)
-        if (validationResult.error) {
-            const response = { success: false, message: validationResult.error.message };
-            return res.status(400).send(response);
-        }
 
-        noteService.create(noteData, (error, data) => {
+        noteService.validateUser(noteData, (error, user) => {
             if (error) {
-                logger.error("Some error occurred while adding note")
-                const response = { success: false, message: "Some error occurred while adding note" }
-                return res.status(500).send(response)
+                const response = { success: false, message: error.message };
+                logger.error(error.message)
+                return res.status(401).send(response)
             }
+            else {
+                const validationResult = inputPattern.validate(noteData)
+                if (validationResult.error) {
+                    const response = { success: false, message: validationResult.error.message };
+                    return res.status(400).send(response);
+                }
 
-            logger.info("Successfully added note !")
-            const response = { success: true, message: "Successfully added note !", data: data }
-            return res.status(200).send(response)
+                noteService.createNote(noteData, (error, data) => {
+                    if (error) {
+                        logger.error("Some error occurred while adding note")
+                        const response = { success: false, message: "Some error occurred while adding note" }
+                        return res.status(500).send(response)
+                    }
+
+                    logger.info("Successfully added note !")
+                    const response = { success: true, message: "Successfully added note !", data: data }
+                    return res.status(200).send(response)
+                })
+            }
         })
     }
 

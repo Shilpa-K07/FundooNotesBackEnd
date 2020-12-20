@@ -20,7 +20,7 @@ module.exports = (app) => {
     app.put('/reset-password', util.verifyToken, user.resetPassword)
 
      // Create a new note
-    app.post('/notes', note.create)
+    app.post('/notes', note.createNote)
 
     // Retrieve all notes
     app.get('/notes', note.findAll)
