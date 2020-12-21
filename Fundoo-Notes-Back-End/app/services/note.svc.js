@@ -1,14 +1,15 @@
+/**
+ * @description service class takes request from controller and sends this request to model
+*/
 const noteModel = require('../models/note.mdl')
-const bcrypt = require('bcrypt');
+/* const bcrypt = require('bcrypt'); */
 
 class NoteService {
-    /**
-     * @description Create new note
-     */
+    // Create a new note
     createNote = (noteData, callBack) => {
         noteModel.create(noteData, (error, data) => {
             if (error)
-                return callBack(error, null)
+                return callBack(new Error("Some error occurred while adding note"), null)
             return callBack(null, data)
         })
     }
@@ -17,11 +18,12 @@ class NoteService {
     findAll = (callBack) => {
         noteModel.findAll((error, data) => {
             if (error)
-                return callBack(error, data)
+                return callBack(new Error("Some error occurred while retrieving notes"), null)
             return callBack(null, data)
         })
     }
 
+    
     // Update note
     updateNote = (noteData, callBack) => {
         noteModel.update(noteData, (error, data) => {
@@ -44,16 +46,18 @@ class NoteService {
     validateUser = (noteData, callBack) => {
         noteModel.findByEmailId(noteData, (error, user) => {
             if(error)
-                return callBack(new Error("Authorization falied"), null)
+                return callBack(new Error("Some error occurred while finding user"), null)
             else if (!user)
                 return callBack(new Error("Authorization failed"), null)
-            else {
+            else
+                return callBack(null, user)
+            /* else {
                 bcrypt.compare(noteData.password, user.password, (error, result) => {
                     if (result) 
                         return callBack(null, result)
                     return callBack(new Error("Authorization failed"), null)
                 })
-            }
+            } */
         })
     }
 }

@@ -7,7 +7,7 @@
  */
 
 const user = require('../models/user.mdl')
-const util = require('../utility/user.utl')
+const util = require('../utility/util')
 const bcrypt = require('bcrypt');
 class UserService {
     // New user registration

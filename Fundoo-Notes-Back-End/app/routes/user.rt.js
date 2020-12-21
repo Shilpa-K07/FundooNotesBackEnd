@@ -4,8 +4,9 @@
  */
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
-    const util = require('../utility/user.utl.js')
+    const util = require('../utility/util.js')
     const note = require('../controllers/note.ctr')
+    const label = require('../controllers/label.ctr')
 
     // New registration
     app.post('/registration', user.register)
@@ -28,6 +29,18 @@ module.exports = (app) => {
     // Update note
     app.put('/notes/:noteID', note.updateNote)
 
-    // Delete Note
+    // Delete note
     app.delete('/notes/:noteID', note.deleteNote)
+
+    // Create a new label
+    app.post('/labels/', label.createLabel)
+
+    // Retrieve all labels
+    app.get('/labels',  label.findLabels)
+
+    // Update label
+    app.put('/labels/:labelID', label.updateLabel)
+
+    // Delete label
+    app.delete('/labels/:labelID', label.deleteLabel)
 }

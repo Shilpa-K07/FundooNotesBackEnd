@@ -56,6 +56,10 @@ const UserSchema = mongoose.Schema({
     notes:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Note"
+    }],
+    labels:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Label"
     }]
 }, {
     timestamps: true

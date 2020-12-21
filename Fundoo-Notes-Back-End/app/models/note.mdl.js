@@ -3,7 +3,6 @@
  * @param noteSchema is the schema for the note created by the users
  */
 const mongoose = require('mongoose')
-const { User } = require('./user.mdl')
 const user = require('./user.mdl')
 
 const NoteSchema = mongoose.Schema({
@@ -16,6 +15,10 @@ const NoteSchema = mongoose.Schema({
         required: true,
     },
     isArchived: {
+        type: Boolean,
+        default: false
+    },
+    isDeleted: {
         type: Boolean,
         default: false
     },
@@ -40,7 +43,6 @@ class NoteModel {
         })
 
         noteDetails.save({}, (error, data) => {
-            console.log("save error: " + error)
             if (error) {
                 return callBack(error, null)
             }
@@ -73,8 +75,7 @@ class NoteModel {
             else {
                 Note.findByIdAndUpdate(noteData.noteID, {
                     title: noteData.title,
-                    description: noteData.description,
-                    isArchived: noteData.isArchived
+                    description: noteData.description
                 }, { new: true }, (error, data) => {
                     if (error)
                         return callBack(error, null)

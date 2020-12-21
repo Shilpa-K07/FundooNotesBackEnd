@@ -2,8 +2,8 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "Fundoo Notes Users",
-        "description": "User API"
+        "title": "Fundoo Notes",
+        "description": "APIs"
     },
     "host": "localhost:3000",
     "basePath": "/",
@@ -11,6 +11,10 @@
         {
             "name": "User",
             "description": "API for User"
+        },
+        {
+            "name": "Notes",
+            "description": "API for notes"
         }
     ],
     "schemes": [
@@ -35,7 +39,7 @@
                         "in": "body",
                         "description": "User registration",
                         "schema": {
-                            "$ref": "#/definations/registration"
+                            "$ref": "#/definitions/registration"
                         }
                     }
                 ],
@@ -46,7 +50,7 @@
                     "200": {
                         "description": "Registration is done successfully",
                         "schema": {
-                            "$ref": "#/definations/registration"
+                            "$ref": "#/definitions/registration"
                         }
                     }
                 }
@@ -64,7 +68,7 @@
                         "in": "body",
                         "description": "User login",
                         "schema": {
-                            "$ref": "#/definations/login"
+                            "$ref": "#/definitions/login"
                         }
                     }
                 ],
@@ -75,7 +79,7 @@
                     "200": {
                         "description": "Successfuuly logged in !",
                         "schema": {
-                            "$ref": "#/definations/login"
+                            "$ref": "#/definitions/login"
                         }
                     }
                 }
@@ -93,7 +97,7 @@
                         "in": "body",
                         "description": "Recieve reset password link via email",
                         "schema": {
-                            "$ref": "#/definations/forgotPassword"
+                            "$ref": "#/definitions/forgotPassword"
                         }
                     }
                 ],
@@ -101,7 +105,7 @@
                     "200": {
                         "description": "Email has been sent",
                         "schema": {
-                            "$ref": "#/definations/forgotPassword"
+                            "$ref": "#/definitions/forgotPassword"
                         }
                     }
                 }
@@ -124,7 +128,7 @@
                         "in": "body",
                         "description": "User with new password",
                         "schema": {
-                            "$ref": "#/definations/resetPassword"
+                            "$ref": "#/definitions/resetPassword"
                         }
                     }
                 ],
@@ -132,14 +136,116 @@
                     "200": {
                         "description": "Password has been changed !",
                         "schema": {
-                            "$ref": "#/definations/resetPassword"
+                            "$ref": "#/definitions/resetPassword"
+                        }
+                    }
+                }
+            }
+        },
+        "/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Retrieve all the notes",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/notes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create new note",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Create new note",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created new note",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/notes/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note that is to be updated or deleted",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete note with given ID",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Delete note of user",
+                        "schema": {
+                            "$ref": "#/definitions/deleteNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note deleted",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update note with given ID",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Note with new data",
+                        "schema": {
+                            "$ref": "#/definitions/updateNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note is updated",
+                        "schema": {
+                            "$ref": "#/definitions/note"
                         }
                     }
                 }
             }
         }
     },
-    "definations": {
+    "definitions": {
         "registration": {
             "required": [
                 "firstName",
@@ -193,7 +299,54 @@
             ],
             "properties": {
                 "newPassword": {
-                    "in":"body",
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "note": {
+            "required": [
+                "title",
+                "description"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                },
+                "title": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "description": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "notes": {
+            "type": "array",
+            "$ref": "#/definitions/note"
+        },
+        "updateNote": {
+            "required": [
+                "title",
+                "description"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "deleteNote": {
+            "properties": {
+                "emailId": {
                     "type": "string"
                 }
             }
