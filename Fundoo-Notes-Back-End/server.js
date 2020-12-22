@@ -2,12 +2,30 @@ const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const mongoDbSession = require('connect-mongodb-session')(session)
 const logger = require('./app/logger/logger')
 //create express app
 const app = express()
 
 //parse requests of content type application/json
 app.use(bodyParser.json())
+
+// Storing session
+const store = new mongoDbSession ({
+    url: 'mongodb://localhost:27017/fundoo-notes',
+    databaseName: 'fundoo-notes',
+    collection: 'sessions'
+})
+
+// Session creation
+app.use(session({
+    secret: 'key to sign cookie',
+    resave: false,
+    saveUninitialized: false,
+    name: 'fundooNotes',
+    store: store
+}))
 
 /**
  * @description configuring the database
@@ -27,6 +45,7 @@ app.use(cookieParser())
  */
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./app/lib/api-docs.json')
+const { TokenExpiredError } = require('jsonwebtoken')
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

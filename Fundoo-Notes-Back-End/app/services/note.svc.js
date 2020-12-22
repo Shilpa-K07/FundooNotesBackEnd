@@ -2,6 +2,7 @@
  * @description service class takes request from controller and sends this request to model
 */
 const noteModel = require('../models/note.mdl')
+const util = require('../utility/util')
 /* const bcrypt = require('bcrypt'); */
 
 class NoteService {
@@ -23,11 +24,11 @@ class NoteService {
         })
     }
 
-    
+
     // Update note
     updateNote = (noteData, callBack) => {
         noteModel.update(noteData, (error, data) => {
-            if(error)
+            if (error)
                 return callBack(new Error("Some error occurred while updating note"))
             return callBack(null, data)
         })
@@ -36,28 +37,25 @@ class NoteService {
     // Delete note
     deleteNote = (noteData, callBack) => {
         noteModel.delete(noteData, (error, data) => {
-            if(error)
+            if (error)
                 return callBack(new Error("Some error occurred while deleting note"))
             return callBack(null, data)
         })
     }
 
     // Validate user
-    validateUser = (noteData, callBack) => {
-        noteModel.findByEmailId(noteData, (error, user) => {
-            if(error)
+    validateUser = (token, callBack) => {
+        const decodeData = util.verifyUser(token)
+        console.log(decodeData)
+        if (!decodeData)
+            return callBack(new Error("In correct token or token is expired"), null)
+        noteModel.findById(decodeData, (error, user) => {
+            if (error)
                 return callBack(new Error("Some error occurred while finding user"), null)
             else if (!user)
                 return callBack(new Error("Authorization failed"), null)
             else
                 return callBack(null, user)
-            /* else {
-                bcrypt.compare(noteData.password, user.password, (error, result) => {
-                    if (result) 
-                        return callBack(null, result)
-                    return callBack(new Error("Authorization failed"), null)
-                })
-            } */
         })
     }
 }

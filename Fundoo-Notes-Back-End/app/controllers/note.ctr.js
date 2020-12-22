@@ -5,6 +5,7 @@
 const noteService = require('../services/note.svc')
 const logger = require('../logger/logger')
 const Joi = require('joi')
+const util = require('../utility/util')
 
 const inputPattern = Joi.object({
     title: Joi.string().required().messages({
@@ -20,17 +21,19 @@ class NoteController {
     createNote = (req, res) => {
         try {
             const noteData = {
-                emailId: req.body.emailId,
                 title: req.body.title,
                 description: req.body.description,
             }
 
-            noteService.validateUser(noteData, (error, user) => {
+            const token = req.session.fundoNotes.token
+
+            noteService.validateUser(token, (error, user) => {
                 if (error) {
                     const response = { success: false, message: error.message };
                     logger.error(error.message)
                     return res.status(401).send(response)
                 }
+
                 else {
                     const validationResult = inputPattern.validate(noteData)
                     if (validationResult.error) {
@@ -38,6 +41,7 @@ class NoteController {
                         return res.status(400).send(response);
                     }
 
+                    noteData.userId = user._id
                     noteService.createNote(noteData, (error, data) => {
                         if (error) {
                             logger.error(error.message)
@@ -52,7 +56,7 @@ class NoteController {
                 }
             })
         }
-        catch (error) {
+        catch (error) {console.log(error)
             const response = { success: false, message: "Some error occurred !" }
             return res.send(response)
         }
@@ -84,11 +88,13 @@ class NoteController {
         try {
             const noteData = {
                 noteID: req.params.noteID,
-                emailId: req.body.emailId,
                 title: req.body.title,
                 description: req.body.description,
             }
-            noteService.validateUser(noteData, (error, user) => {
+
+            const token = req.session.fundoNotes.token
+
+            noteService.validateUser(token, (error, user) => {
                 if (error) {
                     const response = { success: false, message: error.message };
                     logger.error(error.message)
@@ -101,6 +107,7 @@ class NoteController {
                         return res.status(400).send(response);
                     }
 
+                    noteData.userId = user._id
                     noteService.updateNote(noteData, (error, data) => {
                         if (error) {
                             logger.error(error.message)
@@ -132,16 +139,18 @@ class NoteController {
         try {
             const noteData = {
                 noteID: req.params.noteID,
-                emailId: req.body.emailId,
             }
 
-            noteService.validateUser(noteData, (error, user) => {
+            const token = req.session.fundoNotes.token
+            
+            noteService.validateUser(token, (error, user) => {
                 if (error) {
                     const response = { success: false, message: error.message };
                     logger.error(error.message)
                     return res.status(401).send(response)
                 }
                 else {
+                    noteData.userId = user._id
                     noteService.deleteNote(noteData, (error, data) => {
                         if (error) {
                             logger.error(error.message)

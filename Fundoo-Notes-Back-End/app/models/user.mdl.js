@@ -100,7 +100,7 @@ class UserModel {
 
     // Find user with emailId
     findOne = (userData, callBack) => {
-        User.findOne({ emailId: userData.emailId }).populate('notes').exec((error, user) => {console.log(user)
+        User.findOne({ emailId: userData.emailId }).populate('notes').exec((error, user) => {
             if (error)
                 callBack(error, null)
             callBack(null, user)

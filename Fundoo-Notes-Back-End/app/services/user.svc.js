@@ -32,14 +32,17 @@ class UserService {
     login = (userLoginData, callBack) => {
         user.userModel.findOne(userLoginData, (error, data) => {
             if (error)
-                return callBack(new Error("Some error occured while logging in"), null, null)
+                return callBack(new Error("Some error occured while logging in"), null)
+            else if (!data)
+                return callBack(new Error("Authorization failed"), null)
             else {
                 bcrypt.compare(userLoginData.password, data.password, (error, result) => {
                     if (result) {
                         const token = util.generateToken(data);
-                        return callBack(null, data, token)
+                        data.token = token
+                        return callBack(null, data)
                     }
-                    return callBack(new Error("Authorization failed"), null, null)
+                    return callBack(new Error("Authorization failed"), null)
                 })
             }
         })

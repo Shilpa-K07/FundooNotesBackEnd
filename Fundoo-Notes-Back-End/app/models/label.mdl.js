@@ -54,11 +54,9 @@ class LabelModel {
     delete = (labelData) => {
         return user.User.find({ emailId: labelData.emailId, labels: labelData.labelID })
             .then(data => {
-                console.log("data 1: " + data)
                 if (data.length == 1) {
                     Label.findById(labelData.labelID)
                         .then(label => {
-                            console.log("label data: " + label)
                             if (!label.isDeleted) {
                                 return label.updateOne({isDeleted: true},{new: true})
                             }

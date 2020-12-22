@@ -14,14 +14,14 @@ const inputPattern = Joi.object({
 
 class LabelController {
     createLabel = (req, res) => {
-        try {
+        try {console.log("cookie: "+req.cookies)
             const labelData = {
                 emailId: req.body.emailId,
                 name: req.body.name
             }
 
             labelService.validateUser(labelData)
-                .then(data => {
+                .then(data => {console.log("validate user")
                     if (!data) {
                         const response = { success: false, message: "Authorization failed" };
                         return res.status(401).send(response);
@@ -31,6 +31,7 @@ class LabelController {
                         const response = { success: false, message: validationResult.error.message };
                         return res.status(400).send(response);
                     }
+                    console.log("validate user--1")
                 })
                 .catch(error => {
                     const response = { success: false, message: "Some error occurred" };
@@ -39,7 +40,7 @@ class LabelController {
                 })
 
             labelService.createLabel(labelData)
-                .then(data => {
+                .then(data => {console.log("create label")
                     logger.info("Successfully added label !")
                     const response = { success: true, message: "Successfully added label !", data: data }
                     return res.status(200).send(response)
@@ -50,7 +51,7 @@ class LabelController {
                     return res.status(200).send(response)
                 })
         }
-        catch (error) {
+        catch (error) {console.log(error)
             const response = { success: false, message: "Some error occurred" }
             return res.send(response)
         }

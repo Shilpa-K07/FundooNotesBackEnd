@@ -41,19 +41,21 @@ class Util {
 
     verifyToken = (req, res, next) => {
         jwt.verify(req.headers.token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
-            /* if (error) 
-                return callBack(error, null)
-            callBack(null, decodeData) */
-
             if (error) {
                 const response = { success: false, message: "Incorrect token or token is expired" }
                 return res.status(401).send(response)
             }
-            // user.resetPassword(req, res, decodeData)
+
             req.decodeData = decodeData
-            console.log("decode data: " + JSON.stringify(req.decodeData))
-            console.log(next)
             next()
+        })
+    }
+
+    verifyUser = (token) => {
+        return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
+            if (error) 
+               return null
+            return decodeData
         })
     }
 

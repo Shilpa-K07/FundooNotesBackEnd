@@ -47,7 +47,7 @@ class NoteModel {
                 return callBack(error, null)
             }
             else {
-                user.User.findOneAndUpdate({ emailId: noteData.emailId }, { $push: { notes: data._id } }, { new: true }, (error, data) => {
+                user.User.findOneAndUpdate({ _id: noteData.userId }, { $push: { notes: data._id } }, { new: true }, (error, data) => {
                     if (error)
                         return callBack(error, null)
                 })
@@ -57,8 +57,8 @@ class NoteModel {
     }
 
     // Find user by email Id
-    findByEmailId = (noteData, callBack) => {
-        user.User.findOne({ emailId: noteData.emailId }, (error, user) => {
+    findById = (decodeData, callBack) => {
+        user.User.findOne({ _id: decodeData.userId }, (error, user) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, user)
@@ -67,7 +67,7 @@ class NoteModel {
 
     // Update note
     update = (noteData, callBack) => {
-        user.User.find({ emailId: noteData.emailId, notes: noteData.noteID }, (error, data) => {
+        user.User.find({ _id: noteData.userId, notes: noteData.noteID }, (error, data) => {
             if (error)
                 return callBack(error, null)
             else if (data.length < 1)
@@ -88,7 +88,7 @@ class NoteModel {
 
     // Delete note
     delete = (noteData, callBack) => {
-        user.User.find({emailId: noteData.emailId, notes: noteData.noteID}, (error, data) => {
+        user.User.find({_id: noteData.userId, notes: noteData.noteID}, (error, data) => {
             if(error)
                 return callBack(error, null)
             else if(data.length < 1)
