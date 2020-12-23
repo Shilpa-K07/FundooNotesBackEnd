@@ -49,7 +49,7 @@ class UserService {
     }
 
     // Forgot password
-    forgotPassword = (userData, callBack) => {console.log("data: "+userData.emailId)
+    forgotPassword = (userData, callBack) => {
         user.userModel.findOne(userData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occurred"), null)

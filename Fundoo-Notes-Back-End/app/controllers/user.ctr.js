@@ -68,8 +68,8 @@ class UserController {
 
     // User login
     login = (req, res) => {
-        console.log("session: "+JSON.stringify(req.session))
-        console.log("session: "+req.session.id)
+       /*  console.log("session: "+JSON.stringify(req.session))
+        console.log("session: "+req.session.id) */
         const userLoginData = {
             emailId: req.body.emailId,
             password: req.body.password
@@ -85,8 +85,8 @@ class UserController {
                 const response = { success: false, message: "Authorization failed" };
                 return res.status(401).send(response)
             }
-            else {console.log("token: "+data.token)
-                const response = { success: true, message: "Login Successfull !", data: data };
+            else {
+                const response = { success: true, message: "Login Successfull !", token: data.token,data: data };
                 logger.info("Login Successfull !")
                 req.session.isAuth = true
                 req.session.fundoNotes = {

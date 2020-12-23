@@ -56,7 +56,7 @@ class NoteController {
                 }
             })
         }
-        catch (error) {console.log(error)
+        catch (error) {
             const response = { success: false, message: "Some error occurred !" }
             return res.send(response)
         }
@@ -79,7 +79,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
@@ -115,7 +115,7 @@ class NoteController {
                             return res.status(500).send(response)
                         }
 
-                        if (!data) {
+                        if (data.length == 0) {
                             logger.error("Note not found with id :" + noteData.noteID)
                             const response = { success: false, message: "Note not found with id :" + noteData.noteID }
                             return res.status(404).send(response)
@@ -158,14 +158,14 @@ class NoteController {
                             return res.status(500).send(response)
                         }
 
-                        if (!data) {
+                        else if (!data || (data.length == 0)) {
                             logger.error("Note not found with id :" + noteData.noteID)
                             const response = { success: false, message: "Note not found with id :" + noteData.noteID }
                             return res.status(404).send(response)
                         }
 
                         logger.error("Note deleted successfully !")
-                        const response = { success: true, message: "Note deleted successfully !", data: data }
+                        const response = { success: true, message: "Note deleted successfully !"}
                         return res.status(200).send(response)
                     })
                 }

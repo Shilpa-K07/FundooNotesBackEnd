@@ -2,15 +2,19 @@
  * @description service class takes request from controller and sends this request to model
  */
 const label = require('../models/label.mdl')
+const util = require('../utility/util')
 
 class LabelService {
     // Create new label
     createLabel = (labelData) => {
-     return label.labelModel.create(labelData)
+        return label.labelModel.create(labelData)
     }
 
-    validateUser = (labelData) => {
-        return label.labelModel.findByEmailId(labelData)
+    validateUser = (token) => {
+        const decodeData = util.verifyUser(token)
+        if(!decodeData)
+            return
+        return label.labelModel.findById(decodeData)
     }
 
     // Retrieve labels

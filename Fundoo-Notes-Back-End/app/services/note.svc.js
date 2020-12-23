@@ -3,7 +3,6 @@
 */
 const noteModel = require('../models/note.mdl')
 const util = require('../utility/util')
-/* const bcrypt = require('bcrypt'); */
 
 class NoteService {
     // Create a new note
@@ -29,7 +28,7 @@ class NoteService {
     updateNote = (noteData, callBack) => {
         noteModel.update(noteData, (error, data) => {
             if (error)
-                return callBack(new Error("Some error occurred while updating note"))
+                return callBack(new Error("Some error occurred while updating note"), null)
             return callBack(null, data)
         })
     }
@@ -46,7 +45,6 @@ class NoteService {
     // Validate user
     validateUser = (token, callBack) => {
         const decodeData = util.verifyUser(token)
-        console.log(decodeData)
         if (!decodeData)
             return callBack(new Error("In correct token or token is expired"), null)
         noteModel.findById(decodeData, (error, user) => {

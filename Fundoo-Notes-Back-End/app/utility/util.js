@@ -51,10 +51,16 @@ class Util {
         })
     }
 
+    // decoding token for user verfification using promise
+    decodeToken = (token) => {
+        return jwt.verify(token, process.env.RESET_PASSWORD_KEY)
+    }
+
+    // Validating user
     verifyUser = (token) => {
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
-            if (error) 
-               return null
+            if (error)
+                return null
             return decodeData
         })
     }
@@ -62,7 +68,7 @@ class Util {
     /**
      * @description Encrypting password
      */
-    encryptData= (password, callBack) => {
+    encryptData = (password, callBack) => {
         var saltRounds = 10;
         bcrypt.hash(password, saltRounds, (err, hash) => {
             if (err)
@@ -71,23 +77,26 @@ class Util {
         });
     }
     setCookie = (req, res, next) => {
-        console.log("data: "+req.body.emailId)
-        this.encryptData(req.body.emailId, (error, decodedEmail) => {console.log("h1")
-            if(error)
+        console.log("data: " + req.body.emailId)
+        this.encryptData(req.body.emailId, (error, decodedEmail) => {
+            console.log("h1")
+            if (error)
                 return next(error)
-            else{console.log("h2")
+            else {
+                console.log("h2")
                 res.cookie("emailId", decodedEmail)
             }
         })
         this.encryptData(req.body.password, (error, decodedPassword) => {
-            if(error)
+            if (error)
                 return next(error)
-            else{console.log("h3")
+            else {
+                console.log("h3")
                 res.cookie("Password", decodedPassword)
                 return next()
             }
         })
-       
+
         /* res.cookie("EmailId", userLoginData.emailId)
         res.cookie("Password", userLoginData.password) */
     }

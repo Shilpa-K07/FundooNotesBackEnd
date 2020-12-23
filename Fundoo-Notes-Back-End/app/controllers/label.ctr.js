@@ -13,34 +13,38 @@ const inputPattern = Joi.object({
 }).unknown(true)
 
 class LabelController {
-    createLabel = (req, res) => {
-        try {console.log("cookie: "+req.cookies)
+    createLabel = async (req, res) => {
+        try {
             const labelData = {
-                emailId: req.body.emailId,
                 name: req.body.name
             }
 
-            labelService.validateUser(labelData)
-                .then(data => {console.log("validate user")
-                    if (!data) {
+            const token = req.session.fundoNotes.token
+
+             labelService.validateUser(token)
+                .then(user => {
+                    if (!user) {
                         const response = { success: false, message: "Authorization failed" };
                         return res.status(401).send(response);
                     }
+
                     const validationResult = inputPattern.validate(labelData)
                     if (validationResult.error) {
                         const response = { success: false, message: validationResult.error.message };
                         return res.status(400).send(response);
                     }
-                    console.log("validate user--1")
+                    labelData.userId = user._id
                 })
                 .catch(error => {
-                    const response = { success: false, message: "Some error occurred" };
+                    const response = { success: false, message: "some error occurred.." };
                     logger.error("Some error occurred")
-                    return res.status(401).send(response)
+                    return res.status(500).send(response)
                 })
 
+            await labelService.validateUser(token)
+
             labelService.createLabel(labelData)
-                .then(data => {console.log("create label")
+                .then(data => {
                     logger.info("Successfully added label !")
                     const response = { success: true, message: "Successfully added label !", data: data }
                     return res.status(200).send(response)
@@ -51,9 +55,9 @@ class LabelController {
                     return res.status(200).send(response)
                 })
         }
-        catch (error) {console.log(error)
+        catch (error) {
             const response = { success: false, message: "Some error occurred" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
@@ -78,22 +82,23 @@ class LabelController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
     // Update label
-    updateLabel = (req, res) => {
+    updateLabel = async (req, res) => {
         try {
             const labelData = {
                 labelID: req.params.labelID,
-                emailId: req.body.emailId,
                 name: req.body.name
             }
 
-            labelService.validateUser(labelData)
-                .then(data => {
-                    if (!data) {
+            const token = req.session.fundoNotes.token
+           
+            labelService.validateUser(token)
+                .then(user => { 
+                    if (!user) {
                         const response = { success: false, message: "Authorization failed" };
                         return res.status(401).send(response);
                     }
@@ -102,12 +107,15 @@ class LabelController {
                         const response = { success: false, message: validationResult.error.message };
                         return res.status(400).send(response);
                     }
+
+                    labelData.userId = user._id
                 })
                 .catch(error => {
                     const response = { success: false, message: "Some error occurred" };
                     logger.error("Some error occurred")
                     return res.status(401).send(response)
                 })
+            await labelService.validateUser(token)
 
             labelService.updateLabel(labelData)
                 .then(data => {
@@ -134,28 +142,31 @@ class LabelController {
     }
 
     // Delete label
-    deleteLabel = (req, res) => {
+    deleteLabel = async (req, res) => {
         try {
             const labelData = {
                 labelID: req.params.labelID,
-                emailId: req.body.emailId
             }
 
-            labelService.validateUser(labelData)
-                .then(data => {
-                    if (!data) {
+            const token = req.session.fundoNotes.token
+
+            labelService.validateUser(token)
+                .then(user => {
+                    if (!user) {
                         const response = { success: false, message: "Authorization failed" };
                         return res.status(401).send(response);
                     }
+                    labelData.userId = user._id
                 })
                 .catch(error => {
                     const response = { success: false, message: "Some error occurred" };
                     logger.error("Some error occurred")
                     return res.status(401).send(response)
                 })
-            
+            await labelService.validateUser(token)
+
             labelService.deleteLabel(labelData)
-            .then(data => {console.log("data con:"+ data)
+            .then(data => {
                 if (!data) {
                     const response = { success: false, message: "Label not found with this id" };
                     logger.error("Label not found with this id")
@@ -165,13 +176,13 @@ class LabelController {
                 const response = { success: true, message: "Successfully deleted label!", data: data }
                 return res.status(200).send(response)
             })
-            .catch(error => {console.log(error)
+            .catch(error => {
                 const response = { success: false, message: "Some error occurred while deleting labell" };
                 logger.error("Some error occurred while deleting label")
                 return res.status(500).send(response)
             })
         }
-        catch (error) {console.log(error)
+        catch (error) {
             const response = { success: false, message: "Some error occurred" }
             logger.error("Some error occurred")
             return res.send(response)

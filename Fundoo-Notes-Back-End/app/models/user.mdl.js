@@ -52,7 +52,7 @@ const UserSchema = mongoose.Schema({
             },
             message: props => `${props.value} is not a valid password!`
         }
-    },
+    }/* ,
     notes:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Note"
@@ -60,7 +60,7 @@ const UserSchema = mongoose.Schema({
     labels:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Label"
-    }]
+    }] */
 }, {
     timestamps: true
 })
@@ -100,7 +100,7 @@ class UserModel {
 
     // Find user with emailId
     findOne = (userData, callBack) => {
-        User.findOne({ emailId: userData.emailId }).populate('notes').exec((error, user) => {
+        User.findOne({ emailId: userData.emailId }/*) .populate('notes').exec( */,(error, user) => {
             if (error)
                 callBack(error, null)
             callBack(null, user)
@@ -115,49 +115,6 @@ class UserModel {
             return callBack(null, user)
         })
     }
-
-    // User login
-    /*  login = (userLogindata, callBack) => {
-         User.findOne({ emailId: userLogindata.emailId }, (error, data) => {
-             if (error)
-                 callBack(error, null)
-             callBack(null, data)
-         })
-     } */
-
-    // Recieve reset password link on the user's emailId
-    /* forgotPassword = (emailId, callBack) => {
-        User.findOne({ emailId: emailId }, (error, data) => {
-            if (error)
-                callBack(error, null)
-            callBack(null, data)
-        })
-    } */
-
-    // Reset password
-    /* resetPassword = (resetPasswordData, callBack) => {
-        User.findOne({ emailId: resetPasswordData.emailId }, (error, user) => {
-            if (error)
-                return callBack(new Error("Some error occurred"), null)
-            else { */
-    // user.password = resetPasswordData.newPassword
-    /*   user.updateOne({ password: resetPasswordData.newPassword }, (error, data) => {
-          console.log("data: "+data)
-          if (error)
-              return callBack(new Error("Reset password error"), null)
-          else
-              return callBack(null, data)
-      }) */
-    /*  user.password = resetPasswordData.newPassword
-     user.save({},(error, data) => {
-         if (error)
-             return callBack(new Error("Reset password error"), null)
-         else
-         return callBack(null, data)
-     })
- }
-})
-} */
 
     // Retrieve user profile
     findAll = (callBack) => {

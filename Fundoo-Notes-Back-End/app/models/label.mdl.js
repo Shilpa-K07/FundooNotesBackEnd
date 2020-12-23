@@ -2,7 +2,6 @@
  * @description Model class interacts with dataBase to perform tasks
  * @param labelSchema is the schema for the label created by the users
  */
-const { boolean } = require('joi')
 const mongoose = require('mongoose')
 const user = require('./user.mdl')
 
@@ -13,6 +12,10 @@ const LabelSchema = mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }
 }, {
     timeStamps: true
@@ -24,15 +27,11 @@ class LabelModel {
     // Create a new label
     create = (labelData) => {
         const label = new Label({
-            name: labelData.name
+            name: labelData.name,
+            user: labelData.userId
         })
 
         return label.save({})
-            .then(data => {
-                if (data) {
-                    return user.User.findOneAndUpdate({ emailId: labelData.emailId }, { $push: { labels: data._id } }, { new: true })
-                }
-            })
     }
 
     // Retrieve all labels
@@ -42,34 +41,29 @@ class LabelModel {
 
     // Update label
     update = (labelData) => {
-        return user.User.find({ emailId: labelData.emailId, labels: labelData.labelID })
-            .then(data => {
-                if (data.length == 1) {
-                    return Label.findByIdAndUpdate(labelData.labelID, { name: labelData.name }, { new: true })
+            return Label.find({ _id: labelData.labelID, user: labelData.userId })
+            .then(label => {
+                if(label.length == 1){
+                    return Label.findByIdAndUpdate(labelData.labelID, {
+                        name: labelData.name
+                    }, { new: true })
                 }
             })
     }
 
     // Delete label
     delete = (labelData) => {
-        return user.User.find({ emailId: labelData.emailId, labels: labelData.labelID })
-            .then(data => {
-                if (data.length == 1) {
-                    Label.findById(labelData.labelID)
-                        .then(label => {
-                            if (!label.isDeleted) {
-                                return label.updateOne({isDeleted: true},{new: true})
-                            }
-                            else
-                                return null
-                        })
-                }
+        return Label.find({ _id: labelData.labelID, user: labelData.userId })
+            .then(label => {
+                if (label.length == 1 && !(label[0].isDeleted)) {
+                    return Label.findByIdAndUpdate(labelData.labelID,{isDeleted: true},{new: true})
+                    }
             })
     }
 
     // Find user by email Id
-    findByEmailId = (labelData) => {
-        return user.User.findOne({ emailId: labelData.emailId })
+    findById = (decodeData) => {
+        return user.User.findOne({ _id: decodeData.userId })
     }
 }
 module.exports = {
