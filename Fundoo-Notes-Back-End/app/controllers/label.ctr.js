@@ -13,13 +13,14 @@ const inputPattern = Joi.object({
 }).unknown(true)
 
 class LabelController {
-    createLabel = async (req, res) => {
+    createLabel = (req, res) => {
         try {
             const labelData = {
-                name: req.body.name
+                name: req.body.name,
+                userId: req.decodeData.userId
             }
 
-            const token = req.session.fundoNotes.token
+            /* const token = req.session.fundoNotes.token
 
              labelService.validateUser(token)
                 .then(user => {
@@ -41,7 +42,7 @@ class LabelController {
                     return res.status(500).send(response)
                 })
 
-            await labelService.validateUser(token)
+            await labelService.validateUser(token) */
 
             labelService.createLabel(labelData)
                 .then(data => {
@@ -55,7 +56,7 @@ class LabelController {
                     return res.status(200).send(response)
                 })
         }
-        catch (error) {
+        catch (error) {console.log(error)
             const response = { success: false, message: "Some error occurred" }
             return res.status(500).send(response)
         }
@@ -87,14 +88,15 @@ class LabelController {
     }
 
     // Update label
-    updateLabel = async (req, res) => {
+    updateLabel = (req, res) => {
         try {
             const labelData = {
                 labelID: req.params.labelID,
-                name: req.body.name
+                name: req.body.name,
+                userId: req.decodeData.userId
             }
 
-            const token = req.session.fundoNotes.token
+         /*    const token = req.session.fundoNotes.token
            
             labelService.validateUser(token)
                 .then(user => { 
@@ -115,7 +117,7 @@ class LabelController {
                     logger.error("Some error occurred")
                     return res.status(401).send(response)
                 })
-            await labelService.validateUser(token)
+            await labelService.validateUser(token) */
 
             labelService.updateLabel(labelData)
                 .then(data => {
@@ -142,13 +144,14 @@ class LabelController {
     }
 
     // Delete label
-    deleteLabel = async (req, res) => {
+    deleteLabel = (req, res) => {
         try {
             const labelData = {
                 labelID: req.params.labelID,
+                userId: req.decodeData.userId
             }
 
-            const token = req.session.fundoNotes.token
+            /* const token = req.session.fundoNotes.token
 
             labelService.validateUser(token)
                 .then(user => {
@@ -163,7 +166,7 @@ class LabelController {
                     logger.error("Some error occurred")
                     return res.status(401).send(response)
                 })
-            await labelService.validateUser(token)
+            await labelService.validateUser(token) */
 
             labelService.deleteLabel(labelData)
             .then(data => {

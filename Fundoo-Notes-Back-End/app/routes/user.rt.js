@@ -21,26 +21,32 @@ module.exports = (app) => {
     app.put('/reset-password', util.verifyToken, user.resetPassword)
 
     // Create a new note
-    app.post('/notes', note.createNote)
+    app.post('/notes', util.verifyUser, note.createNote)
 
     // Retrieve all notes
     app.get('/notes', note.findAll)
 
     // Update note
-    app.put('/notes/:noteID', note.updateNote)
+    app.put('/notes/:noteID', util.verifyUser, note.updateNote)
 
     // Delete note
-    app.delete('/notes/:noteID', note.deleteNote)
+    app.delete('/notes/:noteID', util.verifyUser, note.deleteNote)
 
     // Create a new label
-    app.post('/labels/', label.createLabel)
+    app.post('/labels/', util.verifyUser, label.createLabel)
 
     // Retrieve all labels
     app.get('/labels',  label.findLabels)
 
     // Update label
-    app.put('/labels/:labelID', label.updateLabel)
+    app.put('/labels/:labelID', util.verifyUser, label.updateLabel)
 
     // Delete label
-    app.delete('/labels/:labelID', label.deleteLabel)
+    app.delete('/labels/:labelID', util.verifyUser, label.deleteLabel)
+
+    // Add label to note
+    app.put('/addLabelToNote/:noteID', util.verifyUser, note.addLabelToNote)  
+    
+    // Remove label from note
+    app.put('/removeLabelFromNote/:noteID', util.verifyUser, note.removeLabelFromNote) 
 }

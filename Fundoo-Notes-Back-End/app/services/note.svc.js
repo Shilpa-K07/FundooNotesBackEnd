@@ -56,5 +56,15 @@ class NoteService {
                 return callBack(null, user)
         })
     }
+
+    // Add label to note
+    addLabelToNote = (noteData) => {
+        return noteModel.add(noteData)
+    }
+
+    // Remove label from note
+    removeLabelFromNote = (noteData) => {
+        return noteModel.remove(noteData)
+    }
 }
 module.exports = new NoteService()

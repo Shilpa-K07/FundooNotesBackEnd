@@ -13,7 +13,7 @@ const LabelSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
@@ -26,12 +26,21 @@ const Label = mongoose.model('Label', LabelSchema)
 class LabelModel {
     // Create a new label
     create = (labelData) => {
-        const label = new Label({
-            name: labelData.name,
-            user: labelData.userId
-        })
-
-        return label.save({})
+        return user.User.findOne({ _id: labelData.userId })
+            .then(user => {
+                if (user) {
+                    const label = new Label({
+                        name: labelData.name,
+                        userId: labelData.userId
+                    })
+                    return label.save({})
+                }
+            })
+        /*  const label = new Label({
+             name: labelData.name,
+             user: labelData.userId
+         })
+         return label.save({}) */
     }
 
     // Retrieve all labels
@@ -41,23 +50,40 @@ class LabelModel {
 
     // Update label
     update = (labelData) => {
-            return Label.find({ _id: labelData.labelID, user: labelData.userId })
-            .then(label => {
-                if(label.length == 1){
-                    return Label.findByIdAndUpdate(labelData.labelID, {
-                        name: labelData.name
-                    }, { new: true })
+        return user.User.findOne({ _id: labelData.userId })
+            .then(user => {
+                if (user) {
+                    return Label.find({ _id: labelData.labelID, userId: labelData.userId })
+                        .then(label => {
+                            if (label.length == 1) {
+                                return Label.findByIdAndUpdate(labelData.labelID, {
+                                    name: labelData.name
+                                }, { new: true })
+                            }
+                        })
                 }
             })
+        /*  return Label.find({ _id: labelData.labelID, user: labelData.userId })
+         .then(label => {
+             if(label.length == 1){
+                 return Label.findByIdAndUpdate(labelData.labelID, {
+                     name: labelData.name
+                 }, { new: true })
+             }
+         }) */
     }
 
     // Delete label
     delete = (labelData) => {
-        return Label.find({ _id: labelData.labelID, user: labelData.userId })
-            .then(label => {
-                if (label.length == 1 && !(label[0].isDeleted)) {
-                    return Label.findByIdAndUpdate(labelData.labelID,{isDeleted: true},{new: true})
-                    }
+        return user.User.findOne({ _id: labelData.userId })
+            .then(user => {
+                if (user) {
+                    return Label.find({ _id: labelData.labelID, userId: labelData.userId })
+                        .then(label => {
+                            if (label.length == 1 && !(label[0].isDeleted))
+                                return Label.findByIdAndUpdate(labelData.labelID, { isDeleted: true }, { new: true })
+                        })
+                }
             })
     }
 

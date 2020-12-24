@@ -78,7 +78,8 @@ MongoDBAdapter.prototype.connect = function(){
  * @description creating object of MongoDBAdapter by passing parameters URL and Options
  */
 var mongoDBAdapter = new MongoDBAdapter(process.env.DB_URL, { useNewUrlParser : true, 
-                                        useUnifiedTopology : true,}); 
+                                        useUnifiedTopology : true,
+                                        useFindAndModify : false}); 
 
 /**
  * @description Calling function MongoDBAdapter.prototype.connect

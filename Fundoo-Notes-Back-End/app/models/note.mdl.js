@@ -23,10 +23,14 @@ const NoteSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    labelId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Label"
+    }],
     color: {
         type: String
     },
@@ -42,17 +46,23 @@ const Note = mongoose.model('Note', NoteSchema)
 class NoteModel {
     // Create a new note and save
     create = (noteData, callBack) => {
-        const noteDetails = new Note({
-            title: noteData.title,
-            description: noteData.description,
-            user: noteData.userId
-        })
-
-        noteDetails.save({}, (error, data) => {
-            if (error) {
+        user.User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error)
                 return callBack(error, null)
+            else {
+                const noteDetails = new Note({
+                    title: noteData.title,
+                    description: noteData.description,
+                    userId: noteData.userId
+                })
+
+                noteDetails.save({}, (error, data) => {
+                    if (error) {
+                        return callBack(error, null)
+                    }
+                    return callBack(null, data)
+                })
             }
-            return callBack(null, data)
             /* else {
                 data.updateOne({ $push: { users: noteData.userId } }, { new: true }, (error, user) => {
                     if (error)
@@ -80,43 +90,58 @@ class NoteModel {
 
     // Update note
     update = (noteData, callBack) => {
-
-        Note.find({ _id: noteData.noteID, user: noteData.userId }, (error, note) => {
+        user.User.findOne({ _id: noteData.userId }, (error, user) => {
             if (error)
                 return callBack(error, null)
-            else if (note.length == 0)
-                return callBack(null, note)
-            else {
-                Note.findByIdAndUpdate(noteData.noteID, {
-                    title: noteData.title,
-                    description: noteData.description
-                }, { new: true }, (error, data) => {
+            else if(user){
+                Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
                     if (error)
                         return callBack(error, null)
-                    return callBack(null, data)
+                    else if (note.length == 0)
+                        return callBack(null, note)
+                    else {
+                        Note.findByIdAndUpdate(noteData.noteID, {
+                            title: noteData.title,
+                            description: noteData.description
+                        }, { new: true }, (error, data) => {
+                            if (error)
+                                return callBack(error, null)
+                            return callBack(null, data)
+                        })
+                    }
                 })
             }
-        })
-    }
+        else
+            return callBack(error, null)
+    })
+}
 
     // Delete note
-    delete = (noteData, callBack) => {
-        Note.find({ _id: noteData.noteID, user: noteData.userId }, (error, note) => {
+    delete = (noteData, callBack) => {debugger;
+        user.User.findOne({ _id: noteData.userId }, (error, user) => {
             if (error)
                 return callBack(error, null)
-            else if (note.length == 0)
-                return callBack(null, note)
-            else {
-                if (!(note[0].isDeleted)) {
-                    Note.findByIdAndUpdate(noteData.noteID,{isDeleted: true},{new: true}, (error, data) => {
-                        if (error)
-                            return callBack(error, null)
-                        return callBack(null, data)
-                    })
-                }
-                else
-                    return callBack(null, null)
+            else if (user) {
+                Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
+                    if (error)
+                        return callBack(error, null)
+                    else if (note.length == 0)
+                        return callBack(null, note)
+                    else {
+                        if (!(note[0].isDeleted)) {
+                            Note.findByIdAndUpdate(noteData.noteID, { isDeleted: true }, { new: true }, (error, data) => {
+                                if (error)
+                                    return callBack(error, null)
+                                return callBack(null, data)
+                            })
+                        }
+                        else
+                            return callBack(null, null)
+                    }
+                })
             }
+            else
+                return callBack(error, null)
         })
     }
 
@@ -126,6 +151,36 @@ class NoteModel {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
+        })
+    }
+
+    // Add label to note
+    add = (noteData) => {
+        return user.User.findOne({ _id: noteData.userId })
+        .then(user => {
+            if (user) {
+                return Note.find({ _id: noteData.noteID, userId: noteData.userId })
+                    .then(note => {
+                        if (note.length == 1) {
+                            return Note.findByIdAndUpdate(noteData.noteID, { $push: { labelId: noteData.labelId } }, { new: true })
+                        }
+                    })
+            }
+        })
+    }
+
+    // Remove label from note
+    remove = (noteData) => {
+        return user.User.findOne({ _id: noteData.userId })
+        .then(user => {
+            if (user) {
+                return Note.find({ _id: noteData.noteID, userId: noteData.userId })
+                    .then(note => {
+                        if (note.length == 1) {
+                            return Note.findByIdAndUpdate(noteData.noteID, { $pull: { labelId: noteData.labelId } }, { new: true })
+                        }
+                    })
+            }
         })
     }
 }
