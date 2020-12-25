@@ -37,10 +37,12 @@ class UserService {
                 return callBack(new Error("Authorization failed"), null)
             else {
                 bcrypt.compare(userLoginData.password, data.password, (error, result) => {
-                    if (result) {
+                    if (result) {console.log("status: "+data.status)
+                        if(data.status){
                         const token = util.generateToken(data);
                         data.token = token
                         return callBack(null, data)
+                        }
                     }
                     return callBack(new Error("Authorization failed"), null)
                 })
@@ -90,5 +92,34 @@ class UserService {
             return callBack(null, data)
         })
     })
+
+    // Send email for  verification
+    emailVerification = (userData, callBack) => {
+        user.userModel.findOne(userData, (error, data) => {
+            if (error)
+                return callBack(new Error("Some error occurred while finding user"), null)
+            else if (!data)
+                return callBack(new Error("User not found with this email Id"), null)
+            else {
+                const token = util.generateToken(data)
+                userData.token = token
+                util.sendEmailVerificationMail(userData, (error, data) => {
+                    if (error){console.log("error: "+error)
+                        return callBack(new Error("Some error occurred while sending email"), null)
+                    }
+                    return callBack(null, data)
+                })
+            }
+        })
+    }
+
+    // Activate account
+    activateAccount = (userData, callBack) => {
+        user.userModel.findAndUpdate(userData, (error, data) => {
+            if (error)
+                return callBack(new Error(("Some error occurred while activating account"), null))
+            return callBack(null, data)
+        })
+    }
 }
 module.exports = new UserService()

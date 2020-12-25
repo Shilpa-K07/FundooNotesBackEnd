@@ -79,6 +79,7 @@ MongoDBAdapter.prototype.connect = function(){
  */
 var mongoDBAdapter = new MongoDBAdapter(process.env.DB_URL, { useNewUrlParser : true, 
                                         useUnifiedTopology : true,
+                                        useCreateIndex: true,
                                         useFindAndModify : false}); 
 
 /**

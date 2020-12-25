@@ -91,29 +91,30 @@ class Util {
             return callBack(null, hash)
         });
     }
-    setCookie = (req, res, next) => {
-        console.log("data: " + req.body.emailId)
-        this.encryptData(req.body.emailId, (error, decodedEmail) => {
-            console.log("h1")
-            if (error)
-                return next(error)
-            else {
-                console.log("h2")
-                res.cookie("emailId", decodedEmail)
+   
+    // Send email verification link
+    sendEmailVerificationMail = (userData, callBack) => {console.log("util: "+userData)
+        let mailTransporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.AUTH_USER,
+                pass: process.env.AUTH_PASSWORD
             }
-        })
-        this.encryptData(req.body.password, (error, decodedPassword) => {
-            if (error)
-                return next(error)
-            else {
-                console.log("h3")
-                res.cookie("Password", decodedPassword)
-                return next()
-            }
-        })
+        });
 
-        /* res.cookie("EmailId", userLoginData.emailId)
-        res.cookie("Password", userLoginData.password) */
+        let mailDetails = {
+            from: process.env.AUTH_USER,
+            to: userData.emailId,
+            subject: 'Verify Email',
+            html: `<p>Please click on below link to verify your email</p>
+        <a>${process.env.URL}/verifyEmail/${userData.token}</a>`
+        }
+
+        mailTransporter.sendMail(mailDetails, (error, data) => {
+            if (error)
+                return callBack(error, null)
+            return callBack(null, data)
+        })
     }
 }
 module.exports = new Util();

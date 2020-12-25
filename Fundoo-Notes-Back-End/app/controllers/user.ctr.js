@@ -168,5 +168,53 @@ class UserController {
             }
         })
     }
+
+     // Sends email verification links to user's emailId
+     emailVerification = (req, res) => {
+        const userData = { emailId: req.body.emailId }
+
+        userService.emailVerification(userData, (error, user) => {
+            if (error) {
+                logger.error(error.message)
+                const response = { success: false, message: error.message };
+                return res.status(500).send(response)
+            }
+
+            else if (!user) {
+                logger.error("This email is not registered")
+                const response = { success: false, message: "This email is not registered" };
+                return res.status(401).send(response)
+            }
+            else {
+                const response = { success: true, message: "Verification email has been sent !. Please verify your account" };
+                logger.info("Verification email has been sent !. Please verify your account")
+                res.status(200).send(response)
+            }
+        })
+    }
+
+    activateAccount = (req, res) => {
+        const userData = {
+            emailId: req.decodeData.emailId
+        }
+        userService.activateAccount(userData, (error, data) => {
+            if (error) {
+                logger.error(error.message)
+                const response = { success: false, message: error.message };
+                return res.status(500).send(response)
+            }
+
+            else if (!data) {
+                logger.error("User not found with this email Id")
+                const response = { success: false, message: "User not found with this email Id" };
+                return res.status(401).send(response)
+            }
+            else {
+                const response = { success: true, message: "Account has been activated !" };
+                logger.info("Account has been activated !")
+                res.status(200).send(response)
+            }
+        })
+    }
 }
 module.exports = new UserController();

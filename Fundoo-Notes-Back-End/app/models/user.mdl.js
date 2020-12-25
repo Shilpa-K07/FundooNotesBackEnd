@@ -52,15 +52,11 @@ const UserSchema = mongoose.Schema({
             },
             message: props => `${props.value} is not a valid password!`
         }
-    }/* ,
-    notes:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Note"
-    }],
-    labels:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Label"
-    }] */
+    },
+    status: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 })
@@ -122,6 +118,15 @@ class UserModel {
             if (error)
                 return callBack(error, null);
             return callBack(null, user);
+        })
+    }
+
+    // Find user with emailId and activate account
+    findAndUpdate = (userData, callBack) => {
+        User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { status: true } }, { new: true }, (error, user) => {
+            if (error)
+                return callBack(error, null)
+            return callBack(null, user)
         })
     }
 }

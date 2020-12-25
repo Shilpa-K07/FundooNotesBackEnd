@@ -204,10 +204,7 @@
                     {
                         "name": "note",
                         "in": "body",
-                        "description": "Delete note of user",
-                        "schema": {
-                            "$ref": "#/definitions/deleteNote"
-                        }
+                        "description": "Delete note of user"
                     }
                 ],
                 "responses": {
@@ -239,6 +236,105 @@
                         "description": "Note is updated",
                         "schema": {
                             "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/labels": {
+            "get": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Retrieve all the labels",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/labels"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Create new label",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Create new label",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created new label",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                }
+            }
+        },
+        "/labels/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the label that is to be updated or deleted",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Delete label with given ID",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Delete label of user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label deleted",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Update label with given ID",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Label with new data",
+                        "schema": {
+                            "$ref": "#/definitions/updateLabel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is updated",
+                        "schema": {
+                            "$ref": "#/definitions/label"
                         }
                     }
                 }
@@ -310,9 +406,6 @@
                 "description"
             ],
             "properties": {
-                "emailId": {
-                    "type": "string"
-                },
                 "title": {
                     "in": "body",
                     "type": "string"
@@ -333,9 +426,6 @@
                 "description"
             ],
             "properties": {
-                "emailId": {
-                    "type": "string"
-                },
                 "title": {
                     "type": "string"
                 },
@@ -344,12 +434,30 @@
                 }
             }
         },
-        "deleteNote": {
+        "label": {
+            "required": [
+               "name"
+            ],
             "properties": {
-                "emailId": {
+                "name": {
+                    "in": "body",
                     "type": "string"
                 }
             }
+        },
+        "labels": {
+            "type": "array",
+            "$ref": "#/definitions/label"
+        },
+        "updateLabel": {
+            "required": [
+                "name"
+             ],
+             "properties": {
+                 "name": {
+                     "type": "string"
+                 }
+             }
         }
     }
 }

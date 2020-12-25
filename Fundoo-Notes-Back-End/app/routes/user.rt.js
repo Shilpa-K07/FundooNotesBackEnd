@@ -49,4 +49,10 @@ module.exports = (app) => {
     
     // Remove label from note
     app.put('/removeLabelFromNote/:noteID', util.verifyUser, note.removeLabelFromNote) 
+
+    // Send email verification link
+    app.post('/verifyEmail', user.emailVerification)
+
+    // activate account
+    app.put('/activateAccount', util.verifyToken, user.activateAccount)
 }
