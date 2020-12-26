@@ -53,7 +53,7 @@ const UserSchema = mongoose.Schema({
             message: props => `${props.value} is not a valid password!`
         }
     },
-    status: {
+    isActivated: {
         type: Boolean,
         default: false
     }

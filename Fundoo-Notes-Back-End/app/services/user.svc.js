@@ -19,15 +19,6 @@ class UserService {
         })
     }
 
-    /*  encryptPassword = (password, callBack) => {
-         var saltRounds = 10;
-         bcrypt.hash(password, saltRounds, (err, hash) => {
-             if (err)
-                 return callBack(error, null)
-             return callBack(null, hash)
-         });
-     } */
-
     // User login
     login = (userLoginData, callBack) => {
         user.userModel.findOne(userLoginData, (error, data) => {
@@ -37,12 +28,14 @@ class UserService {
                 return callBack(new Error("Authorization failed"), null)
             else {
                 bcrypt.compare(userLoginData.password, data.password, (error, result) => {
-                    if (result) {console.log("status: "+data.status)
-                        if(data.status){
+                    if (result) {
+                        if(data.isActivated){
                         const token = util.generateToken(data);
                         data.token = token
                         return callBack(null, data)
                         }
+                        else
+                            return callBack(new Error("Please verify email before login"))
                     }
                     return callBack(new Error("Authorization failed"), null)
                 })
@@ -59,7 +52,8 @@ class UserService {
                 return callBack(new Error("User not found with this email Id"), null)
             else {
                 const token = util.generateToken(data);
-                util.nodeEmailSender(token, (error, data) => {
+                userData.token = token
+                util.nodeEmailSender(userData, (error, data) => {
                     if (error)
                         return callBack(new Error("Some error occurred while sending email"), null)
                     return callBack(null, data)
@@ -104,7 +98,7 @@ class UserService {
                 const token = util.generateToken(data)
                 userData.token = token
                 util.sendEmailVerificationMail(userData, (error, data) => {
-                    if (error){console.log("error: "+error)
+                    if (error){
                         return callBack(new Error("Some error occurred while sending email"), null)
                     }
                     return callBack(null, data)

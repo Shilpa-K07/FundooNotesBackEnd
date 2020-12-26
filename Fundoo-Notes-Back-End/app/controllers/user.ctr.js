@@ -28,7 +28,7 @@ const inputPattern = Joi.object({
         'string.min': 'password length should be minimum 8',
         'string.empty': 'password can not be empty'
     })
-})
+}).unknown(true)
 
 class UserController {
     //new user registration
