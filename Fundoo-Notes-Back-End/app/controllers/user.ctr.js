@@ -8,6 +8,7 @@
 const userService = require('../services/user.svc.js')
 const Joi = require('joi');
 const logger = require('../logger/logger')
+const publisher = require('../utility/publisher')
 
 const inputPattern = Joi.object({
     firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
@@ -172,6 +173,14 @@ class UserController {
      // Sends email verification links to user's emailId
      emailVerification = (req, res) => {
         const userData = { emailId: req.body.emailId }
+        
+        publisher.publish(userData, (error, data) => {
+            if(error){
+                logger.error("Some error occurred while addig to queue")
+                const response = { success: false, message: "Some error occurred while addig to queue" };
+                return res.status(500).send(response)
+            }
+        })
 
         userService.emailVerification(userData, (error, user) => {
             if (error) {

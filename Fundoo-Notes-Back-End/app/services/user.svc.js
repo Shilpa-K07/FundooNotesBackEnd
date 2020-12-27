@@ -9,6 +9,11 @@
 const user = require('../models/user.mdl')
 const util = require('../utility/util')
 const bcrypt = require('bcrypt');
+const consumer = require('../utility/subscriber')
+const redis = require('redis')
+
+const client = redis.createClient()
+
 class UserService {
     // New user registration
     register = (userRegistrationData, callBack) => {
@@ -21,23 +26,32 @@ class UserService {
 
     // User login
     login = (userLoginData, callBack) => {
-        user.userModel.findOne(userLoginData, (error, data) => {
-            if (error)
-                return callBack(new Error("Some error occured while logging in"), null)
-            else if (!data)
-                return callBack(new Error("Authorization failed"), null)
+        const userName = userLoginData.emailId
+        client.get(userName, (error, data) => {
+            console.log("data: " + data)
+            if (data)
+                return callBack(null, data)
             else {
-                bcrypt.compare(userLoginData.password, data.password, (error, result) => {
-                    if (result) {
-                        if(data.isActivated){
-                        const token = util.generateToken(data);
-                        data.token = token
-                        return callBack(null, data)
-                        }
-                        else
-                            return callBack(new Error("Please verify email before login"))
+                user.userModel.findOne(userLoginData, (error, data) => {
+                    if (error)
+                        return callBack(new Error("Some error occured while logging in"), null)
+                    else if (!data)
+                        return callBack(new Error("Authorization failed"), null)
+                    else {
+                        bcrypt.compare(userLoginData.password, data.password, (error, result) => {
+                            if (result) {
+                                if (data.isActivated) {
+                                    const token = util.generateToken(data);
+                                    data.token = token
+                                    client.setex(userName, 1440, userLoginData)
+                                    return callBack(null, data)
+                                }
+                                else
+                                    return callBack(new Error("Please verify email before login"))
+                            }
+                            return callBack(new Error("Authorization failed"), null)
+                        })
                     }
-                    return callBack(new Error("Authorization failed"), null)
                 })
             }
         })
@@ -97,11 +111,19 @@ class UserService {
             else {
                 const token = util.generateToken(data)
                 userData.token = token
-                util.sendEmailVerificationMail(userData, (error, data) => {
-                    if (error){
-                        return callBack(new Error("Some error occurred while sending email"), null)
+                consumer.consume((error, message) => {
+                    if (error)
+                        callBack(new Error("Some error occurred while consuming message"), null)
+                    else {
+                        console.log("message is: " + message)
+                        userData.emailId = message
+                        util.sendEmailVerificationMail(userData, (error, data) => {
+                            if (error) {
+                                return callBack(new Error("Some error occurred while sending email"), null)
+                            }
+                            return callBack(null, data)
+                        })
                     }
-                    return callBack(null, data)
                 })
             }
         })
