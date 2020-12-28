@@ -6,33 +6,37 @@
  * @method resetPassword updates password
  */
 
-const user = require('../models/user.mdl')
+const userModel = require('../models/user.mdl').userModel
 const util = require('../utility/util')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
 const consumer = require('../utility/subscriber')
-const redis = require('redis')
-
-const client = redis.createClient()
+const redis = require('../utility/redisCache')
 
 class UserService {
     // New user registration
     register = (userRegistrationData, callBack) => {
-        user.userModel.create(userRegistrationData, (error, data) => {
+        userModel.create(userRegistrationData, (error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
         })
     }
 
-    // User login
+   /**
+    * @description User login
+    * @method clent.get is redis implementation to check for emailId
+    * @method findOne is model class method
+    * @method client.setex is used to set the key in redis cache
+    */
     login = (userLoginData, callBack) => {
         const userName = userLoginData.emailId
-        client.get(userName, (error, data) => {
-            console.log("data: " + data)
-            if (data)
-                return callBack(null, data)
-            else {
-                user.userModel.findOne(userLoginData, (error, data) => {
+        redis.get(userName, (error, data) => {
+            if(error)
+                return callBack(new Error("Some error occuured while retrieving data from redis"), null)
+            else if(data)
+                return callBack(null, JSON.parse(data))
+            else{
+                userModel.findOne(userLoginData, (error, data) => {
                     if (error)
                         return callBack(new Error("Some error occured while logging in"), null)
                     else if (!data)
@@ -41,9 +45,10 @@ class UserService {
                         bcrypt.compare(userLoginData.password, data.password, (error, result) => {
                             if (result) {
                                 if (data.isActivated) {
-                                    const token = util.generateToken(data);
+                                    const token = util.generateToken(data)
                                     data.token = token
-                                    client.setex(userName, 1440, userLoginData)
+                                    redis.set(userName, data)
+                                    //client.setex(userName, 1440, JSON.stringify(data))
                                     return callBack(null, data)
                                 }
                                 else
@@ -57,9 +62,12 @@ class UserService {
         })
     }
 
-    // Forgot password
+    /**
+     * @description Forgot password 
+     * @method util.nodeEmailSender is util class method to send reset password link to user
+     */
     forgotPassword = (userData, callBack) => {
-        user.userModel.findOne(userData, (error, data) => {
+        userModel.findOne(userData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occurred"), null)
             else if (!data)
@@ -76,14 +84,17 @@ class UserService {
         })
     }
 
-    // Reset password
+    /**
+     * @description Reset password
+     * @method util.encryptData is used to hash password
+     */
     resetPassword = (resetPasswordData, callBack) => {
         util.encryptData(resetPasswordData.newPassword, (error, encryptedData) => {
             if (error)
                 return callBack(new Error("Some error occurred while encrypting password"), null)
             else {
                 resetPasswordData.newPassword = encryptedData
-                user.userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
+                userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
                     if (error)
                         return callBack(new Error(("Some error occurred while resetting password"), null))
                     return callBack(null, data)
@@ -94,16 +105,20 @@ class UserService {
 
     // Retrieve user profiles 
     findAll = ((callBack) => {
-        user.userModel.findAll((error, data) => {
+        userModel.findAll((error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
         })
     })
 
-    // Send email for  verification
+    /**
+     * @description Send mail for verification of user email address
+     * @method util.generateToken generates token based on userId and emailId
+     * @method util.sendEmailVerificationMail sends mail to user for verifying email address
+     */
     emailVerification = (userData, callBack) => {
-        user.userModel.findOne(userData, (error, data) => {
+        userModel.findOne(userData, (error, data) => {
             if (error)
                 return callBack(new Error("Some error occurred while finding user"), null)
             else if (!data)
@@ -131,7 +146,7 @@ class UserService {
 
     // Activate account
     activateAccount = (userData, callBack) => {
-        user.userModel.findAndUpdate(userData, (error, data) => {
+        userModel.findAndUpdate(userData, (error, data) => {
             if (error)
                 return callBack(new Error(("Some error occurred while activating account"), null))
             return callBack(null, data)

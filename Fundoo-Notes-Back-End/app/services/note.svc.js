@@ -5,7 +5,11 @@ const noteModel = require('../models/note.mdl')
 const util = require('../utility/util')
 
 class NoteService {
-    // Create a new note
+    /**
+     *@description Create a new note
+     *@method create calls model class method
+     *@param callBack is function which calls controller class method
+     */
     createNote = (noteData, callBack) => {
         noteModel.create(noteData, (error, data) => {
             if (error)
@@ -14,7 +18,11 @@ class NoteService {
         })
     }
 
-    // Retrieve notes
+    /**
+     *@description Retrieve notes
+     *@method findAll calls model class method
+     *@param callBack is function which calls controller class method
+     */
     findAll = (callBack) => {
         noteModel.findAll((error, data) => {
             if (error)
@@ -23,8 +31,11 @@ class NoteService {
         })
     }
 
-
-    // Update note
+    /**
+     *@description Update notes
+     *@method update calls model class method
+     *@param callBack is function which calls controller class method
+     */
     updateNote = (noteData, callBack) => {
         noteModel.update(noteData, (error, data) => {
             if (error)
@@ -33,7 +44,11 @@ class NoteService {
         })
     }
 
-    // Delete note
+    /**
+     *@description Deletes notes
+     *@method delete calls model class method
+     *@param callBack is function which calls controller class method
+     */
     deleteNote = (noteData, callBack) => {
         noteModel.delete(noteData, (error, data) => {
             if (error)
@@ -42,7 +57,11 @@ class NoteService {
         })
     }
 
-    // Validate user
+    /**
+     * @description Validate user
+     * @method util.verifyUse checks for user existence 
+     * @method findById finds the user by Id
+     */
     validateUser = (token, callBack) => {
         const decodeData = util.verifyUser(token)
         if (!decodeData)

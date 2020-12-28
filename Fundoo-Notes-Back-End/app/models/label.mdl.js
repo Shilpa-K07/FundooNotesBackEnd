@@ -24,7 +24,11 @@ const LabelSchema = mongoose.Schema({
 const Label = mongoose.model('Label', LabelSchema)
 
 class LabelModel {
-    // Create a new label
+    /**
+     * @description Create a new label
+     * @method User.findOne finds user with specific Id
+     * @method save will save object into DB
+     */
     create = (labelData) => {
         return user.User.findOne({ _id: labelData.userId })
             .then(user => {
@@ -36,11 +40,6 @@ class LabelModel {
                     return label.save({})
                 }
             })
-        /*  const label = new Label({
-             name: labelData.name,
-             user: labelData.userId
-         })
-         return label.save({}) */
     }
 
     // Retrieve all labels
@@ -48,7 +47,12 @@ class LabelModel {
         return Label.find()
     }
 
-    // Update label
+    /**
+     * @description Update label
+     * @method User.findOne finds User with specific Id
+     * @method Label.find finds label with specific label Id and user Id
+     * @method Label.findByIdAndUpdate updates label 
+     */
     update = (labelData) => {
         return user.User.findOne({ _id: labelData.userId })
             .then(user => {
@@ -63,17 +67,14 @@ class LabelModel {
                         })
                 }
             })
-        /*  return Label.find({ _id: labelData.labelID, user: labelData.userId })
-         .then(label => {
-             if(label.length == 1){
-                 return Label.findByIdAndUpdate(labelData.labelID, {
-                     name: labelData.name
-                 }, { new: true })
-             }
-         }) */
     }
 
-    // Delete label
+    /**
+     * @description Delete label
+     * @method User.findOne finds user with specific Id
+     * @method Label.find finds label with specific label Id and user Id
+     * @method Label.findByIdAndUpdate sets isDeleted flag to true
+     */
     delete = (labelData) => {
         return user.User.findOne({ _id: labelData.userId })
             .then(user => {

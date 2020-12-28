@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const mongoDbSession = require('connect-mongodb-session')(session)
 const logger = require('./app/logger/logger')
+
 //create express app
 const app = express()
 
@@ -20,33 +21,30 @@ app.use(bodyParser.json())
     collection: 'sessions'
 }) */
 
-// Session creation
+/**
+ * @description creating session
+ * @method uuid generates unique universal identifier which is used as session Id
+ */
 app.use(session({
     genid: (req) => {
-        return uuid() 
-      },
+        return uuid()
+    },
     secret: 'key to sign cookie',
     resave: false,
     saveUninitialized: false,
     name: 'fundooNotes',
-   // store: store
+    // store: store
 }))
 
-
-/**
- * @description require user routes
- */
+// require user routes
 require('./app/routes/user.rt')(app)
 
 // Cookies for session management
 app.use(cookieParser())
 
- /**
- * @description require swagger-ui and swagger.json
- */
+// require swagger-ui and swagger.json
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./app/lib/api-docs.json')
-/* const { TokenExpiredError } = require('jsonwebtoken') */
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -55,5 +53,5 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  * @param process.env.PORT is the port number 3000
  */
 app.listen(process.env.PORT, () => {
-    logger.info("Server is listening on port ",process.env.PORT);
+    logger.info("Server is listening on port ", process.env.PORT);
 })

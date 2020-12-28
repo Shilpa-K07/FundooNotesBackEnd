@@ -13,6 +13,11 @@ const inputPattern = Joi.object({
 }).unknown(true)
 
 class LabelController {
+    /**
+     * @description Create a new label
+     * @method validate validates input using Joi
+     * @method labelService.createLabel service class method for adding label
+     */
     createLabel = (req, res) => {
         try {
             const labelData = {
@@ -20,29 +25,12 @@ class LabelController {
                 userId: req.decodeData.userId
             }
 
-            /* const token = req.session.fundoNotes.token
+            const validationResult = inputPattern.validate(noteData)
 
-             labelService.validateUser(token)
-                .then(user => {
-                    if (!user) {
-                        const response = { success: false, message: "Authorization failed" };
-                        return res.status(401).send(response);
-                    }
-
-                    const validationResult = inputPattern.validate(labelData)
-                    if (validationResult.error) {
-                        const response = { success: false, message: validationResult.error.message };
-                        return res.status(400).send(response);
-                    }
-                    labelData.userId = user._id
-                })
-                .catch(error => {
-                    const response = { success: false, message: "some error occurred.." };
-                    logger.error("Some error occurred")
-                    return res.status(500).send(response)
-                })
-
-            await labelService.validateUser(token) */
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
+            }
 
             labelService.createLabel(labelData)
                 .then(data => {
@@ -62,7 +50,10 @@ class LabelController {
         }
     }
 
-    // Retrieve labels
+     /**
+     * @description Retrieve all the labels
+     * @method labelService.findLabels service class method for adding label
+     */
     findLabels = (req, res) => {
         try {
             labelService.findLabels()
@@ -87,7 +78,11 @@ class LabelController {
         }
     }
 
-    // Update label
+    /**
+     * @description Update label
+     * @method validate validates new data using Joi
+     * @method labelService.updateLabel service class method for updating label
+     */
     updateLabel = (req, res) => {
         try {
             const labelData = {
@@ -96,28 +91,12 @@ class LabelController {
                 userId: req.decodeData.userId
             }
 
-         /*    const token = req.session.fundoNotes.token
-           
-            labelService.validateUser(token)
-                .then(user => { 
-                    if (!user) {
-                        const response = { success: false, message: "Authorization failed" };
-                        return res.status(401).send(response);
-                    }
-                    const validationResult = inputPattern.validate(labelData)
-                    if (validationResult.error) {
-                        const response = { success: false, message: validationResult.error.message };
-                        return res.status(400).send(response);
-                    }
+            const validationResult = inputPattern.validate(noteData)
 
-                    labelData.userId = user._id
-                })
-                .catch(error => {
-                    const response = { success: false, message: "Some error occurred" };
-                    logger.error("Some error occurred")
-                    return res.status(401).send(response)
-                })
-            await labelService.validateUser(token) */
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
+            }
 
             labelService.updateLabel(labelData)
                 .then(data => {
@@ -143,30 +122,16 @@ class LabelController {
         }
     }
 
-    // Delete label
+    /**
+     * @description Delete label
+     * @method labelService.deleteLabel service class method for deleting label
+     */
     deleteLabel = (req, res) => {
         try {
             const labelData = {
                 labelID: req.params.labelID,
                 userId: req.decodeData.userId
             }
-
-            /* const token = req.session.fundoNotes.token
-
-            labelService.validateUser(token)
-                .then(user => {
-                    if (!user) {
-                        const response = { success: false, message: "Authorization failed" };
-                        return res.status(401).send(response);
-                    }
-                    labelData.userId = user._id
-                })
-                .catch(error => {
-                    const response = { success: false, message: "Some error occurred" };
-                    logger.error("Some error occurred")
-                    return res.status(401).send(response)
-                })
-            await labelService.validateUser(token) */
 
             labelService.deleteLabel(labelData)
             .then(data => {

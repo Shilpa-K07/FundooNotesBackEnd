@@ -1,8 +1,19 @@
+/**
+ * @description This class contains utility methods
+ * @method generateToken for token generation
+ * @method nodeEmailSender sends email
+ * @method verifyToken verifies token generated
+ */
 const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer")
 const bcrypt = require('bcrypt');
 const ejs = require('ejs')
 class Util {
+
+    /**
+     * @description generate token
+     * @method jwt.sign takes @var emailId and @var userId to generate token
+     */
     generateToken = (user) => {
         const token = jwt.sign({
             emailId: user.emailId,
@@ -15,6 +26,11 @@ class Util {
         return token
     }
 
+    /**
+     * @description sends mail for reset password
+     * @method createTransport creates transport for sending mail
+     * @method sendMail sends email
+     */
     nodeEmailSender = (userData, callBack) => {
         let mailTransporter = this.createTransport()
         ejs.renderFile("app/views/resetPassword.ejs", { link: process.env.URL + '/resetPassword/' + userData.token }, (error, data) => {
@@ -40,13 +56,17 @@ class Util {
         })
     }
 
+    /**
+     * @description verifytoken
+     * @param next calls next middleware function
+     * @method jwt.verify decodes token
+     */
     verifyToken = (req, res, next) => {
         jwt.verify(req.headers.token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
                 const response = { success: false, message: "Incorrect token or token is expired" }
                 return res.status(401).send(response)
             }
-
             req.decodeData = decodeData
             next()
         })
@@ -57,7 +77,11 @@ class Util {
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY)
     }
 
-    // Validating user
+    /**
+     * @description verify user by decoding token
+     * @method jwt.verify decodes token
+     * @param next calls next middleware function
+     */
     verifyUser = (req, res, next) => {
         if (req.session.fundoNotes === undefined) {
             const response = { success: false, message: "Incorrect token or token is expired" }
@@ -76,6 +100,8 @@ class Util {
 
     /**
      * @description Encrypting password
+     * @method bcrypt.hash used to encrypt password
+     * @var saltRounds is the number of rounds used for hashing
      */
     encryptData = (password, callBack) => {
         var saltRounds = 10;
@@ -107,7 +133,11 @@ class Util {
         })
     }
 
-    // Send email verification link
+    /**
+    * @description sends email verification link
+    * @method createTransport creates transport for sending mail
+    * @method sendMail sends email
+    */
     sendEmailVerificationMail = (userData, callBack) => {
         let mailTransporter = this.createTransport()
         ejs.renderFile("app/views/emailVerification.ejs", { link: process.env.URL + '/verifyEmail/' + userData.token }, (error, htmlData) => {

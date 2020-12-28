@@ -2,7 +2,6 @@
  * @description Model class interacts with dataBase to perform tasks
  * @param noteSchema is the schema for the note created by the users
  */
-const { update } = require('lodash')
 const mongoose = require('mongoose')
 const user = require('./user.mdl')
 
@@ -63,19 +62,6 @@ class NoteModel {
                     return callBack(null, data)
                 })
             }
-            /* else {
-                data.updateOne({ $push: { users: noteData.userId } }, { new: true }, (error, user) => {
-                    if (error)
-                        return callBack(error, null)
-                })
-            } */
-            /*  else {
-                 user.User.findOneAndUpdate({ _id: noteData.userId }, { $push: { notes: data._id } }, { new: true }, (error, data) => {
-                     if (error)
-                         return callBack(error, null)
-                 })
-                 return callBack(null, data)
-             } */
         })
     }
 
@@ -93,7 +79,7 @@ class NoteModel {
         user.User.findOne({ _id: noteData.userId }, (error, user) => {
             if (error)
                 return callBack(error, null)
-            else if(user){
+            else if (user) {
                 Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
                     if (error)
                         return callBack(error, null)
@@ -111,13 +97,14 @@ class NoteModel {
                     }
                 })
             }
-        else
-            return callBack(error, null)
-    })
-}
+            else
+                return callBack(error, null)
+        })
+    }
 
     // Delete note
-    delete = (noteData, callBack) => {debugger;
+    delete = (noteData, callBack) => {
+        debugger;
         user.User.findOne({ _id: noteData.userId }, (error, user) => {
             if (error)
                 return callBack(error, null)
@@ -157,31 +144,31 @@ class NoteModel {
     // Add label to note
     add = (noteData) => {
         return user.User.findOne({ _id: noteData.userId })
-        .then(user => {
-            if (user) {
-                return Note.find({ _id: noteData.noteID, userId: noteData.userId })
-                    .then(note => {
-                        if (note.length == 1) {
-                            return Note.findByIdAndUpdate(noteData.noteID, { $push: { labelId: noteData.labelId } }, { new: true })
-                        }
-                    })
-            }
-        })
+            .then(user => {
+                if (user) {
+                    return Note.find({ _id: noteData.noteID, userId: noteData.userId })
+                        .then(note => {
+                            if (note.length == 1) {
+                                return Note.findByIdAndUpdate(noteData.noteID, { $push: { labelId: noteData.labelId } }, { new: true })
+                            }
+                        })
+                }
+            })
     }
 
     // Remove label from note
     remove = (noteData) => {
         return user.User.findOne({ _id: noteData.userId })
-        .then(user => {
-            if (user) {
-                return Note.find({ _id: noteData.noteID, userId: noteData.userId })
-                    .then(note => {
-                        if (note.length == 1) {
-                            return Note.findByIdAndUpdate(noteData.noteID, { $pull: { labelId: noteData.labelId } }, { new: true })
-                        }
-                    })
-            }
-        })
+            .then(user => {
+                if (user) {
+                    return Note.find({ _id: noteData.noteID, userId: noteData.userId })
+                        .then(note => {
+                            if (note.length == 1) {
+                                return Note.findByIdAndUpdate(noteData.noteID, { $pull: { labelId: noteData.labelId } }, { new: true })
+                            }
+                        })
+                }
+            })
     }
 }
 module.exports = new NoteModel()

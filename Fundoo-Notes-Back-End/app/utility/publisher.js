@@ -1,7 +1,12 @@
+/**
+ * @description This class contains @method publish which is used to push emailIds into Queue 
+ * @method used are connect, createChannel, sendToQueue
+ */
 const amqp = require('amqplib/callback_api')
 class Publisher {
+    //Push emailIds to queue
     publish = (userData, callBack) => {
-        amqp.connect(`amqp://localhost`, (error, connection) => {
+        amqp.connect(process.env.REDIS_URL, (error, connection) => {
             if (error)
                 callBack(error, null)
             connection.createChannel((error, channel) => {
@@ -10,7 +15,7 @@ class Publisher {
                 let queName = 'Emails'
                 let message = userData.emailId
                 channel.assertQueue(queName, {
-                    durable: false
+                    durable: true
                 })
                 channel.sendToQueue(queName, Buffer.from(message))
                 console.log(`Message: ${message}`)

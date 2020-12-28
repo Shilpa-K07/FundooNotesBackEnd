@@ -61,6 +61,10 @@ const UserSchema = mongoose.Schema({
     timestamps: true
 })
 
+/**
+ * @description this method is invoked before saving objects into User Schema
+ * @method bcrypt.hash is used to encrypt password
+ */
 UserSchema.pre('save', function (next) {
     // only hash the password if it has been modified or is new
     if (!this.isModified('password'))
@@ -78,7 +82,11 @@ UserSchema.pre('save', function (next) {
 const User = mongoose.model('User', UserSchema)
 
 class UserModel {
-    // Add user info
+
+    /***
+     * @description New user registration
+     * @method save is used to save object to DB
+     */
     create = (userRegistrationData, callBack) => {
         const user = new User({
             firstName: userRegistrationData.firstName,
@@ -94,41 +102,50 @@ class UserModel {
         });
     }
 
-    // Find user with emailId
+    /**
+     * @description Find user with emailId
+     * @method findOne will find user with specific emailId
+     */
     findOne = (userData, callBack) => {
-        User.findOne({ emailId: userData.emailId }/*) .populate('notes').exec( */, (error, user) => {
+        User.findOne({ emailId: userData.emailId }, (error, user) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, user)
         })
     }
 
-// Find user with emailId and update password
-findOneAndUpdate = (userData, callBack) => {
-    User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { password: userData.newPassword } }, { new: true }, (error, user) => {
-        if (error)
-            return callBack(error, null)
-        return callBack(null, user)
-    })
-}
+    /**
+     * @description Find user with emailId and update password
+     * @method findOneAndUpdate finds the user with emailId then updates password
+     */
+    findOneAndUpdate = (userData, callBack) => {
+        User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { password: userData.newPassword } }, { new: true }, (error, user) => {
+            if (error)
+                return callBack(error, null)
+            return callBack(null, user)
+        })
+    }
 
-// Retrieve user profile
-findAll = (callBack) => {
-    User.find((error, user) => {
-        if (error)
-            return callBack(error, null);
-        return callBack(null, user);
-    })
-}
+    // Retrieve user profile
+    findAll = (callBack) => {
+        User.find((error, user) => {
+            if (error)
+                return callBack(error, null);
+            return callBack(null, user);
+        })
+    }
 
-// Find user with emailId and activate account
-findAndUpdate = (userData, callBack) => {
-    User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { status: true } }, { new: true }, (error, user) => {
-        if (error)
-            return callBack(error, null)
-        return callBack(null, user)
-    })
-}
+    /**
+     * @description Find user with emailId and activate account
+     * @method findOneAndUpdate finds the user with emailId then sets isActivated field to true
+     */
+    findAndUpdate = (userData, callBack) => {
+        User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { isActivated: true } }, { new: true }, (error, user) => {
+            if (error)
+                return callBack(error, null)
+            return callBack(null, user)
+        })
+    }
 }
 module.exports = {
     userModel: new UserModel(),

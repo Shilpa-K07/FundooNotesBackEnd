@@ -5,11 +5,19 @@ const label = require('../models/label.mdl')
 const util = require('../utility/util')
 
 class LabelService {
-    // Create new label
+    /**
+     * @description Create a new label 
+     * @method labelModel.create calls model class method
+     */
     createLabel = (labelData) => {
         return label.labelModel.create(labelData)
     }
 
+    /**
+     * @description validate user
+     * @method util.verifyUser decodes token
+     * @method labelModel.findById calls model class method
+     */
     validateUser = (token) => {
         const decodeData = util.verifyUser(token)
         if(!decodeData)
@@ -17,17 +25,26 @@ class LabelService {
         return label.labelModel.findById(decodeData)
     }
 
-    // Retrieve labels
+     /**
+     * @description Retrieve all labels
+     * @method labelModel.findAll calls model class method
+     */
     findLabels = () => {
         return label.labelModel.findAll()
     }
 
-    // Update label
+     /**
+     * @description Update label
+     * @method labelModel.update calls model class method
+     */
     updateLabel = (labelData) => {
         return label.labelModel.update(labelData)
     }
 
-    //deleteLabel
+    /**
+     * @description Delete label
+     * @method labelModel.delete calls model class method
+     */
     deleteLabel = (labelData) => {
         return label.labelModel.delete(labelData)
     }

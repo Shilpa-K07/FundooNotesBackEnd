@@ -1,6 +1,11 @@
 /**
- * @description Controller class takes request from the routes and sends response back
+ * @description Controller class takes request from the routes and sends response to client
  * @method createNote creates a new note for the particular user
+ * @method findAll finds all the notes
+ * @method updateNote updates note
+ * @method deleteNote deletes note
+ * @method addLabelToNote is used for adding label to note
+ * @method removeLabelFromNote will delete label from note
  */
 const noteService = require('../services/note.svc')
 const logger = require('../logger/logger')
@@ -17,7 +22,10 @@ const inputPattern = Joi.object({
 }).unknown(true)
 
 class NoteController {
-    // Create a new note
+    /**
+     * @description Create a new note
+     * @method noteService.createNote is service clss method 
+     */
     createNote = (req, res) => {
         try {
             const noteData = {
@@ -26,44 +34,35 @@ class NoteController {
                 userId: req.decodeData.userId
             }
 
-           /*  const token = req.session.fundoNotes.token
+            const validationResult = inputPattern.validate(noteData)
 
-            noteService.validateUser(token, (error, user) => {
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
+            }
+
+            noteService.createNote(noteData, (error, data) => {
                 if (error) {
-                    const response = { success: false, message: error.message };
                     logger.error(error.message)
-                    return res.status(401).send(response)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
                 }
 
-                else {
-                    const validationResult = inputPattern.validate(noteData)
-                    if (validationResult.error) {
-                        const response = { success: false, message: validationResult.error.message };
-                        return res.status(400).send(response);
-                    }
- */
-                   // noteData.userId = user._id
-                    noteService.createNote(noteData, (error, data) => {
-                        if (error) {
-                            logger.error(error.message)
-                            const response = { success: false, message: error.message }
-                            return res.status(500).send(response)
-                        }
-
-                        logger.info("Successfully added note !")
-                        const response = { success: true, message: "Successfully added note !", data: data }
-                        return res.status(200).send(response)
-                    })
-          /*       }
-            }) */
+                logger.info("Successfully added note !")
+                const response = { success: true, message: "Successfully added note !", data: data }
+                return res.status(200).send(response)
+            })
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
-    // Retrieve all the notes
+    /**
+     * @description Retrieve all the notes
+     * @method noteService.findAll is service clss method for finding notes which later calls model
+     */
     findAll = (req, res) => {
         try {
             noteService.findAll((error, data) => {
@@ -84,7 +83,10 @@ class NoteController {
         }
     }
 
-    // Update note
+    /**
+    * @description Update note
+    * @method noteService.updateNote is service class method for updating note
+    */
     updateNote = (req, res) => {
         try {
             const noteData = {
@@ -93,50 +95,42 @@ class NoteController {
                 description: req.body.description,
                 userId: req.decodeData.userId
             }
-/* 
-            const token = req.session.fundoNotes.token
 
-            noteService.validateUser(token, (error, user) => {
+            const validationResult = inputPattern.validate(noteData)
+
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
+            }
+
+            noteService.updateNote(noteData, (error, data) => {
                 if (error) {
-                    const response = { success: false, message: error.message };
                     logger.error(error.message)
-                    return res.status(401).send(response)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
                 }
-                else {
-                    const validationResult = inputPattern.validate(noteData)
-                    if (validationResult.error) {
-                        const response = { success: false, message: validationResult.error.message };
-                        return res.status(400).send(response);
-                    }
 
-                    noteData.userId = user._id */
-                    noteService.updateNote(noteData, (error, data) => {
-                        if (error) {
-                            logger.error(error.message)
-                            const response = { success: false, message: error.message }
-                            return res.status(500).send(response)
-                        }
+                if (!data || data.length == 0) {
+                    logger.error("Note not found with id :" + noteData.noteID)
+                    const response = { success: false, message: "Note not found with id :" + noteData.noteID }
+                    return res.status(404).send(response)
+                }
 
-                        if (!data || data.length == 0) {
-                            logger.error("Note not found with id :" + noteData.noteID)
-                            const response = { success: false, message: "Note not found with id :" + noteData.noteID }
-                            return res.status(404).send(response)
-                        }
-
-                        logger.error("Note updated successfully !")
-                        const response = { success: true, message: "Note updated successfully !", data: data }
-                        return res.status(200).send(response)
-                    })
-            /*     }
-            }) */
+                logger.error("Note updated successfully !")
+                const response = { success: true, message: "Note updated successfully !", data: data }
+                return res.status(200).send(response)
+            })
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
-    // Delete note
+    /**
+     * @description Delete note
+     * @param noteData contains noteId and userId. userId is retrieved from decoded data
+     */
     deleteNote = (req, res) => {
         try {
             const noteData = {
@@ -144,45 +138,37 @@ class NoteController {
                 userId: req.decodeData.userId
             }
 
-         /*    const token = req.session.fundoNotes.token
-            
-            noteService.validateUser(token, (error, user) => {
+            noteService.deleteNote(noteData, (error, data) => {
                 if (error) {
-                    const response = { success: false, message: error.message };
                     logger.error(error.message)
-                    return res.status(401).send(response)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
                 }
-                else {
-                    noteData.userId = user._id */
-                    noteService.deleteNote(noteData, (error, data) => {
-                        if (error) {
-                            logger.error(error.message)
-                            const response = { success: false, message: error.message }
-                            return res.status(500).send(response)
-                        }
 
-                        else if (!data || (data.length == 0)) {
-                            logger.error("Note not found with id :" + noteData.noteID)
-                            const response = { success: false, message: "Note not found with id :" + noteData.noteID }
-                            return res.status(404).send(response)
-                        }
+                else if (!data || (data.length == 0)) {
+                    logger.error("Note not found with id :" + noteData.noteID)
+                    const response = { success: false, message: "Note not found with id :" + noteData.noteID }
+                    return res.status(404).send(response)
+                }
 
-                        logger.error("Note deleted successfully !")
-                        const response = { success: true, message: "Note deleted successfully !"}
-                        return res.status(200).send(response)
-                    })
-            /*     }
-            }) */
+                logger.error("Note deleted successfully !")
+                const response = { success: true, message: "Note deleted successfully !" }
+                return res.status(200).send(response)
+            })
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
-    // Add label to note
+    /**
+     * @description Adding label to note
+     * @var userId is retrieved from decoded data
+     * @method noteService.addLabelToNote return promise
+     */
     addLabelToNote = (req, res) => {
-        try{
+        try {
             const noteData = {
                 noteID: req.params.noteID,
                 labelId: req.body.labelId,
@@ -190,31 +176,34 @@ class NoteController {
             }
 
             noteService.addLabelToNote(noteData)
-            .then(data => {
-                if (!data) {
-                    const response = { success: false, message: "Note not found with this id" };
-                    logger.error("Note not found with this id")
-                    return res.status(404).send(response)
-                }
-                logger.info("Successfully added label to note !")
-                const response = { success: true, message: "Successfully added label to note!", data: data }
-                return res.status(200).send(response)
-            })
-            .catch(error => {
-                const response = { success: false, message: "Some error occurred while label to note" };
-                logger.error("Some error occurred while label to note")
-                return res.status(500).send(response)
-            })
+                .then(data => {
+                    if (!data) {
+                        const response = { success: false, message: "Note not found with this id" };
+                        logger.error("Note not found with this id")
+                        return res.status(404).send(response)
+                    }
+                    logger.info("Successfully added label to note !")
+                    const response = { success: true, message: "Successfully added label to note!", data: data }
+                    return res.status(200).send(response)
+                })
+                .catch(error => {
+                    const response = { success: false, message: "Some error occurred while label to note" };
+                    logger.error("Some error occurred while label to note")
+                    return res.status(500).send(response)
+                })
         }
-        catch(error){
+        catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 
-    // Remove label from note
+    /**
+     * @description Remove label from notes
+     * @method noteService.removeLabelFromNote is service class method returns promise
+     */
     removeLabelFromNote = (req, res) => {
-        try{
+        try {
             const noteData = {
                 noteID: req.params.noteID,
                 labelId: req.body.labelId,
@@ -222,25 +211,26 @@ class NoteController {
             }
 
             noteService.removeLabelFromNote(noteData)
-            .then(data => {
-                if (!data) {
-                    const response = { success: false, message: "Note not found with this id" };
-                    logger.error("Note not found with this id")
-                    return res.status(404).send(response)
-                }
-                logger.info("Successfully removed label from note !")
-                const response = { success: true, message: "Successfully removed label from note !", data: data }
-                return res.status(200).send(response)
-            })
-            .catch(error => {console.log(error)
-                const response = { success: false, message: "Some error occurred while removing label from note" };
-                logger.error("Some error occurred while removing label from note")
-                return res.status(500).send(response)
-            })
+                .then(data => {
+                    if (!data) {
+                        const response = { success: false, message: "Note not found with this id" };
+                        logger.error("Note not found with this id")
+                        return res.status(404).send(response)
+                    }
+                    logger.info("Successfully removed label from note !")
+                    const response = { success: true, message: "Successfully removed label from note !", data: data }
+                    return res.status(200).send(response)
+                })
+                .catch(error => {
+                    console.log(error)
+                    const response = { success: false, message: "Some error occurred while removing label from note" };
+                    logger.error("Some error occurred while removing label from note")
+                    return res.status(500).send(response)
+                })
         }
-        catch(error){
+        catch (error) {
             const response = { success: false, message: "Some error occurred !" }
-            return res.send(response)
+            return res.status(500).send(response)
         }
     }
 }
