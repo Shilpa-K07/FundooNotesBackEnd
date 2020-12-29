@@ -6,7 +6,7 @@ const amqp = require('amqplib/callback_api')
 
 class Subscriber {
     consume = (callBack) => {
-        amqp.connect(process.env.REDIS_URL, (error, connection) => {
+        amqp.connect(process.env.RABBIT_URL, (error, connection) => {
             if (error)
                 return callBack(error, null)
             connection.createChannel((error, channel) => {

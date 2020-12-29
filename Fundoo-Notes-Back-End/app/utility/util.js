@@ -157,6 +157,7 @@ class Util {
                 this.sendMail(mailData, (error, data) => {
                     if (error)
                         return callBack(error, null)
+                    console.log("message Id: "+data.messageId)
                     return callBack(null, data)
                 })
             }

@@ -8,10 +8,10 @@ const session = require('express-session')
 const mongoDbSession = require('connect-mongodb-session')(session)
 const logger = require('./app/logger/logger')
 
-//create express app
+// create express app
 const app = express()
 
-//parse requests of content type application/json
+// parse requests of content type application/json
 app.use(bodyParser.json())
 
 // Storing session
@@ -48,6 +48,13 @@ const swaggerDocument = require('./app/lib/api-docs.json')
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+/* app.use((err, req, res, next) => {
+    res.status(404).send({
+        status: 404,
+        error: 'Not found'
+    })
+}) */
+
 /**
  * @description listen for requests
  * @param process.env.PORT is the port number 3000
@@ -55,3 +62,5 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(process.env.PORT, () => {
     logger.info("Server is listening on port ", process.env.PORT);
 })
+
+

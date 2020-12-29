@@ -15,6 +15,7 @@ const UserSchema = mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        trim: true,
         validate: {
             validator: (v) => {
                 return FIRST_NAME_PATTERN.test(v)
@@ -25,6 +26,7 @@ const UserSchema = mongoose.Schema({
     lastName: {
         type: String,
         required: true,
+        trim: true,
         validate: {
             validator: (v) => {
                 return LAST_NAME_PATTERN.test(v)
@@ -36,6 +38,7 @@ const UserSchema = mongoose.Schema({
         type: String,
         unique: true,
         required: true,
+        trim: true,
         validate: {
             validator: (v) => {
                 return EMAIL_ID_PATTERN.test(v)
@@ -46,6 +49,7 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
+        trim: true,
         validate: {
             validator: (v) => {
                 return PASSWORD_PATTERN.test(v)

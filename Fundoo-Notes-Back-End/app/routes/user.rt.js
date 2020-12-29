@@ -7,6 +7,7 @@ module.exports = (app) => {
     const util = require('../utility/util.js')
     const note = require('../controllers/note.ctr')
     const label = require('../controllers/label.ctr')
+    const collaborator = require('../controllers/collaborator.ctr')
 
     // New registration
     app.post('/registration', user.register)
@@ -36,7 +37,7 @@ module.exports = (app) => {
     app.post('/labels/', util.verifyUser, label.createLabel)
 
     // Retrieve all labels
-    app.get('/labels',  label.findLabels)
+    app.get('/labels', label.findLabels)
 
     // Update label
     app.put('/labels/:labelID', util.verifyUser, label.updateLabel)
@@ -45,14 +46,24 @@ module.exports = (app) => {
     app.delete('/labels/:labelID', util.verifyUser, label.deleteLabel)
 
     // Add label to note
-    app.put('/addLabelToNote/:noteID', util.verifyUser, note.addLabelToNote)  
-    
+    app.put('/addLabelToNote/:noteID', util.verifyUser, note.addLabelToNote)
+
     // Remove label from note
-    app.put('/removeLabelFromNote/:noteID', util.verifyUser, note.removeLabelFromNote) 
+    app.put('/removeLabelFromNote/:noteID', util.verifyUser, note.removeLabelFromNote)
 
     // Send email verification link
     app.post('/verifyEmail', user.emailVerification)
 
     // activate account
     app.put('/activateAccount', util.verifyToken, user.activateAccount)
+
+    // Create new collaborator
+    app.post('/collaborator', util.verifyUser, collaborator.createCollaborator)
+
+    // If no routes matches execute this 
+    app.use((req, res, next) => {
+        res.status(404).send({
+            error: 'Not found'
+        })
+    })
 }

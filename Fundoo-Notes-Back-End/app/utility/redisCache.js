@@ -12,8 +12,8 @@ class RedisCache{
      * @description Get data from redis cache
      * @param userName is holding user emailId 
      */
-    get = (userName, callBack) => {
-        client.get(`UserDetails: ${userName}`, (error, data) => {
+    get = (inputData, callBack) => {
+        client.get(inputData, (error, data) => {
             if(error)
                 return callBack(error, null)
             else 
@@ -26,8 +26,8 @@ class RedisCache{
      * @param userName is holding user emailId 
      * @var maxAge is the expire time for key
      */
-    set = (userName, data) => {
-        client.setex(`UserDetails: ${userName}`, maxAge, JSON.stringify(data))
+    set = (userName, key, data) => {
+        client.setex(`${key} ${userName}`, maxAge, JSON.stringify(data))
     }
 }
 

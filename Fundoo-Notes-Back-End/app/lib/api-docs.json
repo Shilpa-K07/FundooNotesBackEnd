@@ -339,6 +339,109 @@
                     }
                 }
             }
+        },
+
+        "/addLabelToNote/{id}": {
+            "put": {
+                "tags": [
+                    "Label-Note"
+                ],
+                "summary": "Add Labels to Note",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Adding Labels to Note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is added to note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                }
+            }
+        },
+
+        "/removeLabelFromNote/{id}": {
+            "put": {
+                "tags": [
+                    "Label-Note"
+                ],
+                "summary": "Remove Label from Note",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Removing Label from Note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is removed from note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyEmail": {
+            "post": {
+                "summary": "Send email verification links to user's emailId",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "body",
+                        "description": "Sends email verification links to user's emailId",
+                        "schema": {
+                            "$ref": "#/definitions/verifyEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email has been sent ! Please verify your email address",
+                        "schema": {
+                            "$ref": "#/definitions/verifyEmail"
+                        }
+                    }
+                }
+            }
+        },
+        "/activateAccount": {
+            "put": {
+                "summary": "Activate account",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account has been activated  !",
+                        "schema": {
+                            "$ref": "#/definitions/activateAccount"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -458,6 +561,37 @@
                      "type": "string"
                  }
              }
+        },
+        "labelsToNote": {
+            "required": [
+                "labelId"
+             ],
+             "properties": {
+                 "labelId": {
+                     "type": "string"
+                 }
+             }
+        },
+        "verifyEmail": {
+            "required": [
+                "emailId"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                }
+            }
+        },
+        "activateAccount": {
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "in": "path",
+                    "type": "string"
+                }
+            }
         }
     }
 }

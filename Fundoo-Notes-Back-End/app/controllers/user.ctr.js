@@ -10,14 +10,14 @@ const Joi = require('joi');
 const logger = require('../logger/logger')
 const publisher = require('../utility/publisher')
 
-const emailPattern = Joi.string()
+const emailPattern = Joi.string().trim()
     .regex(/^([0-9A-Za-z])+([-+._][0-9A-Za-z]+)*@([0-9A-Za-z])+[.]([a-zA-Z])+([.][A-Za-z]+)*$/)
     .required().messages({
         'string.pattern.base': 'Email Id should be in this pattern ex: abc@gmail.com',
         'string.empty': 'Email Id can not be empty'
     })
 
-const passwordPattern = Joi.string()
+const passwordPattern = Joi.string().trim()
     .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*\W){1}.*$/).min(8)
     .required().messages({
         'string.pattern.base': 'password should contain atleast one uppercase, one digit, one special character',
@@ -26,12 +26,12 @@ const passwordPattern = Joi.string()
     })
 
 const inputPattern = Joi.object({
-    firstName: Joi.string().regex(/^[a-zA-Z]+$/).min(2).required().messages({
+    firstName: Joi.string().trim().regex(/^[a-zA-Z]+$/).min(2).required().messages({
         'string.pattern.base': 'name should contain only characters.',
         'string.min': 'first name must have minimum 2 characters.',
         'string.empty': 'first name can not be empty'
     }),
-    lastName: Joi.string().regex(/^[a-zA-Z]+$/).required().messages({
+    lastName: Joi.string().trim().regex(/^[a-zA-Z]+$/).required().messages({
         'string.pattern.base': 'name should contain only characters.',
         'string.empty': 'last name can not be empty'
     }),
@@ -84,7 +84,7 @@ class UserController {
                 res.send(response)
             })
         }
-        catch (error) {
+        catch (error) {console.log("error: "+error)
             logger.error("Some error occurred !")
             const response = { success: false, message: "Some error occurred !" };
             res.status(500).send(response)
@@ -120,7 +120,7 @@ class UserController {
                     return res.status(401).send(response)
                 }
                 else {
-                    const response = { success: true, message: "Login Successfull !", token: data.token, data: data };
+                    const response = { success: true, message: "Login Successfull !", token: data.token };
                     logger.info("Login Successfull !")
                     req.session.isAuth = true
                     req.session.fundoNotes = {

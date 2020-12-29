@@ -30,7 +30,9 @@ class UserService {
     */
     login = (userLoginData, callBack) => {
         const userName = userLoginData.emailId
-        redis.get(userName, (error, data) => {
+        const key = 'UserDetails: '
+        
+        redis.get(`${key} ${userName}`, (error, data) => {
             if(error)
                 return callBack(new Error("Some error occuured while retrieving data from redis"), null)
             else if(data)
@@ -47,8 +49,10 @@ class UserService {
                                 if (data.isActivated) {
                                     const token = util.generateToken(data)
                                     data.token = token
-                                    redis.set(userName, data)
-                                    //client.setex(userName, 1440, JSON.stringify(data))
+                                    const redisData = {
+                                        token: token
+                                    }
+                                    redis.set(userName, key, redisData)
                                     return callBack(null, data)
                                 }
                                 else
