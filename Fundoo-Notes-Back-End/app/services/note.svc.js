@@ -1,7 +1,7 @@
 /**
  * @description service class takes request from controller and sends this request to model
 */
-const noteModel = require('../models/note.mdl')
+const noteModel = require('../models/note.mdl').noteModel
 const util = require('../utility/util')
 
 class NoteService {

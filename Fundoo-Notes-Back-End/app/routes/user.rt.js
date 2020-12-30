@@ -21,6 +21,9 @@ module.exports = (app) => {
     // Reset password
     app.put('/reset-password', util.verifyToken, user.resetPassword)
 
+    // Retrieve users by emailId 
+    app.get('/users', user.findAll)
+
     // Create a new note
     app.post('/notes', util.verifyUser, note.createNote)
 
@@ -60,10 +63,8 @@ module.exports = (app) => {
     // Create new collaborator
     app.post('/collaborator', util.verifyUser, collaborator.createCollaborator)
 
-    // If no routes matches execute this 
-    app.use((req, res, next) => {
-        res.status(404).send({
-            error: 'Not found'
-        })
-    })
+    // Delete collaborator
+    app.delete('/collaborator/:collaboratorID', util.verifyUser, collaborator.deleteCollaborator)
+
+   
 }

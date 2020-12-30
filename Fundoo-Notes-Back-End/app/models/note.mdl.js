@@ -30,6 +30,10 @@ const NoteSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Label"
     }],
+    collaboratorId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Collaborator"
+    }],
     color: {
         type: String
     },
@@ -171,4 +175,7 @@ class NoteModel {
             })
     }
 }
-module.exports = new NoteModel()
+module.exports = {
+    noteModel: new NoteModel(),
+    Note: Note
+}

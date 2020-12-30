@@ -35,8 +35,12 @@ class UserService {
         redis.get(`${key} ${userName}`, (error, data) => {
             if(error)
                 return callBack(new Error("Some error occuured while retrieving data from redis"), null)
-            else if(data)
-                return callBack(null, JSON.parse(data))
+            else if(data){
+                data = JSON.parse(data)
+                const token = util.generateToken(data)
+                data.token = token
+                return callBack(null, data)
+            }
             else{
                 userModel.findOne(userLoginData, (error, data) => {
                     if (error)
@@ -49,10 +53,7 @@ class UserService {
                                 if (data.isActivated) {
                                     const token = util.generateToken(data)
                                     data.token = token
-                                    const redisData = {
-                                        token: token
-                                    }
-                                    redis.set(userName, key, redisData)
+                                    redis.set(userName, key, data)
                                     return callBack(null, data)
                                 }
                                 else
@@ -134,7 +135,6 @@ class UserService {
                     if (error)
                         callBack(new Error("Some error occurred while consuming message"), null)
                     else {
-                        console.log("message is: " + message)
                         userData.emailId = message
                         util.sendEmailVerificationMail(userData, (error, data) => {
                             if (error) {
@@ -156,5 +156,14 @@ class UserService {
             return callBack(null, data)
         })
     }
+
+    // find all users by emailId
+    findAll = ((callBack) => {
+        userModel.findByEmailId((error, data) => {
+            if (error)
+                return callBack(new Error(("Some error occurred while activating account"), null))
+            return callBack(null, data)
+        })
+    })
 }
 module.exports = new UserService()

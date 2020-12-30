@@ -131,8 +131,8 @@ class UserModel {
     }
 
     // Retrieve user profile
-    findAll = (callBack) => {
-        User.find((error, user) => {
+    findByEmailId = (callBack) => {
+        User.find({ emailId : { $regex: EMAIL_ID_PATTERN }},(error, user) => {
             if (error)
                 return callBack(error, null);
             return callBack(null, user);
