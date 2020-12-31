@@ -131,14 +131,22 @@ class UserModel {
     }
 
     // Retrieve user profile
-    findByEmailId = (callBack) => {
-        User.find({ emailId : { $regex: EMAIL_ID_PATTERN }},(error, user) => {
+    /* findByEmailId = (userData, callBack) => {
+        User.find({ emailId : { $regex: userData.emailId }},(error, user) => {
             if (error)
-                return callBack(error, null);
-            return callBack(null, user);
+                return callBack(error, null)
+            return callBack(null, user)
         })
     }
-
+ */
+    findAll = (userData, callBack) => {
+        User.find({ emailId: { $regex: userData.emailId } }, (error, user) => {
+            if (error)
+                return callBack(error, null)
+            return callBack(null, user)
+        })
+    }
+    
     /**
      * @description Find user with emailId and activate account
      * @method findOneAndUpdate finds the user with emailId then sets isActivated field to true

@@ -342,6 +342,15 @@
         },
 
         "/addLabelToNote/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note to which label will be addide",
+                    "type": "string"
+                }
+            ],
             "put": {
                 "tags": [
                     "Label-Note"
@@ -349,8 +358,8 @@
                 "summary": "Add Labels to Note",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
+                        "name": "LabelId",
+                        "in": "body",
                         "description": "Adding Labels to Note",
                         "schema": {
                             "$ref": "#/definitions/labelsToNote"
@@ -369,6 +378,15 @@
         },
 
         "/removeLabelFromNote/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note to which label will be addide",
+                    "type": "string"
+                }
+            ],
             "put": {
                 "tags": [
                     "Label-Note"
@@ -376,8 +394,8 @@
                 "summary": "Remove Label from Note",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
+                        "name": "labelId",
+                        "in": "body",
                         "description": "Removing Label from Note",
                         "schema": {
                             "$ref": "#/definitions/labelsToNote"
@@ -438,6 +456,65 @@
                         "description": "Account has been activated  !",
                         "schema": {
                             "$ref": "#/definitions/activateAccount"
+                        }
+                    }
+                }
+            }
+        },
+
+        "/collaborator": {
+            "post": {
+                "summary": "Create collaborator",
+                "tags": [
+                    "Collaborator"
+                ],
+                "parameters": [
+                    {
+                        "name": "Collaborator",
+                        "in": "body",
+                        "description": "Creates collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/collaborator"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/collaborator"
+                        }
+                    }
+                }
+            }
+        },
+        "/collaborator/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "Delete collaborator",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Collaborator"
+                ],
+                "summary": "Delete collaborator with given ID",
+                "parameters": [
+                    {
+                        "name": "collaborator",
+                        "in": "body",
+                        "description": "Delete collaborator"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/collaborator"
                         }
                     }
                 }
@@ -589,6 +666,22 @@
             "properties": {
                 "token": {
                     "in": "path",
+                    "type": "string"
+                }
+            }
+        },
+        "collaborator": {
+            "required": [
+                "noteId",
+                "collaboratorUserId"
+            ],
+            "properties": {
+                "noteId": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "collaboratorUserId": {
+                    "in": "body",
                     "type": "string"
                 }
             }

@@ -7,20 +7,15 @@ const User = require('../models/user.mdl').User
 const Note = require('../models/note.mdl').Note
 
 const CollaboratorSchema = mongoose.Schema({
-    noteId: {
-        type: String
-    },
-    collaboratorUserId: {
-        type: String
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
+    userId: {
+        type: String,
+        trim: true
     }
 }, {
     timeStamps: true
 })
 
+CollaboratorSchema.set('versionKey', false)
 const Collaborator = mongoose.model('Collaborator', CollaboratorSchema)
 
 class CollaboratorModel {
@@ -30,19 +25,30 @@ class CollaboratorModel {
      * @method Note.findByIdAndUpdate updates note with collaborator Id
      */
     create = (collaboratorData) => {
-        return User.findOne({ _id: collaboratorData.userId })
+        return User.findOne({ _id: collaboratorData.noteCreatorId })
             .then(data => {
                 if (data) {
-                    const collaborator = new Collaborator({
-                        noteId: collaboratorData.noteId,
-                        collaboratorUserId: collaboratorData.collaboratorUserId
-                    })
-                    return collaborator.save({})
-                    .then(data => {
-                        if(data)
-                            Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaboratorId: data._id } }, { new: true })
-                            .then(data)
-                    })
+                    return Note.findOne({ _id: collaboratorData.noteId }).populate('collaboratorId')
+                        .then(data => {
+                            if (data.collaboratorId) {
+                                for (var index = 0; index < data.collaboratorId.length; index++) {
+                                    if (data.collaboratorId[index].userId === collaboratorData.userId) {
+                                        return
+                                    }
+                                }
+                            }
+                            const collaborator = new Collaborator({
+                                userId: collaboratorData.userId
+                            })
+                            return collaborator.save({})
+                                .then(data => {
+                                    if (data){
+                                        Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaboratorId: data._id } }, { new: true })
+                                            .then(data)
+                                    }
+                                    return data
+                                })
+                        })
                 }
             })
     }
@@ -51,13 +57,13 @@ class CollaboratorModel {
      * @description delete collabortaor
      */
     delete = (collaboratorData) => {
-        return User.findOne({ _id: collaboratorData.decodeData.userId })
+        return User.findOne({ _id: collaboratorData.noteCreatorId })
             .then(data => {
                 if (data) {
                     return Collaborator.find({ _id: collaboratorData.collaboratorId })
                         .then(collaborator => {
                             if (collaborator.length == 1 && !(collaborator[0].isDeleted))
-                                return Collaborator.findByIdAndUpdate(collaboratorData.collaboratorId, { isDeleted: true }, { new: true })
+                                return Collaborator.findByIdAndRemove(collaboratorData.collaboratorId)
                         })
                 }
             })

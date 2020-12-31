@@ -83,11 +83,11 @@ class Util {
      * @param next calls next middleware function
      */
     verifyUser = (req, res, next) => {
-        if (req.session.fundoNotes === undefined) {
+        if (req.session.token === undefined) {
             const response = { success: false, message: "Incorrect token or token is expired" }
             return res.status(401).send(response)
         }
-        const token = req.session.fundoNotes.token
+        const token = req.session.token
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
                 const response = { success: false, message: "Incorrect token or token is expired" }

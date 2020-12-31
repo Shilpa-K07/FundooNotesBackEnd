@@ -123,9 +123,11 @@ class UserController {
                     const response = { success: true, message: "Login Successfull !", token: data.token };
                     logger.info("Login Successfull !")
                     req.session.isAuth = true
-                    req.session.fundoNotes = {
+                    req.session.token = data.token
+                    /* req.session.fundoNotes = {
                         token: data.token
-                    }
+                    } */
+                    console.log("ctr: "+JSON.stringify(req.session))
                     return res.status(200).send(response)
                 }
             })
@@ -225,17 +227,28 @@ class UserController {
         }
     }
 
-    //Get user profile
-    findAll = (req, res) => {
-        userService.findAll((error, data) => {
+    /**
+     * @description Get user profile
+     * @method userService.findAll is service class method for finding users based on emailId
+     */
+    findAll = (req, res) => {console.log("ctr")
+        const userData = {
+            emailId : req.body.emailId
+        }
+        userService.findAll(userData, (error, data) => {
             if (error) {
                 logger.error(error.message)
                 const response = { success: false, message: error.message };
                 return res.status(500).send(response)
             }
             else if (!data) {
-                logger.error("No users found")
+                logger.error("Authorization failed")
                 const response = { success: false, message: "Authorization failed" };
+                return res.status(404).send(response)
+            }
+            else if (data.length == 0) {
+                logger.error("No users found")
+                const response = { success: false, message: "No users found" };
                 return res.status(404).send(response)
             }
             else {

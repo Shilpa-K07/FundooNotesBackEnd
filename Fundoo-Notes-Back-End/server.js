@@ -32,7 +32,13 @@ app.use(session({
     secret: 'key to sign cookie',
     resave: false,
     saveUninitialized: false,
-    name: 'fundooNotes',
+    /* cookie: {
+        'name': 'test',
+        httpOnly: false,
+        secure: false,
+        maxAge: ((60 * 1000) * 60)
+      } */
+    //name: 'fundooNotes',
     // store: store
 }))
 

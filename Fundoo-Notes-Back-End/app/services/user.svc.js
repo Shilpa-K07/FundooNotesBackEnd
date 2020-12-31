@@ -109,13 +109,28 @@ class UserService {
     }
 
     // Retrieve user profiles 
-    findAll = ((callBack) => {
-        userModel.findAll((error, data) => {
+    findAll = (userData, callBack) => {
+        userModel.findAll(userData, (error, data) => {
             if (error)
                 return callBack(error, null)
             return callBack(null, data)
         })
-    })
+    }
+
+    resetPassword = (resetPasswordData, callBack) => {
+        util.encryptData(resetPasswordData.newPassword, (error, encryptedData) => {
+            if (error)
+                return callBack(new Error("Some error occurred while encrypting password"), null)
+            else {
+                resetPasswordData.newPassword = encryptedData
+                userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
+                    if (error)
+                        return callBack(new Error(("Some error occurred while resetting password"), null))
+                    return callBack(null, data)
+                })
+            }
+        })
+    }
 
     /**
      * @description Send mail for verification of user email address
@@ -157,13 +172,13 @@ class UserService {
         })
     }
 
-    // find all users by emailId
+    /* // find all users by emailId
     findAll = ((callBack) => {
         userModel.findByEmailId((error, data) => {
             if (error)
                 return callBack(new Error(("Some error occurred while activating account"), null))
             return callBack(null, data)
         })
-    })
+    }) */
 }
 module.exports = new UserService()
