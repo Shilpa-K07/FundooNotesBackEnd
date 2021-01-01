@@ -35,7 +35,7 @@ class CollaboratorController {
             }
 
             collaboratorService.createCollaborator(collaboratorData)
-                .then(data => {console.log("ctr:data: "+data)
+                .then(data => {
                     if (!data) {
                         logger.error("Collaborator exists")
                         const response = { success: false, message: "Collaborator exists" };

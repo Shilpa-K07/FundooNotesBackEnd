@@ -519,6 +519,32 @@
                     }
                 }
             }
+        },
+        "/users": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Retrieve all the users based on emailId",
+                "parameters": [
+                    {
+                        "name": "users",
+                        "in": "body",
+                        "description": "Retrieve all the users based on emailId",
+                        "schema": {
+                            "$ref": "#/definitions/users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/users"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -673,14 +699,25 @@
         "collaborator": {
             "required": [
                 "noteId",
-                "collaboratorUserId"
+                "userId"
             ],
             "properties": {
                 "noteId": {
                     "in": "body",
                     "type": "string"
                 },
-                "collaboratorUserId": {
+                "userId": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "users": {
+            "required": [
+                "emailId"
+            ],
+            "properties": {
+                "emailId": {
                     "in": "body",
                     "type": "string"
                 }

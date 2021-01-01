@@ -55,6 +55,9 @@ class CollaboratorModel {
 
     /**
      * @description delete collabortaor
+     * @method Collaborator.find find collaborator with given Id
+     * @method Note.findOneAndUpdate updates notes by removing specific collaborator Id
+     * @method Collaborator.findByIdAndRemove removes collaborator 
      */
     delete = (collaboratorData) => {
         return User.findOne({ _id: collaboratorData.noteCreatorId })
@@ -62,8 +65,11 @@ class CollaboratorModel {
                 if (data) {
                     return Collaborator.find({ _id: collaboratorData.collaboratorId })
                         .then(collaborator => {
-                            if (collaborator.length == 1 && !(collaborator[0].isDeleted))
+                            if (collaborator.length == 1 /* && !(collaborator[0].isDeleted) */){
+                                Note.findOneAndUpdate({collaboratorId:collaboratorData.collaboratorId}, { $pull: { collaboratorId: collaboratorData.collaboratorId } }, { new: true })
+                                .then(data => {console.log("data: "+data)})
                                 return Collaborator.findByIdAndRemove(collaboratorData.collaboratorId)
+                            }
                         })
                 }
             })

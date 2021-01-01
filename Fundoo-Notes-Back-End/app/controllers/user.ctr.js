@@ -127,7 +127,6 @@ class UserController {
                     /* req.session.fundoNotes = {
                         token: data.token
                     } */
-                    console.log("ctr: "+JSON.stringify(req.session))
                     return res.status(200).send(response)
                 }
             })
