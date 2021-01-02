@@ -37,15 +37,15 @@ class CollaboratorController {
             collaboratorService.createCollaborator(collaboratorData)
                 .then(data => {
                     if (!data) {
-                        logger.error("Collaborator exists")
-                        const response = { success: false, message: "Collaborator exists" };
+                        logger.error("Collaborator exists or Note not found")
+                        const response = { success: false, message: "Collaborator exists or Note not found" };
                         return res.status(409).send(response)
                     }
                     logger.info("Successfully created collaborator !")
                     const response = { success: true, message: "Successfully created collaborator !", data: data }
                     return res.status(200).send(response)
                 })
-                .catch(error => {
+                .catch(error => {console.log(error)
                     logger.info("Some error occurred while creating collaborator")
                     const response = { success: false, message: "Some error occurred while creating collaborator" }
                     return res.status(200).send(response)
@@ -64,15 +64,16 @@ class CollaboratorController {
     deleteCollaborator = (req, res) => {
         /*  try { */
         const collaboratorData = {
-            collaboratorId: req.params.collaboratorID,
+            collaboratorId: req.body.collaboratorId,
+            noteId: req.body.noteId,
             noteCreatorId: req.decodeData.userId
         }
-
+        console.log("input: "+JSON.stringify(collaboratorData))
         collaboratorService.deleteCollaborator(collaboratorData)
-            .then(data => {console.log("ctr-data: "+data)
+            .then(data => {
                 if (!data) {
-                    const response = { success: false, message: "Collaborator not found with this id" };
-                    logger.error("Collaborator not found with this id")
+                    const response = { success: false, message: "Collaborator or Note not found with this id" };
+                    logger.error("Collaborator or Note not found with this id")
                     return res.status(404).send(response)
                 }
                 logger.info("Successfully deleted Collaborator !")

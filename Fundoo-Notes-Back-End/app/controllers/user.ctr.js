@@ -230,7 +230,7 @@ class UserController {
      * @description Get user profile
      * @method userService.findAll is service class method for finding users based on emailId
      */
-    findAll = (req, res) => {console.log("ctr")
+    findAll = (req, res) => {
         const userData = {
             emailId : req.body.emailId
         }

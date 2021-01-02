@@ -61,10 +61,8 @@ module.exports = (app) => {
     app.put('/activateAccount', util.verifyToken, user.activateAccount)
 
     // Create new collaborator
-    app.post('/collaborator', util.verifyUser, collaborator.createCollaborator)
+    app.post('/addCollaborator', util.verifyUser, collaborator.createCollaborator)
 
     // Delete collaborator
-    app.delete('/collaborator/:collaboratorID', util.verifyUser, collaborator.deleteCollaborator)
-
-   
+    app.put('/removeCollaborator', util.verifyUser, collaborator.deleteCollaborator)
 }

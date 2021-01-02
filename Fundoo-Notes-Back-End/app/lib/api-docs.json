@@ -462,7 +462,7 @@
             }
         },
 
-        "/collaborators": {
+        "/addCollaborator": {
             "post": {
                 "summary": "Create collaborator",
                 "tags": [
@@ -474,7 +474,7 @@
                         "in": "body",
                         "description": "Creates collaborator",
                         "schema": {
-                            "$ref": "#/definitions/collaborator"
+                            "$ref": "#/definitions/addCollaborator"
                         }
                     }
                 ],
@@ -482,23 +482,14 @@
                     "200": {
                         "description": "Successfully created collaborator",
                         "schema": {
-                            "$ref": "#/definitions/collaborator"
+                            "$ref": "#/definitions/note"
                         }
                     }
                 }
             }
         },
-        "/collaborator/{id}": {
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "required": true,
-                    "description": "Delete collaborator",
-                    "type": "string"
-                }
-            ],
-            "delete": {
+        "/removeCollaborator": {
+            "put": {
                 "tags": [
                     "Collaborator"
                 ],
@@ -507,14 +498,17 @@
                     {
                         "name": "collaborator",
                         "in": "body",
-                        "description": "Delete collaborator"
+                        "description": "Remove collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/removeCollaborator"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully deleted collaborator",
+                        "description": "Successfully removed collaborator from note",
                         "schema": {
-                            "$ref": "#/definitions/collaborator"
+                            "$ref": "#/definitions/note"
                         }
                     }
                 }
@@ -696,7 +690,7 @@
                 }
             }
         },
-        "collaborator": {
+        "addCollaborator": {
             "required": [
                 "noteId",
                 "userId"
@@ -707,6 +701,22 @@
                     "type": "string"
                 },
                 "userId": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "removeCollaborator": {
+            "required": [
+                "noteId",
+                "collaboratorId"
+            ],
+            "properties": {
+                "noteId": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "collaboratorId": {
                     "in": "body",
                     "type": "string"
                 }
