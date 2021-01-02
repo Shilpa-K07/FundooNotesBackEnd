@@ -69,7 +69,7 @@ class CollaboratorController {
         }
 
         collaboratorService.deleteCollaborator(collaboratorData)
-            .then(data => {
+            .then(data => {console.log("ctr-data: "+data)
                 if (!data) {
                     const response = { success: false, message: "Collaborator not found with this id" };
                     logger.error("Collaborator not found with this id")

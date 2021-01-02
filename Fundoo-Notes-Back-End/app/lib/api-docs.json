@@ -353,7 +353,7 @@
             ],
             "put": {
                 "tags": [
-                    "Label-Note"
+                    "Notes"
                 ],
                 "summary": "Add Labels to Note",
                 "parameters": [
@@ -389,7 +389,7 @@
             ],
             "put": {
                 "tags": [
-                    "Label-Note"
+                    "Notes"
                 ],
                 "summary": "Remove Label from Note",
                 "parameters": [
@@ -462,7 +462,7 @@
             }
         },
 
-        "/collaborator": {
+        "/collaborators": {
             "post": {
                 "summary": "Create collaborator",
                 "tags": [
@@ -521,7 +521,7 @@
             }
         },
         "/users": {
-            "post": {
+            "get": {
                 "tags": [
                     "User"
                 ],

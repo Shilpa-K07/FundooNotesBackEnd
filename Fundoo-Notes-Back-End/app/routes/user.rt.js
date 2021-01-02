@@ -22,7 +22,7 @@ module.exports = (app) => {
     app.put('/reset-password', util.verifyToken, user.resetPassword)
 
     // Retrieve users by emailId 
-    app.post('/users', user.findAll)
+    app.get('/users', user.findAll)
 
     // Create a new note
     app.post('/notes', util.verifyUser, note.createNote)

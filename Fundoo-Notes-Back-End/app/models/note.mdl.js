@@ -30,9 +30,13 @@ const NoteSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Label"
     }],
-    collaboratorId: [{
+   /*  collaboratorId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Collaborator"
+    }], */
+    collaborator: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }],
     color: {
         type: String

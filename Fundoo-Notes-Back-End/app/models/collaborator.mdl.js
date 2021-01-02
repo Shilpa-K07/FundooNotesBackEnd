@@ -28,6 +28,24 @@ class CollaboratorModel {
         return User.findOne({ _id: collaboratorData.noteCreatorId })
             .then(data => {
                 if (data) {
+                    return Note.findOne({ collaborator: collaboratorData.userId })
+                        .then(note => {
+                            if (note)
+                                return
+                            const collaborator = new Collaborator({
+                                userId: collaboratorData.userId
+                            })
+                            return collaborator.save({})
+                                .then(data => {
+                                    if (data) {
+                                        Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaborator: collaboratorData.userId } }, { new: true })
+                                            .then(data)
+                                    }
+                                    return data
+                                })
+                        })
+                }
+                /* if (data) {
                     return Note.findOne({ _id: collaboratorData.noteId }).populate('collaboratorId')
                         .then(data => {
                             if (data.collaboratorId) {
@@ -49,7 +67,7 @@ class CollaboratorModel {
                                     return data
                                 })
                         })
-                }
+                } */
             })
     }
 
@@ -63,15 +81,25 @@ class CollaboratorModel {
         return User.findOne({ _id: collaboratorData.noteCreatorId })
             .then(data => {
                 if (data) {
+                    if (Note.collaborator) {
+                        return Note.findOne({ collaborator: collaboratorData.collaboratorId })
+                            .then(note => {
+                                if (note) {
+                                    return Note.findOneAndUpdate({ collaborator: collaboratorData.collaboratorId }, { $pull: { collaborator: collaboratorData.collaboratorId } }, { new: true })
+                                }
+                            })
+                    }
+                }
+                /* if (data) {
                     return Collaborator.find({ _id: collaboratorData.collaboratorId })
                         .then(collaborator => {
-                            if (collaborator.length == 1 /* && !(collaborator[0].isDeleted) */){
-                                Note.findOneAndUpdate({collaboratorId:collaboratorData.collaboratorId}, { $pull: { collaboratorId: collaboratorData.collaboratorId } }, { new: true })
-                                .then(data => {console.log("data: "+data)})
+                            if (collaborator.length == 1  && !(collaborator[0].isDeleted) ) {
+                                Note.findOneAndUpdate({ collaboratorId: collaboratorData.collaboratorId }, { $pull: { collaboratorId: collaboratorData.collaboratorId } }, { new: true })
+                                    .then(data => { console.log("data: " + data) })
                                 return Collaborator.findByIdAndRemove(collaboratorData.collaboratorId)
                             }
                         })
-                }
+                } */
             })
     }
 }
