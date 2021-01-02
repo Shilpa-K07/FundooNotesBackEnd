@@ -3,6 +3,7 @@
 */
 const noteModel = require('../models/note.mdl').noteModel
 const util = require('../utility/util')
+const logger = require('../logger/logger')
 
 class NoteService {
     /**
@@ -12,8 +13,10 @@ class NoteService {
      */
     createNote = (noteData, callBack) => {
         noteModel.create(noteData, (error, data) => {
-            if (error)
+            if (error){
+                logger.error('Some error occurred while adding note')
                 return callBack(new Error("Some error occurred while adding note"), null)
+            }
             return callBack(null, data)
         })
     }
@@ -25,8 +28,10 @@ class NoteService {
      */
     findAll = (callBack) => {
         noteModel.findAll((error, data) => {
-            if (error)
+            if (error){
+                logger.error('Some error occurred while retrieving notes')
                 return callBack(new Error("Some error occurred while retrieving notes"), null)
+            }
             return callBack(null, data)
         })
     }
@@ -38,8 +43,10 @@ class NoteService {
      */
     updateNote = (noteData, callBack) => {
         noteModel.update(noteData, (error, data) => {
-            if (error)
+            if (error){
+                logger.error('Some error occurred while updating note')
                 return callBack(new Error("Some error occurred while updating note"), null)
+            }
             return callBack(null, data)
         })
     }
@@ -51,8 +58,10 @@ class NoteService {
      */
     deleteNote = (noteData, callBack) => {
         noteModel.delete(noteData, (error, data) => {
-            if (error)
+            if (error){
+                logger.error('Some error occurred while deleting note')
                 return callBack(new Error("Some error occurred while deleting note"))
+            }
             return callBack(null, data)
         })
     }
@@ -64,26 +73,54 @@ class NoteService {
      */
     validateUser = (token, callBack) => {
         const decodeData = util.verifyUser(token)
-        if (!decodeData)
+        if (!decodeData){
+            logger.error('In correct token or token is expired')
             return callBack(new Error("In correct token or token is expired"), null)
+        }
         noteModel.findById(decodeData, (error, user) => {
-            if (error)
+            if (error){
+                logger.error('Some error occurred while finding user')
                 return callBack(new Error("Some error occurred while finding user"), null)
-            else if (!user)
+            }
+            else if (!user){
+                logger.error('Authorization failed')
                 return callBack(new Error("Authorization failed"), null)
+            }
             else
                 return callBack(null, user)
         })
     }
 
-    // Add label to note
+    /**
+     * @description adds labels to note
+     * @method add calls model class method
+     */
     addLabelToNote = (noteData) => {
         return noteModel.add(noteData)
     }
 
-    // Remove label from note
+    /**
+     * @description remove labels from note
+     * @method remove calls model class method
+     */
     removeLabelFromNote = (noteData) => {
         return noteModel.remove(noteData)
+    }
+
+     /**
+     * @description create new collaborator
+     * @method create calls model class method
+     */
+    createCollaborator = (collaboratorData) => {
+        return noteModel.createCollaborator(collaboratorData)
+    }
+
+    /**
+     * @description delete  collaborator
+     * @method delete calls model class method
+     */
+    removeCollaborator = (collaboratorData) => {
+        return noteModel.removeCollaborator(collaboratorData)
     }
 }
 module.exports = new NoteService()

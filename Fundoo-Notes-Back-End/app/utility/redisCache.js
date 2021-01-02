@@ -5,6 +5,7 @@
  */
 const redis = require('redis')
 const client = redis.createClient()
+const logger = require('../logger/logger')
 const maxAge = 1400
 
 class RedisCache{
@@ -14,8 +15,10 @@ class RedisCache{
      */
     get = (inputData, callBack) => {
         client.get(inputData, (error, data) => {
-            if(error)
+            if(error){
+                logger.error('Error while retrieving data from redis cache')
                 return callBack(error, null)
+            }
             else 
                 return callBack(null, data)
         })
@@ -27,6 +30,7 @@ class RedisCache{
      * @var maxAge is the expire time for key
      */
     set = (userName, key, data) => {
+        logger.info('Setting data to redis cache')
         client.setex(`${key} ${userName}`, maxAge, JSON.stringify(data))
     }
 }

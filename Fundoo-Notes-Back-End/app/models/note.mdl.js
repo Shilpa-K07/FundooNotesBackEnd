@@ -3,7 +3,8 @@
  * @param noteSchema is the schema for the note created by the users
  */
 const mongoose = require('mongoose')
-const user = require('./user.mdl')
+const User = require('./user.mdl').User
+const logger = require('../logger/logger')
 
 const NoteSchema = mongoose.Schema({
     title: {
@@ -30,10 +31,6 @@ const NoteSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Label"
     }],
-   /*  collaboratorId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Collaborator"
-    }], */
     collaborator: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -51,12 +48,19 @@ const NoteSchema = mongoose.Schema({
 const Note = mongoose.model('Note', NoteSchema)
 
 class NoteModel {
-    // Create a new note and save
+    /**
+     * @description Create a new note and save
+     * @method User.findOne checks for user authorization
+     * @method noteDetails.save saves note to note collection
+     */
     create = (noteData, callBack) => {
-        user.User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error)
+        User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error){
+                logger.error('Error occurred while finding user')
                 return callBack(error, null)
+            }
             else {
+                logger.error('user found')
                 const noteDetails = new Note({
                     title: noteData.title,
                     description: noteData.description,
@@ -65,6 +69,7 @@ class NoteModel {
 
                 noteDetails.save({}, (error, data) => {
                     if (error) {
+                        logger.error('Error occurred while saving user')
                         return callBack(error, null)
                     }
                     return callBack(null, data)
@@ -73,20 +78,32 @@ class NoteModel {
         })
     }
 
-    // Find user by objectId
+    /**
+     * @description Find user by objectId
+     * @method User.findOne checks for user in user collection
+     */
     findById = (decodeData, callBack) => {
-        user.User.findOne({ _id: decodeData.userId }, (error, user) => {
-            if (error)
+        User.findOne({ _id: decodeData.userId }, (error, user) => {
+            if (error){
+                logger.error('Error occurred while finding user')
                 return callBack(error, null)
+            }
             return callBack(null, user)
         })
     }
 
-    // Update note
+    /**
+     * @description Update note
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note
+     */
     update = (noteData, callBack) => {
-        user.User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error)
+        User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error){
+                logger.error('Error occurred while finding user')
                 return callBack(error, null)
+            }
             else if (user) {
                 Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
                     if (error)
@@ -94,6 +111,7 @@ class NoteModel {
                     else if (note.length == 0)
                         return callBack(null, note)
                     else {
+                        logger.info('Note found updating note')
                         Note.findByIdAndUpdate(noteData.noteID, {
                             title: noteData.title,
                             description: noteData.description
@@ -110,12 +128,18 @@ class NoteModel {
         })
     }
 
-    // Delete note
+    /**
+     * @description Delete note
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note by setting isDeleted fied to true
+     */
     delete = (noteData, callBack) => {
-        debugger;
-        user.User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error)
+        User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error){
+                logger.error('Error occurred while finding user')
                 return callBack(error, null)
+            }
             else if (user) {
                 Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
                     if (error)
@@ -123,10 +147,13 @@ class NoteModel {
                     else if (note.length == 0)
                         return callBack(null, note)
                     else {
+                        logger.info('Note found')
                         if (!(note[0].isDeleted)) {
                             Note.findByIdAndUpdate(noteData.noteID, { isDeleted: true }, { new: true }, (error, data) => {
-                                if (error)
+                                if (error){
+                                    logger.error('Error occurred while deleting note')
                                     return callBack(error, null)
+                                }
                                 return callBack(null, data)
                             })
                         }
@@ -140,23 +167,35 @@ class NoteModel {
         })
     }
 
-    // Find all the notes 
+     /**
+     * @description Find all the notes 
+     * @method Note.find finds all the notes in note collection
+     */
     findAll = (callBack) => {
         Note.find((error, data) => {
-            if (error)
+            if (error){
+                logger.error('error occurred while finding all the users')
                 return callBack(error, null)
+            }
             return callBack(null, data)
         })
     }
 
-    // Add label to note
+    /**
+     * @description Add label to note
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note by pushing labelId to labelId
+     */
     add = (noteData) => {
-        return user.User.findOne({ _id: noteData.userId })
+        return User.findOne({ _id: noteData.userId })
             .then(user => {
                 if (user) {
+                    logger.info('User found')
                     return Note.find({ _id: noteData.noteID, userId: noteData.userId })
                         .then(note => {
                             if (note.length == 1) {
+                                logger.info('Note found updating note')
                                 return Note.findByIdAndUpdate(noteData.noteID, { $push: { labelId: noteData.labelId } }, { new: true })
                             }
                         })
@@ -164,15 +203,74 @@ class NoteModel {
             })
     }
 
-    // Remove label from note
+    /**
+     * @description Remove label from note
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note by pulling labelId from labelId
+     */
     remove = (noteData) => {
-        return user.User.findOne({ _id: noteData.userId })
+        return User.findOne({ _id: noteData.userId })
             .then(user => {
                 if (user) {
+                    logger.info('User found')
                     return Note.find({ _id: noteData.noteID, userId: noteData.userId })
                         .then(note => {
                             if (note.length == 1) {
+                                logger.info('Note found updating note by removing label')
                                 return Note.findByIdAndUpdate(noteData.noteID, { $pull: { labelId: noteData.labelId } }, { new: true })
+                            }
+                        })
+                }
+            })
+    }
+
+     /**
+     * @description Create new collaborator
+     * @method Note.find searches in note collection for specific noteId and userId
+     */
+    createCollaborator = (collaboratorData) => {
+        return User.findOne({ _id: collaboratorData.noteCreatorId })
+            .then(data => {
+                if (data) {
+                    logger.info('User found')
+                    return Note.find({ _id: collaboratorData.noteId, collaborator: collaboratorData.userId })
+                        .then(note => {
+                            if (note.length == 0) {
+                                logger.info('Note found creating collaborator')
+                                const collaborator = new Collaborator({
+                                    userId: collaboratorData.userId
+                                })
+                                return collaborator.save({})
+                                    .then(data => {
+                                        if (data) {
+                                            logger.info('Updating collaborator field of note')
+                                            Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaborator: collaboratorData.userId } }, { new: true })
+                                                .then(data)
+                                        }
+                                        return data
+                                    })
+                            }
+                        })
+                }
+            })
+    }
+
+    /**
+     * @description delete collabortaor
+     * @method Note.find finds in note collection for specific noteId and collaboratorId
+     * @method Note.findOneAndUpdate updates notes by removing specific collaboratorId
+     */
+    removeCollaborator = (collaboratorData) => {
+        return User.findOne({ _id: collaboratorData.noteCreatorId })
+            .then(data => {
+                if (data) {
+                    logger.info('User found')
+                    return Note.find({ _id: collaboratorData.noteId, collaborator: collaboratorData.userId })
+                        .then(note => {
+                            if (note.length == 1) {
+                                logger.info('Note found updating note by removing collaboratorId')
+                                return Note.findOneAndUpdate({ collaborator: collaboratorData.userId }, { $pull: { collaborator: collaboratorData.userId } }, { new: true })
                             }
                         })
                 }

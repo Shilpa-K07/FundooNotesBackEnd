@@ -12,14 +12,32 @@ const logger = require('../logger/logger')
 const Joi = require('joi')
 const util = require('../utility/util')
 
-const inputPattern = Joi.object({
-    title: Joi.string().required().messages({
+const noteInputPattern = Joi.object({
+    title: Joi.string().trim().required().messages({
         'string.empty': 'Title can not be empty'
     }),
     description: Joi.string().required().messages({
         'string.empty': 'Note can not be empty'
     })
 }).unknown(true)
+
+const noteId = Joi.string().trim().required().messages({
+    'string.empty': 'noteId can not be empty'
+})
+const collaboratorInputPattern = Joi.object({
+    noteId: noteId,
+    userId: Joi.string().trim().required().messages({
+        'string.empty': 'userId can not be empty'
+    })
+})
+
+const labelInputPattern = Joi.object({
+    noteID: noteId,
+    labelId: Joi.string().trim().required().messages({
+        'string.empty': 'userId can not be empty'
+    })
+})
+
 
 class NoteController {
     /**
@@ -34,7 +52,7 @@ class NoteController {
                 userId: req.decodeData.userId
             }
 
-            const validationResult = inputPattern.validate(noteData)
+            const validationResult = noteInputPattern.validate(noteData)
 
             if (validationResult.error) {
                 const response = { success: false, message: validationResult.error.message };
@@ -55,6 +73,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }
@@ -79,6 +98,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }
@@ -96,7 +116,7 @@ class NoteController {
                 userId: req.decodeData.userId
             }
 
-            const validationResult = inputPattern.validate(noteData)
+            const validationResult = noteInputPattern.validate(noteData)
 
             if (validationResult.error) {
                 const response = { success: false, message: validationResult.error.message };
@@ -123,6 +143,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }
@@ -158,6 +179,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }
@@ -173,6 +195,13 @@ class NoteController {
                 noteID: req.params.noteID,
                 labelId: req.body.labelId,
                 userId: req.decodeData.userId
+            }
+
+            const validationResult = labelInputPattern.validate(collaboratorData)
+
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
             }
 
             noteService.addLabelToNote(noteData)
@@ -194,6 +223,7 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }
@@ -222,7 +252,6 @@ class NoteController {
                     return res.status(200).send(response)
                 })
                 .catch(error => {
-                    console.log(error)
                     const response = { success: false, message: "Some error occurred while removing label from note" };
                     logger.error("Some error occurred while removing label from note")
                     return res.status(500).send(response)
@@ -230,6 +259,87 @@ class NoteController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
+            return res.status(500).send(response)
+        }
+    }
+
+    /**
+    *@description create new collaborator
+    *@method validate is for validating request data using joi validation
+    *@method createCollaborator is service class method
+    */
+    createCollaborator = (req, res) => {
+        try {
+            const collaboratorData = {
+                noteId: req.body.noteId,
+                userId: req.body.userId,
+                noteCreatorId: req.decodeData.userId
+            }
+
+            const validationResult = collaboratorInputPattern.validate(collaboratorData)
+
+            if (validationResult.error) {
+                const response = { success: false, message: validationResult.error.message };
+                return res.status(400).send(response);
+            }
+
+            noteService.createCollaborator(collaboratorData)
+                .then(data => {
+                    if (!data) {
+                        logger.error("Collaborator exists or Note not found")
+                        const response = { success: false, message: "Collaborator exists or Note not found" };
+                        return res.status(409).send(response)
+                    }
+                    logger.info("Successfully created collaborator !")
+                    const response = { success: true, message: "Successfully created collaborator !", data: data }
+                    return res.status(200).send(response)
+                })
+                .catch(error => {
+                    logger.info("Some error occurred while creating collaborator")
+                    const response = { success: false, message: "Some error occurred while creating collaborator" }
+                    return res.status(200).send(response)
+                })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred" }
+            logger.error("Some error occurred !")
+            return res.status(500).send(response)
+        }
+    }
+
+    /**
+     * @description delete colloaborator
+     * @method collaboratorService.deleteCollaborator is service class method
+     */
+    removeCollaborator = (req, res) => {
+        try {
+            const collaboratorData = {
+                userId: req.body.userId,
+                noteId: req.body.noteId,
+                noteCreatorId: req.decodeData.userId
+            }
+
+            noteService.removeCollaborator(collaboratorData)
+                .then(data => {
+                    if (!data) {
+                        const response = { success: false, message: "Collaborator or Note not found with this id" };
+                        logger.error("Collaborator or Note not found with this id")
+                        return res.status(404).send(response)
+                    }
+                    logger.info("Successfully deleted Collaborator !")
+                    const response = { success: true, message: "Successfully deleted Collaborator!" }
+                    return res.status(200).send(response)
+                })
+                .catch(error => {
+                    logger.info("Some error occurred while deleting collaborator")
+                    const response = { success: false, message: "Some error occurred while deleting collaborator" }
+                    return res.status(200).send(response)
+                })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred" }
+            logger.error("Some error occurred !")
             return res.status(500).send(response)
         }
     }

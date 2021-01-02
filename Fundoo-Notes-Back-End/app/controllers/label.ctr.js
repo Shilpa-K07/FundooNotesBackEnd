@@ -44,7 +44,7 @@ class LabelController {
                     return res.status(200).send(response)
                 })
         }
-        catch (error) {console.log(error)
+        catch (error) {
             const response = { success: false, message: "Some error occurred" }
             return res.status(500).send(response)
         }
@@ -118,6 +118,7 @@ class LabelController {
         }
         catch (error) {
             const response = { success: false, message: "Some error occurred" }
+            logger.error("Some error occurred")
             return res.send(response)
         }
     }

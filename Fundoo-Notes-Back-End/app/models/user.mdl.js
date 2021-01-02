@@ -4,7 +4,8 @@
  */
 
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
+const logger = require('../logger/logger')
 const saltRounds = 10;
 const FIRST_NAME_PATTERN = /[a-zA-Z]{2,}/
 const LAST_NAME_PATTERN = /[a-zA-Z]{1,}/
@@ -99,8 +100,10 @@ class UserModel {
             password: userRegistrationData.password
         })
         user.save({}, (error, data) => {
-            if (error)
+            if (error){
+                logger.error('Error occurred while saving user')
                 return callBack(error, null);
+            }
             else
                 return callBack(null, data);
         });
@@ -112,8 +115,10 @@ class UserModel {
      */
     findOne = (userData, callBack) => {
         User.findOne({ emailId: userData.emailId }, (error, user) => {
-            if (error)
+            if (error){
+                logger.error('Error occurred while finding user')
                 return callBack(error, null)
+            }
             return callBack(null, user)
         })
     }
@@ -124,8 +129,10 @@ class UserModel {
      */
     findOneAndUpdate = (userData, callBack) => {
         User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { password: userData.newPassword } }, { new: true }, (error, user) => {
-            if (error)
+            if (error){
+                logger.error('Error occurred while updating user')
                 return callBack(error, null)
+            }
             return callBack(null, user)
         })
     }
@@ -141,8 +148,10 @@ class UserModel {
  */
     findAll = (userData, callBack) => {
         User.find({ emailId: { $regex: userData.emailId } }, (error, user) => {
-            if (error)
+            if (error){
+                logger.error('Error occurred while finding user with emailId regex')
                 return callBack(error, null)
+            }
             return callBack(null, user)
         })
     }
@@ -153,8 +162,10 @@ class UserModel {
      */
     findAndUpdate = (userData, callBack) => {
         User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { isActivated: true } }, { new: true }, (error, user) => {
-            if (error)
+            if (error){
+                logger.error('Error occurred while updating user state')
                 return callBack(error, null)
+            }
             return callBack(null, user)
         })
     }

@@ -1,6 +1,7 @@
 /**
  * @description service class takes request from controller and sends this request to model
  */
+const logger = require('../logger/logger')
 const label = require('../models/label.mdl')
 const util = require('../utility/util')
 
@@ -20,8 +21,10 @@ class LabelService {
      */
     validateUser = (token) => {
         const decodeData = util.verifyUser(token)
-        if(!decodeData)
+        if(!decodeData){
+            logger.error('Could not able to decode token')
             return
+        }
         return label.labelModel.findById(decodeData)
     }
 

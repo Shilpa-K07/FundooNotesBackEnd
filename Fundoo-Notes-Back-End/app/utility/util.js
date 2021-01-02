@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer")
 const bcrypt = require('bcrypt');
 const ejs = require('ejs')
+const logger = require('../logger/logger')
 class Util {
 
     /**
@@ -15,6 +16,7 @@ class Util {
      * @method jwt.sign takes @var emailId and @var userId to generate token
      */
     generateToken = (user) => {
+        logger.info('Generating token')
         const token = jwt.sign({
             emailId: user.emailId,
             userId: user._id
@@ -34,8 +36,10 @@ class Util {
     nodeEmailSender = (userData, callBack) => {
         let mailTransporter = this.createTransport()
         ejs.renderFile("app/views/resetPassword.ejs", { link: process.env.URL + '/resetPassword/' + userData.token }, (error, data) => {
-            if (error)
+            if (error){
+                logger.error('Error while rendering ejs template file')
                 callBack(error, null)
+            }
             else {
                 var mailDetails = {
                     from: process.env.AUTH_USER,
@@ -47,6 +51,7 @@ class Util {
                     mailTransporter: mailTransporter,
                     mailDetails: mailDetails
                 }
+                logger.info('Sending email')
                 this.sendMail(mailData, (error, data) => {
                     if (error)
                         return callBack(error, null)
@@ -62,8 +67,10 @@ class Util {
      * @method jwt.verify decodes token
      */
     verifyToken = (req, res, next) => {
+        logger.info('Verifying token')
         jwt.verify(req.headers.token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
+                logger.error('Incorrect token or token is expired')
                 const response = { success: false, message: "Incorrect token or token is expired" }
                 return res.status(401).send(response)
             }
@@ -74,6 +81,7 @@ class Util {
 
     // decoding token for user verfification using promise
     decodeToken = (token) => {
+        logger.info('Decoding token')
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY)
     }
 
@@ -83,13 +91,16 @@ class Util {
      * @param next calls next middleware function
      */
     verifyUser = (req, res, next) => {
+        logger.info('Verifying user')
         if (req.session.token === undefined) {
+            logger.error('Incorrect token or token is expired')
             const response = { success: false, message: "Incorrect token or token is expired" }
             return res.status(401).send(response)
         }
         const token = req.session.token
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
+                logger.error('Incorrect token or token is expired')
                 const response = { success: false, message: "Incorrect token or token is expired" }
                 return res.status(401).send(response)
             }
@@ -104,6 +115,7 @@ class Util {
      * @var saltRounds is the number of rounds used for hashing
      */
     encryptData = (password, callBack) => {
+        logger.info('Encrypting password')
         var saltRounds = 10;
         bcrypt.hash(password, saltRounds, (err, hash) => {
             if (err)
@@ -114,6 +126,7 @@ class Util {
 
     // Creating mail transport
     createTransport = () => {
+        logger.info('Creating mail transport')
         let mailTransporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -124,8 +137,12 @@ class Util {
         return mailTransporter
     }
 
-    // Sending email
+    /**
+     *@description send email
+     *@method sendEmail sends email to specific mailId 
+     */
     sendMail = (mailData, callBack) => {
+        logger.info('Sending email')
         mailData.mailTransporter.sendMail(mailData.mailDetails, (error, data) => {
             if (error)
                 return callBack(error, null)
@@ -141,8 +158,10 @@ class Util {
     sendEmailVerificationMail = (userData, callBack) => {
         let mailTransporter = this.createTransport()
         ejs.renderFile("app/views/emailVerification.ejs", { link: process.env.URL + '/verifyEmail/' + userData.token }, (error, htmlData) => {
-            if (error)
+            if (error){
+                logger.error('Error while rendering ejs template file')
                 return callBack(error, null)
+            }
             else {
                 var mailDetails = {
                     from: process.env.AUTH_USER,

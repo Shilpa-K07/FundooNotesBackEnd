@@ -3,7 +3,8 @@
  * @param labelSchema is the schema for the label created by the users
  */
 const mongoose = require('mongoose')
-const user = require('./user.mdl')
+const User = require('./user.mdl').User
+const logger = require('../logger/logger')
 
 const LabelSchema = mongoose.Schema({
     name: {
@@ -30,9 +31,10 @@ class LabelModel {
      * @method save will save object into DB
      */
     create = (labelData) => {
-        return user.User.findOne({ _id: labelData.userId })
+        return User.findOne({ _id: labelData.userId })
             .then(user => {
                 if (user) {
+                    logger.info('user found')
                     const label = new Label({
                         name: labelData.name,
                         userId: labelData.userId
@@ -54,12 +56,14 @@ class LabelModel {
      * @method Label.findByIdAndUpdate updates label 
      */
     update = (labelData) => {
-        return user.User.findOne({ _id: labelData.userId })
+        return User.findOne({ _id: labelData.userId })
             .then(user => {
                 if (user) {
+                    logger.info('user found')
                     return Label.find({ _id: labelData.labelID, userId: labelData.userId })
                         .then(label => {
                             if (label.length == 1) {
+                                logger.info('label found removing label')
                                 return Label.findByIdAndUpdate(labelData.labelID, {
                                     name: labelData.name
                                 }, { new: true })
@@ -76,9 +80,10 @@ class LabelModel {
      * @method Label.findByIdAndUpdate sets isDeleted flag to true
      */
     delete = (labelData) => {
-        return user.User.findOne({ _id: labelData.userId })
+        return User.findOne({ _id: labelData.userId })
             .then(user => {
                 if (user) {
+                    logger.info('user found')
                     return Label.find({ _id: labelData.labelID, userId: labelData.userId })
                         .then(label => {
                             if (label.length == 1 && !(label[0].isDeleted))
@@ -88,9 +93,12 @@ class LabelModel {
             })
     }
 
-    // Find user by email Id
+    /**
+     * @description find user by id
+     * @method User.findOne searches in User collection for specific Id
+     */
     findById = (decodeData) => {
-        return user.User.findOne({ _id: decodeData.userId })
+        return User.findOne({ _id: decodeData.userId })
     }
 }
 module.exports = {

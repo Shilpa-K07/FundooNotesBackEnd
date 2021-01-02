@@ -84,7 +84,7 @@ class UserController {
                 res.send(response)
             })
         }
-        catch (error) {console.log("error: "+error)
+        catch (error) {
             logger.error("Some error occurred !")
             const response = { success: false, message: "Some error occurred !" };
             res.status(500).send(response)
@@ -124,9 +124,6 @@ class UserController {
                     logger.info("Login Successfull !")
                     req.session.isAuth = true
                     req.session.token = data.token
-                    /* req.session.fundoNotes = {
-                        token: data.token
-                    } */
                     return res.status(200).send(response)
                 }
             })
