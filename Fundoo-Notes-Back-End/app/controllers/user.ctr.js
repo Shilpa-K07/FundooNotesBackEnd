@@ -229,7 +229,7 @@ class UserController {
      */
     findAll = (req, res) => {
         const userData = {
-            emailId : req.body.emailId
+            emailId : req.params.emailID
         }
         userService.findAll(userData, (error, data) => {
             if (error) {

@@ -55,7 +55,7 @@ class NoteModel {
      */
     create = (noteData, callBack) => {
         User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user')
                 return callBack(error, null)
             }
@@ -84,7 +84,7 @@ class NoteModel {
      */
     findById = (decodeData, callBack) => {
         User.findOne({ _id: decodeData.userId }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user')
                 return callBack(error, null)
             }
@@ -100,7 +100,7 @@ class NoteModel {
      */
     update = (noteData, callBack) => {
         User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user')
                 return callBack(error, null)
             }
@@ -136,7 +136,7 @@ class NoteModel {
      */
     delete = (noteData, callBack) => {
         User.findOne({ _id: noteData.userId }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user')
                 return callBack(error, null)
             }
@@ -150,7 +150,7 @@ class NoteModel {
                         logger.info('Note found')
                         if (!(note[0].isDeleted)) {
                             Note.findByIdAndUpdate(noteData.noteID, { isDeleted: true }, { new: true }, (error, data) => {
-                                if (error){
+                                if (error) {
                                     logger.error('Error occurred while deleting note')
                                     return callBack(error, null)
                                 }
@@ -167,13 +167,13 @@ class NoteModel {
         })
     }
 
-     /**
-     * @description Find all the notes 
-     * @method Note.find finds all the notes in note collection
-     */
+    /**
+    * @description Find all the notes 
+    * @method Note.find finds all the notes in note collection
+    */
     findAll = (callBack) => {
         Note.find((error, data) => {
-            if (error){
+            if (error) {
                 logger.error('error occurred while finding all the users')
                 return callBack(error, null)
             }
@@ -225,10 +225,10 @@ class NoteModel {
             })
     }
 
-     /**
-     * @description Create new collaborator
-     * @method Note.find searches in note collection for specific noteId and userId
-     */
+    /**
+    * @description Create new collaborator
+    * @method Note.find searches in note collection for specific noteId and userId
+    */
     createCollaborator = (collaboratorData) => {
         return User.findOne({ _id: collaboratorData.noteCreatorId })
             .then(data => {
@@ -238,18 +238,8 @@ class NoteModel {
                         .then(note => {
                             if (note.length == 0) {
                                 logger.info('Note found creating collaborator')
-                                const collaborator = new Collaborator({
-                                    userId: collaboratorData.userId
-                                })
-                                return collaborator.save({})
-                                    .then(data => {
-                                        if (data) {
-                                            logger.info('Updating collaborator field of note')
-                                            Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaborator: collaboratorData.userId } }, { new: true })
-                                                .then(data)
-                                        }
-                                        return data
-                                    })
+                                return Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaborator: collaboratorData.userId } }, { new: true })
+                                    .then(data)
                             }
                         })
                 }
@@ -270,7 +260,7 @@ class NoteModel {
                         .then(note => {
                             if (note.length == 1) {
                                 logger.info('Note found updating note by removing collaboratorId')
-                                return Note.findOneAndUpdate({ collaborator: collaboratorData.userId }, { $pull: { collaborator: collaboratorData.userId } }, { new: true })
+                                return Note.findByIdAndUpdate(collaboratorData.noteId, { $pull: { collaborator: collaboratorData.userId } }, { new: true })
                             }
                         })
                 }

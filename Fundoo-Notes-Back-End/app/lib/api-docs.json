@@ -514,22 +514,21 @@
                 }
             }
         },
-        "/users": {
+        "/users/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "email to be searched",
+                    "type": "string"
+                }
+            ],
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Retrieve all the users based on emailId",
-                "parameters": [
-                    {
-                        "name": "users",
-                        "in": "body",
-                        "description": "Retrieve all the users based on emailId",
-                        "schema": {
-                            "$ref": "#/definitions/users"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Ok",
@@ -723,15 +722,8 @@
             }
         },
         "users": {
-            "required": [
-                "emailId"
-            ],
-            "properties": {
-                "emailId": {
-                    "in": "body",
-                    "type": "string"
-                }
-            }
+            "type": "array",
+            "$ref": "#/definitions/registration"
         }
     }
 }

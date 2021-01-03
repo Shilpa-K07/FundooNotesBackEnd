@@ -55,10 +55,10 @@ const swaggerDocument = require('./app/lib/api-docs.json')
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
  // If no routes matches execute this 
- //app.use('*/*',(req, res, next) => {
-   // const response = {success:false, message:"Route Not found"}
-    //res.status(404).send(response)
-//})
+ app.use('*/*',(req, res, next) => {
+   const response = {success:false, message:"Route Not found"}
+    res.status(404).send(response)
+})
 
 /**
  * @description listen for requests

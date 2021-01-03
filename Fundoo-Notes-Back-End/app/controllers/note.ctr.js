@@ -29,14 +29,14 @@ const collaboratorInputPattern = Joi.object({
     userId: Joi.string().trim().required().messages({
         'string.empty': 'userId can not be empty'
     })
-})
+}).unknown(true)
 
 const labelInputPattern = Joi.object({
     noteID: noteId,
     labelId: Joi.string().trim().required().messages({
         'string.empty': 'userId can not be empty'
     })
-})
+}).unknown(true)
 
 
 class NoteController {
@@ -197,7 +197,7 @@ class NoteController {
                 userId: req.decodeData.userId
             }
 
-            const validationResult = labelInputPattern.validate(collaboratorData)
+            const validationResult = labelInputPattern.validate(noteData)
 
             if (validationResult.error) {
                 const response = { success: false, message: validationResult.error.message };
@@ -221,7 +221,7 @@ class NoteController {
                     return res.status(500).send(response)
                 })
         }
-        catch (error) {
+        catch (error) {console.log(error)
             const response = { success: false, message: "Some error occurred !" }
             logger.error("Some error occurred !")
             return res.status(500).send(response)
@@ -295,7 +295,7 @@ class NoteController {
                     const response = { success: true, message: "Successfully created collaborator !", data: data }
                     return res.status(200).send(response)
                 })
-                .catch(error => {
+                .catch(error => {console.log(error)
                     logger.info("Some error occurred while creating collaborator")
                     const response = { success: false, message: "Some error occurred while creating collaborator" }
                     return res.status(200).send(response)
