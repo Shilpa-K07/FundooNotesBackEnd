@@ -9,8 +9,8 @@ const nodemailer = require("nodemailer")
 const bcrypt = require('bcrypt');
 const ejs = require('ejs')
 const logger = require('../logger/logger')
-class Util {
 
+class Util {
     /**
      * @description generate token
      * @method jwt.sign takes @var emailId and @var userId to generate token

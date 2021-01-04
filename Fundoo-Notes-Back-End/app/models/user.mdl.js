@@ -2,7 +2,6 @@
  * @description Model class interacts with dataBase to perform tasks
  * @param UserSchema is the schema for the user created with mongoose
  */
-
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const logger = require('../logger/logger')
@@ -100,7 +99,7 @@ class UserModel {
             password: userRegistrationData.password
         })
         user.save({}, (error, data) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while saving user')
                 return callBack(error, null);
             }
@@ -115,7 +114,7 @@ class UserModel {
      */
     findOne = (userData, callBack) => {
         User.findOne({ emailId: userData.emailId }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user')
                 return callBack(error, null)
             }
@@ -129,7 +128,7 @@ class UserModel {
      */
     findOneAndUpdate = (userData, callBack) => {
         User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { password: userData.newPassword } }, { new: true }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while updating user')
                 return callBack(error, null)
             }
@@ -137,32 +136,23 @@ class UserModel {
         })
     }
 
-    // Retrieve user profile
-    /* findByEmailId = (userData, callBack) => {
-        User.find({ emailId : { $regex: userData.emailId }},(error, user) => {
-            if (error)
-                return callBack(error, null)
-            return callBack(null, user)
-        })
-    }
- */
     findAll = (userData, callBack) => {
         User.find({ emailId: { $regex: userData.emailId } }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while finding user with emailId regex')
                 return callBack(error, null)
             }
             return callBack(null, user)
         })
     }
-    
+
     /**
      * @description Find user with emailId and activate account
      * @method findOneAndUpdate finds the user with emailId then sets isActivated field to true
      */
     findAndUpdate = (userData, callBack) => {
         User.findOneAndUpdate({ emailId: userData.emailId }, { $set: { isActivated: true } }, { new: true }, (error, user) => {
-            if (error){
+            if (error) {
                 logger.error('Error occurred while updating user state')
                 return callBack(error, null)
             }

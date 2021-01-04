@@ -248,7 +248,7 @@ class UserController {
                 return res.status(404).send(response)
             }
             else {
-                const response = { success: true, message: "Successfully retrieved user profiles !", data: data };
+                const response = { success: true, message: "Successfully retrieved user profiles !", data: data};
                 logger.info("Successfully retrieved user profiles !")
                 res.status(200).send(response)
             }

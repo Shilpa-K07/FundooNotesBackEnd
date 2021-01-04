@@ -10,7 +10,6 @@
 const noteService = require('../services/note.svc')
 const logger = require('../logger/logger')
 const Joi = require('joi')
-const util = require('../utility/util')
 
 const noteInputPattern = Joi.object({
     title: Joi.string().trim().required().messages({

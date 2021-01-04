@@ -26,34 +26,34 @@ class UserService {
         })
     }
 
-   /**
-    * @description User login
-    * @method clent.get is redis implementation to check for emailId
-    * @method findOne is model class method
-    * @method client.setex is used to set the key in redis cache
-    */
+    /**
+     * @description User login
+     * @method clent.get is redis implementation to check for emailId
+     * @method findOne is model class method
+     * @method client.setex is used to set the key in redis cache
+     */
     login = (userLoginData, callBack) => {
         const userName = userLoginData.emailId
         const key = 'UserDetails: '
-        
+
         redis.get(`${key} ${userName}`, (error, data) => {
-            if(error){
+            if (error) {
                 logger.error('Some error occuured while retrieving data from redis')
                 return callBack(new Error("Some error occuured while retrieving data from redis"), null)
             }
-            else if(data){
+            else if (data) {
                 data = JSON.parse(data)
                 const token = util.generateToken(data)
                 data.token = token
                 return callBack(null, data)
             }
-            else{
+            else {
                 userModel.findOne(userLoginData, (error, data) => {
-                    if (error){
+                    if (error) {
                         logger.error('Some error occured while logging in')
                         return callBack(new Error("Some error occured while logging in"), null)
                     }
-                    else if (!data){
+                    else if (!data) {
                         logger.error('Authorization failed')
                         return callBack(new Error("Authorization failed"), null)
                     }
@@ -67,7 +67,7 @@ class UserService {
                                     redis.set(userName, key, data)
                                     return callBack(null, data)
                                 }
-                                else{
+                                else {
                                     logger.info('Please verify email before login')
                                     return callBack(new Error("Please verify email before login"))
                                 }
@@ -87,11 +87,11 @@ class UserService {
      */
     forgotPassword = (userData, callBack) => {
         userModel.findOne(userData, (error, data) => {
-            if (error){
+            if (error) {
                 logger.error('Some error occurred')
                 return callBack(new Error("Some error occurred"), null)
             }
-            else if (!data){
+            else if (!data) {
                 logger.error('User not found with this email Id')
                 return callBack(new Error("User not found with this email Id"), null)
             }
@@ -99,7 +99,7 @@ class UserService {
                 const token = util.generateToken(data);
                 userData.token = token
                 util.nodeEmailSender(userData, (error, data) => {
-                    if (error){
+                    if (error) {
                         logger.error('Some error occurred while sending email')
                         return callBack(new Error("Some error occurred while sending email"), null)
                     }
@@ -115,14 +115,14 @@ class UserService {
      */
     resetPassword = (resetPasswordData, callBack) => {
         util.encryptData(resetPasswordData.newPassword, (error, encryptedData) => {
-            if (error){
+            if (error) {
                 logger.error('Some error occurred while encrypting password')
                 return callBack(new Error("Some error occurred while encrypting password"), null)
             }
             else {
                 resetPasswordData.newPassword = encryptedData
                 userModel.findOneAndUpdate(resetPasswordData, (error, data) => {
-                    if (error){
+                    if (error) {
                         logger.error('Some error occurred while resetting password')
                         return callBack(new Error(("Some error occurred while resetting password"), null))
                     }
@@ -137,15 +137,23 @@ class UserService {
         userModel.findAll(userData, (error, data) => {
             if (error)
                 return callBack(error, null)
-            return callBack(null, data)
+            var userData = []
+            data.forEach((user) => {
+                const userMap = {
+                    id: user._id,
+                    emailId: user.emailId
+                }
+               userData.push(userMap)
+            })
+            return callBack(null, userData)
         })
     }
 
-     /**
-     * @description reset password
-     * @method util.encryptData encrypts new password
-     * @method userModel.findOneAndUpdate calls model class method to update password
-     */
+    /**
+    * @description reset password
+    * @method util.encryptData encrypts new password
+    * @method userModel.findOneAndUpdate calls model class method to update password
+    */
     resetPassword = (resetPasswordData, callBack) => {
         util.encryptData(resetPasswordData.newPassword, (error, encryptedData) => {
             if (error)

@@ -531,10 +531,7 @@
                 "summary": "Retrieve all the users based on emailId",
                 "responses": {
                     "200": {
-                        "description": "Ok",
-                        "schema": {
-                            "$ref": "#/definitions/users"
-                        }
+                        "description": "Ok"
                     }
                 }
             }
@@ -720,10 +717,6 @@
                     "type": "string"
                 }
             }
-        },
-        "users": {
-            "type": "array",
-            "$ref": "#/definitions/registration"
         }
     }
 }

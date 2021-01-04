@@ -7,7 +7,6 @@ module.exports = (app) => {
     const util = require('../utility/util.js')
     const note = require('../controllers/note.ctr')
     const label = require('../controllers/label.ctr')
-    const collaborator = require('../controllers/collaborator.ctr')
 
     // New registration
     app.post('/registration', user.register)
