@@ -131,7 +131,6 @@ class UserController {
                     logger.info("Login Successfull !")
                     req.session.isAuth = true
                     req.session.token = data.token
-                    console.log("session: "+req.session.token)
                     return res.status(200).send(response)
                 }
             })
