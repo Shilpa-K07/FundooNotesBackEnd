@@ -1,7 +1,12 @@
-/**
- * @description Defining routes
- * @methods post, put are the http methods
- */
+/*************************************************************************
+* Purpose : to recieve client request and hit particular API
+*
+* @file : user.rt.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 module.exports = (app) => {
     const user = require('../controllers/user.ctr.js')
     const util = require('../utility/util.js')
@@ -27,7 +32,10 @@ module.exports = (app) => {
     app.post('/notes', util.verifyUser, note.createNote)
 
     // Retrieve all notes
-    app.get('/notes', note.findAll)
+    app.get('/notes', util.verifyUser, note.findAll)
+
+    // Retrieve notes by labelId
+    app.get('/notesByLabel/:labelId', util.verifyUser, note.findNotesByLabel)
 
     // Update note
     app.put('/notes/:noteID', util.verifyUser, note.updateNote)
@@ -35,11 +43,20 @@ module.exports = (app) => {
     // Delete note
     app.delete('/notes/:noteID', util.verifyUser, note.deleteNote)
 
+    // Restore note
+    app.put('/restoreNote/:noteID', util.verifyUser, note.restoreNote)
+
+    // Hard delete note 
+    app.delete('/notes-h-delete/:noteID', util.verifyUser, note.hardDeleteNote)
+
     // Create a new label
     app.post('/labels/', util.verifyUser, label.createLabel)
 
     // Retrieve all labels
-    app.get('/labels', label.findLabels)
+    app.get('/labels', util.verifyUser, label.findLabels)
+
+    // Retrieve label by user
+    app.get('/labelsByUser', util.verifyUser, label.findLabelsByUserId)
 
     // Update label
     app.put('/labels/:labelID', util.verifyUser, label.updateLabel)

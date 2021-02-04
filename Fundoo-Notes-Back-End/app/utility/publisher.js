@@ -1,7 +1,12 @@
-/**
- * @description This class contains @method publish which is used to push emailIds into Queue 
- * @method used are connect, createChannel, sendToQueue
- */
+/*************************************************************************
+* Purpose : pushing data to rabbit mq
+*
+* @file : publisher.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const amqp = require('amqplib/callback_api')
 const logger = require('../logger/logger')
 class Publisher {

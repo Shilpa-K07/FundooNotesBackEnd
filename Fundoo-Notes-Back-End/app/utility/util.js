@@ -1,9 +1,12 @@
-/**
- * @description This class contains utility methods
- * @method generateToken for token generation
- * @method nodeEmailSender sends email
- * @method verifyToken verifies token generated
- */
+/*************************************************************************
+* Purpose : to provide methods which are most reusable
+*
+* @file : util.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer")
 const bcrypt = require('bcrypt');
@@ -66,7 +69,7 @@ class Util {
      * @param next calls next middleware function
      * @method jwt.verify decodes token
      */
-    verifyToken = (req, res, next) => {
+    verifyToken = (req, res, next) => {console.log("util")
         logger.info('Verifying token')
         jwt.verify(req.headers.token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
@@ -90,14 +93,16 @@ class Util {
      * @method jwt.verify decodes token
      * @param next calls next middleware function
      */
-    verifyUser = (req, res, next) => {
+    verifyUser = (req, res, next) => {console.log("inside util")
+    //console.log("session: "+req.session.token)
+    console.log("session: "+req.headers.token)
         logger.info('Verifying user')
-        if (req.session.token === undefined) {
+        if (req.headers.token === undefined) {
             logger.error('Incorrect token or token is expired')
-            const response = { success: false, message: "Incorrect token or token is expired" }
+            const response = { success: false, message: "Incotrrect token or token is expired" }
             return res.status(401).send(response)
         }
-        const token = req.session.token
+        const token = req.headers.token
         return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
                 logger.error('Incorrect token or token is expired')
@@ -157,7 +162,7 @@ class Util {
     */
     sendEmailVerificationMail = (userData, callBack) => {
         let mailTransporter = this.createTransport()
-        ejs.renderFile("app/views/emailVerification.ejs", { link: process.env.URL + '/verifyEmail/' + userData.token }, (error, htmlData) => {
+        ejs.renderFile("app/views/emailVerification.ejs", { link: process.env.URL + '/activateAccount/' + userData.token }, (error, htmlData) => {
             if (error){
                 logger.error('Error while rendering ejs template file')
                 return callBack(error, null)

@@ -1,12 +1,12 @@
-/**
- * @description Controller class takes request from the routes and sends response to client
- * @method createNote creates a new note for the particular user
- * @method findAll finds all the notes
- * @method updateNote updates note
- * @method deleteNote deletes note
- * @method addLabelToNote is used for adding label to note
- * @method removeLabelFromNote will delete label from note
- */
+/*************************************************************************
+* Purpose : to recieve request from routes and forward it to service layer
+*
+* @file : note.ctr.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const noteService = require('../services/note.svc')
 const logger = require('../logger/logger')
 const Joi = require('joi')
@@ -84,6 +84,34 @@ class NoteController {
     findAll = (req, res) => {
         try {
             noteService.findAll((error, data) => {
+                if (error) {
+                    logger.error(error.message)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
+                }
+
+                logger.error("Successfully retrieved notes !")
+                const response = { success: true, message: "Successfully retrieved notes !", data: data }
+                return res.status(200).send(response)
+            })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
+            return res.status(500).send(response)
+        }
+    }
+
+     /**
+     * @description Retrieve all the notes by labelId
+     * @method noteService.findAll is service clss method for finding notes which later calls model
+     */
+    findNotesByLabel = (req, res) => {
+        try {
+            const noteData = {
+                labelId: req.params.labelId,
+            }
+            noteService.findNotesByLabel(noteData,(error, data) => {
                 if (error) {
                     logger.error(error.message)
                     const response = { success: false, message: error.message }
@@ -183,6 +211,78 @@ class NoteController {
         }
     }
 
+     /**
+     * @description Delete note
+     * @param noteData contains noteId and userId. userId is retrieved from decoded data
+     */
+    restoreNote = (req, res) => {
+        try {
+            const noteData = {
+                noteID: req.params.noteID,
+                userId: req.decodeData.userId
+            }
+
+            noteService.restoreNote(noteData, (error, data) => {
+                if (error) {
+                    logger.error(error.message)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
+                }
+
+                else if (!data || (data.length == 0)) {
+                    logger.error("Note not found with id :" + noteData.noteID)
+                    const response = { success: false, message: "Note not found with id :" + noteData.noteID }
+                    return res.status(404).send(response)
+                }
+
+                logger.error("Note restored successfully !")
+                const response = { success: true, message: "Note restored successfully !" }
+                return res.status(200).send(response)
+            })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
+            return res.status(500).send(response)
+        }
+    }
+
+     /**
+     * @description Delete note permanently
+     * @param noteData contains noteId and userId. userId is retrieved from decoded data
+     */
+    hardDeleteNote = (req, res) => {
+        try {
+            const noteData = {
+                noteID: req.params.noteID,
+                userId: req.decodeData.userId
+            }
+
+            noteService.hardDeleteNote(noteData, (error, data) => {
+                if (error) {
+                    logger.error(error.message)
+                    const response = { success: false, message: error.message }
+                    return res.status(500).send(response)
+                }
+
+                else if (!data || (data.length == 0)) {
+                    logger.error("Note not found with id :" + noteData.noteID)
+                    const response = { success: false, message: "Note not found with id :" + noteData.noteID }
+                    return res.status(404).send(response)
+                }
+
+                logger.error("Note deleted successfully !")
+                const response = { success: true, message: "Note deleted successfully !" }
+                return res.status(200).send(response)
+            })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred !" }
+            logger.error("Some error occurred !")
+            return res.status(500).send(response)
+        }
+    }
+
     /**
      * @description Adding label to note
      * @var userId is retrieved from decoded data
@@ -214,7 +314,7 @@ class NoteController {
                     const response = { success: true, message: "Successfully added label to note!", data: data }
                     return res.status(200).send(response)
                 })
-                .catch(error => {
+                .catch(error => {console.log(error)
                     const response = { success: false, message: "Some error occurred while label to note" };
                     logger.error("Some error occurred while label to note")
                     return res.status(500).send(response)

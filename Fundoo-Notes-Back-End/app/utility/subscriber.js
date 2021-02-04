@@ -1,7 +1,12 @@
-/**
- * @description This class contains @method consume which is used to pop emailIds from the queue
- * @method used are connect, createChannel, assertQueue, consume
- */
+/*************************************************************************
+* Purpose : pulling data from rabbit mq
+*
+* @file : publisher.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const amqp = require('amqplib/callback_api')
 const logger = require('../logger/logger')
 

@@ -1,6 +1,13 @@
-/**
- * @description service class takes request from controller and sends this request to model
- */
+/*************************************************************************
+* Purpose : to recieve request from controller and send it to model layer 
+    and perform some intermediate business logic
+*
+* @file : label.svc.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const logger = require('../logger/logger')
 const label = require('../models/label.mdl')
 const util = require('../utility/util')
@@ -37,6 +44,17 @@ class LabelService {
     }
 
      /**
+<<<<<<< HEAD
+     * @description Retrieve all labels based on UserId
+     * @method labelModel.findAll calls model class method
+     */
+    findLabelsByUserId = (labelData) => {
+        return label.labelModel.findLabelByUser(labelData)
+    }
+
+     /**
+=======
+>>>>>>> e1e39d74caaf121d32525ef5f25d83454a6f685a
      * @description Update label
      * @method labelModel.update calls model class method
      */

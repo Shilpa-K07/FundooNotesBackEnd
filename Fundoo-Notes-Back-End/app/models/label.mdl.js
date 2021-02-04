@@ -1,7 +1,12 @@
-/**
- * @description Model class interacts with dataBase to perform tasks
- * @param labelSchema is the schema for the label created by the users
- */
+/*************************************************************************
+* Purpose : to recieve request from service layer and then query DB
+*
+* @file : label.mdl.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const mongoose = require('mongoose')
 const User = require('./user.mdl').User
 const logger = require('../logger/logger')
@@ -47,6 +52,11 @@ class LabelModel {
     // Retrieve all labels
     findAll = () => {
         return Label.find()
+    }
+
+    // Retrieve all labels by user
+    findLabelByUser = (labelData) => {
+        return Label.find({ userId: labelData.userId })
     }
 
     /**

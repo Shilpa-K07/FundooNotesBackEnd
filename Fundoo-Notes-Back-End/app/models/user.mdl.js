@@ -1,7 +1,12 @@
-/**
- * @description Model class interacts with dataBase to perform tasks
- * @param UserSchema is the schema for the user created with mongoose
- */
+/*************************************************************************
+* Purpose : to recieve request from service layer and then query DB
+*
+* @file : user.mdl.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const logger = require('../logger/logger')

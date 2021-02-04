@@ -1,7 +1,12 @@
-/**
- * @description Model class interacts with dataBase to perform tasks
- * @param noteSchema is the schema for the note created by the users
- */
+/*************************************************************************
+* Purpose : to recieve request from service layer and then query DB
+*
+* @file : note.mdl.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const mongoose = require('mongoose')
 const User = require('./user.mdl').User
 const logger = require('../logger/logger')
@@ -167,12 +172,91 @@ class NoteModel {
         })
     }
 
+       /**
+     * @description Delete note
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note by setting isDeleted fied to true
+     */
+    restoreNote = (noteData, callBack) => {
+        User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error) {
+                logger.error('Error occurred while finding user')
+                return callBack(error, null)
+            }
+            else if (user) {
+                Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
+                    if (error)
+                        return callBack(error, null)
+                    else if (note.length == 0)
+                        return callBack(null, note)
+                    else {
+                        logger.info('Note found')
+                        if ((note[0].isDeleted)) {
+                            Note.findByIdAndUpdate(noteData.noteID, { isDeleted: false }, { new: true }, (error, data) => {
+                                if (error) {
+                                    logger.error('Error occurred while restoring note')
+                                    return callBack(error, null)
+                                }
+                                return callBack(null, data)
+                            })
+                        }
+                        else
+                            return callBack(null, null)
+                    }
+                })
+            }
+            else
+                return callBack(error, null)
+        })
+    }
+
+    /**
+     * @description Delete note permanently
+     * @method User.findOne checks for user in user collection
+     * @method Note.find finds specific noteId and userId in note collection
+     * @method Note.findByIdAndUpdate updates note by setting isDeleted fied to true
+     */
+    hardDeleteNote = (noteData, callBack) => {
+        User.findOne({ _id: noteData.userId }, (error, user) => {
+            if (error) {
+                logger.error('Error occurred while finding user')
+                return callBack(error, null)
+            }
+            else if (user) {
+                Note.find({ _id: noteData.noteID, userId: noteData.userId }, (error, note) => {
+                    if (error)
+                        return callBack(error, null)
+                    else if (note.length == 0)
+                        return callBack(null, note)
+                    else {
+                        logger.info('Note found')
+                        if ((note[0].isDeleted)) {
+                            Note.findByIdAndRemove(noteData.noteID, (error, data) => {
+                                if (error) {
+                                    logger.error('Error occurred while deleting note')
+                                    return callBack(error, null)
+                                }
+                                return callBack(null, data)
+                            })
+                        }
+                        else
+                            return callBack(null, null)
+                    }
+                })
+            }
+            else
+                return callBack(error, null)
+        })
+    }
+
     /**
     * @description Find all the notes 
     * @method Note.find finds all the notes in note collection
     */
+  // Greeting.find().sort({createdAt: -1}).exec ({}, (error, data) => {
     findAll = (callBack) => {
-        Note.find((error, data) => {
+        Note.find().sort({createdAt: -1}).populate('labelId').exec({}, (error, data) => {
             if (error) {
                 logger.error('error occurred while finding all the users')
                 return callBack(error, null)
@@ -180,6 +264,18 @@ class NoteModel {
             return callBack(null, data)
         })
     }
+
+
+     // Greeting.find().sort({createdAt: -1}).exec ({}, (error, data) => {
+        findNotesByLabel = (noteData, callBack) => {
+            Note.find({labelId:noteData.labelId}).sort({createdAt: -1}).populate('labelId').exec({}, (error, data) => {
+                if (error) {
+                    logger.error('error occurred while finding all the users')
+                    return callBack(error, null)
+                }
+                return callBack(null, data)
+            })
+        }
 
     /**
      * @description Add label to note
@@ -196,6 +292,8 @@ class NoteModel {
                         .then(note => {
                             if (note.length == 1) {
                                 logger.info('Note found updating note')
+                                console.log(note[0].labelId.includes(noteData.labelId))
+                                if(!note[0].labelId.includes(noteData.labelId))
                                 return Note.findByIdAndUpdate(noteData.noteID, { $push: { labelId: noteData.labelId } }, { new: true })
                             }
                         })

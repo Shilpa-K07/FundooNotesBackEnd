@@ -1,10 +1,13 @@
-/**
- * @description Controller class recieves request from routes
- * @method registration is for new user to register
- * @method login is for user login
- * @method forgotPassword sends reset password link to registered user
- * @method resetPassword updates password
- */
+/*************************************************************************
+* Purpose : to recieve request from controller and send it to model layer 
+    and perform some intermediate business logic
+*
+* @file : user.svc.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 
 const userModel = require('../models/user.mdl').userModel
 const util = require('../utility/util')
@@ -50,12 +53,12 @@ class UserService {
             else {
                 userModel.findOne(userLoginData, (error, data) => {
                     if (error) {
-                        logger.error('Some error occured while logging in')
-                        return callBack(new Error("Some error occured while logging in"), null)
+                        logger.error('ERR:500-Some error occured while logging in')
+                        return callBack(new Error("ERR:500-Some error occured while logging in"), null)
                     }
                     else if (!data) {
-                        logger.error('Authorization failed')
-                        return callBack(new Error("Authorization failed"), null)
+                        logger.error('ERR:401-Authorization failed')
+                        return callBack(new Error("ERR:401-Authorization failed"), null)
                     }
                     else {
                         bcrypt.compare(userLoginData.password, data.password, (error, result) => {
@@ -68,12 +71,12 @@ class UserService {
                                     return callBack(null, data)
                                 }
                                 else {
-                                    logger.info('Please verify email before login')
-                                    return callBack(new Error("Please verify email before login"))
+                                    logger.info('ERR:401-Please verify email before login')
+                                    return callBack(new Error("ERR:401-Please verify email before login"))
                                 }
                             }
-                            logger.error('Authorization failed')
-                            return callBack(new Error("Authorization failed"), null)
+                            logger.error('ERR:401-Authorization failed')
+                            return callBack(new Error("ERR:401-Authorization failed"), null)
                         })
                     }
                 })
@@ -92,14 +95,14 @@ class UserService {
                 return callBack(new Error("Some error occurred"), null)
             }
             else if (!data) {
-                logger.error('User not found with this email Id')
-                return callBack(new Error("User not found with this email Id"), null)
+                logger.error('ERR:401-User not found with this email Id')
+                return callBack(new Error("ERR:401-User not found with this email Id"), null)
             }
             else {
                 const token = util.generateToken(data);
                 userData.token = token
                 util.nodeEmailSender(userData, (error, data) => {
-                    if (error) {
+                    if (error) {console.log("mail: "+error)
                         logger.error('Some error occurred while sending email')
                         return callBack(new Error("Some error occurred while sending email"), null)
                     }
@@ -179,7 +182,7 @@ class UserService {
             if (error)
                 return callBack(new Error("Some error occurred while finding user"), null)
             else if (!data)
-                return callBack(new Error("User not found with this email Id"), null)
+                return callBack(new Error("ERROR:401-User not found with this email Id"), null)
             else {
                 const token = util.generateToken(data)
                 userData.token = token

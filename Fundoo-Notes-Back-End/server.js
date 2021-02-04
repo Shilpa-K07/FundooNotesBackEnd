@@ -1,3 +1,12 @@
+/*************************************************************************
+* Purpose : to configure appication
+*
+* @file : server.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
@@ -13,6 +22,13 @@ const app = express()
 
 // parse requests of content type application/json
 app.use(bodyParser.json())
+
+// require cors
+var cors = require('cors')
+app.use(cors(/* {
+    origin: ['http://localhost:8080'],
+    credentials: true,
+} */))
 
 // Storing session
 /* const store = new mongoDbSession ({

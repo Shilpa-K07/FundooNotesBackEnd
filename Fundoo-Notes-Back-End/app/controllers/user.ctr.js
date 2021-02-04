@@ -1,10 +1,12 @@
-/**
- * @description Controller class recieves request from routes
- * @method registration is for new user to register
- * @method login is for user login
- * @method forgotPassword sends reset password link to registered user
- * @method resetPassword updates password
- */
+/*************************************************************************
+* Purpose : to recieve request from routes and forward it to service layer
+*
+* @file : user.ctr.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const userService = require('../services/user.svc.js')
 const Joi = require('joi');
 const logger = require('../logger/logger')
@@ -58,7 +60,6 @@ class UserController {
                 emailId: req.body.emailId,
                 password: req.body.password
             }
-
             const validationResult = inputPattern.validate(userRegistrationData)
 
             if (validationResult.error) {
@@ -112,18 +113,25 @@ class UserController {
             userService.login(userLoginData, (error, data) => {
                 if (error) {
                     logger.error(error.message)
-                    const response = { success: false, message: error.message };
+                    const response = { success: false, message: error.message }
+                    if(error.message.includes("401"))
+                        return res.status(401).send(response)
                     return res.status(500).send(response)
                 }
                 if (!data) {
-                    const response = { success: false, message: "Authorization failed" };
+                    const response = { success: false, message: "Authorization failed" }
                     return res.status(401).send(response)
                 }
                 else {
-                    const response = { success: true, message: "Login Successfull !", token: data.token };
+                    const userData = {
+                        emailId: data.emailId,
+                        name: data.firstName+ " "+data.lastName
+                    }
+                    const response = { success: true, message: "Login Successfull !", token: data.token, data: userData};
                     logger.info("Login Successfull !")
                     req.session.isAuth = true
                     req.session.token = data.token
+                    console.log("session: "+req.session.token)
                     return res.status(200).send(response)
                 }
             })
@@ -156,6 +164,8 @@ class UserController {
                 if (error) {
                     logger.error(error.message)
                     const response = { success: false, message: error.message };
+                    if(error.message.includes("401"))
+                        return res.status(401).send(response)
                     return res.status(500).send(response)
                 }
 
@@ -189,7 +199,6 @@ class UserController {
                 emailId: req.decodeData.emailId,
                 newPassword: req.body.newPassword
             }
-
             const validationResult = passwordPattern.validate(resetPasswordData.newPassword)
 
             if (validationResult.error) {
@@ -210,7 +219,7 @@ class UserController {
                     return res.status(401).send(response)
                 }
                 else {
-                    const response = { success: true, message: "Password has been changed !" };
+                    const response = { success: true, message: "Password has been changed !" , data: data };
                     logger.info("Password has benn changed !")
                     res.status(200).send(response)
                 }
@@ -281,7 +290,9 @@ class UserController {
             userService.emailVerification(userData, (error, user) => {
                 if (error) {
                     logger.error(error.message)
-                    const response = { success: false, message: error.message };
+                    const response = { success: false, message: error.message }
+                    if(error.message.includes(401))
+                        return res.status(401).send(response)
                     return res.status(500).send(response)
                 }
 
@@ -291,7 +302,7 @@ class UserController {
                     return res.status(401).send(response)
                 }
                 else {
-                    const response = { success: true, message: "Verification email has been sent !. Please verify your account" };
+                    const response = { success: true, message: "Verification email has been sent !. Please verify your account" ,data:user};
                     logger.info("Verification email has been sent !. Please verify your account")
                     res.status(200).send(response)
                 }

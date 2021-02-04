@@ -1,8 +1,12 @@
-/**
- * @description redis cache implementation
- * @method get is used to check for key in the redis
- * @method set is used to set the data if it is not set
- */
+/*************************************************************************
+* Purpose : implementing redis cache
+*
+* @file : redisCache.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const redis = require('redis')
 const client = redis.createClient()
 const logger = require('../logger/logger')

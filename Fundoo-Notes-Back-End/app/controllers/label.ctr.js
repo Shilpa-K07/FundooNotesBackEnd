@@ -1,7 +1,12 @@
-/**
- * @description Controller class takes request from the routes and sends response back
- * @method createLabel creates a new label for the particular user
- */
+/*************************************************************************
+* Purpose : to recieve request from routes and forward it to service layer
+*
+* @file : label.ctr.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 01/12/2020
+*
+**************************************************************************/
 const Joi = require('joi');
 const logger = require('../logger/logger')
 const labelService = require('../services/label.svc')
@@ -25,7 +30,7 @@ class LabelController {
                 userId: req.decodeData.userId
             }
 
-            const validationResult = inputPattern.validate(noteData)
+            const validationResult = inputPattern.validate(labelData)
 
             if (validationResult.error) {
                 const response = { success: false, message: validationResult.error.message };
@@ -38,13 +43,13 @@ class LabelController {
                     const response = { success: true, message: "Successfully added label !", data: data }
                     return res.status(200).send(response)
                 })
-                .catch(error => {
+                .catch(error => {console.log(error)
                     logger.info("Some error occurred while adding label")
                     const response = { success: false, message: "Some error occurred while adding label" }
-                    return res.status(200).send(response)
+                    return res.status(500).send(response)
                 })
         }
-        catch (error) {
+        catch (error) {console.log(error)
             const response = { success: false, message: "Some error occurred" }
             return res.status(500).send(response)
         }
@@ -53,6 +58,38 @@ class LabelController {
      /**
      * @description Retrieve all the labels
      * @method labelService.findLabels service class method for adding label
+     */
+    findLabelsByUserId = (req, res) => {
+        try {
+            const labelData = {
+                userId: req.decodeData.userId
+            }
+            labelService.findLabelsByUserId(labelData)
+                .then(data => {
+                    if (!data) {
+                        const response = { success: false, message: "No labels found" }
+                        return res.status(404).send(response)
+                    }
+                    logger.info("Successfully retrieved labels !")
+                    const response = { success: true, message: "Successfully retrieved labels!", data: data }
+                    return res.status(200).send(response)
+                })
+                .catch(error => {
+                    logger.info("Some error occurred while retrieving labels")
+                    const response = { success: false, message: "Some error occurred while retrieving labels" }
+                    return res.status(500).send(response)
+                })
+        }
+        catch (error) {
+            const response = { success: false, message: "Some error occurred" }
+            return res.status(500).send(response)
+        }
+    }
+
+
+    /**
+     * @description Retrieve all the labels based on userId
+     * @method labelService.findLabels service class method for retrieving label
      */
     findLabels = (req, res) => {
         try {
@@ -91,7 +128,7 @@ class LabelController {
                 userId: req.decodeData.userId
             }
 
-            const validationResult = inputPattern.validate(noteData)
+            const validationResult = inputPattern.validate(labelData)
 
             if (validationResult.error) {
                 const response = { success: false, message: validationResult.error.message };
