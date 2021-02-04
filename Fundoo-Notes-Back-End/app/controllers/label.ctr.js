@@ -153,7 +153,7 @@ class LabelController {
                 })
 
         }
-        catch (error) {console.log(error)
+        catch (error) {
             const response = { success: false, message: "Some error occurred" }
             logger.error("Some error occurred")
             return res.send(response)

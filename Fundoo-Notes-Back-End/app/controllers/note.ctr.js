@@ -43,7 +43,7 @@ class NoteController {
      * @description Create a new note
      * @method noteService.createNote is service clss method 
      */
-    createNote = (req, res) => {console.log("inside ctr")
+    createNote = (req, res) => {
         try {
             const noteData = {
                 title: req.body.title,
@@ -58,7 +58,7 @@ class NoteController {
                 return res.status(400).send(response);
             }
 
-            noteService.createNote(noteData, (error, data) => {console.log("error"+error);console.log("data: "+data)
+            noteService.createNote(noteData, (error, data) => {
                 if (error) {
                     logger.error(error.message)
                     const response = { success: false, message: error.message }

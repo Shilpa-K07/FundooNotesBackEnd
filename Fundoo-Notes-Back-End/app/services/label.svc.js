@@ -44,6 +44,7 @@ class LabelService {
     }
 
      /**
+<<<<<<< HEAD
      * @description Retrieve all labels based on UserId
      * @method labelModel.findAll calls model class method
      */
@@ -52,6 +53,8 @@ class LabelService {
     }
 
      /**
+=======
+>>>>>>> e1e39d74caaf121d32525ef5f25d83454a6f685a
      * @description Update label
      * @method labelModel.update calls model class method
      */

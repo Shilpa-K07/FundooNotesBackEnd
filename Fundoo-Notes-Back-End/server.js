@@ -64,8 +64,6 @@ require('./app/routes/user.rt')(app)
 // Cookies for session management
 app.use(cookieParser())
 
-
-
 // require swagger-ui and swagger.json
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./app/lib/api-docs.json')

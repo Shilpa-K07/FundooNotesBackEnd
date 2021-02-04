@@ -319,7 +319,7 @@ class UserController {
      * @description To activate user account 
      * @param req holds user emailId
      */
-    activateAccount = (req, res) => {console.log("reahed...!!!")
+    activateAccount = (req, res) => {
         try {
             const userData = {
                 emailId: req.decodeData.emailId
