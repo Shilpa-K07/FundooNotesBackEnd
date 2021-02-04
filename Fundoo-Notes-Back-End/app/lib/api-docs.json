@@ -1,0 +1,722 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "2.0.0",
+        "title": "Fundoo Notes",
+        "description": "APIs"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "User",
+            "description": "API for User"
+        },
+        {
+            "name": "Notes",
+            "description": "API for notes"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/registration": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User registration",
+                "parameters": [
+                    {
+                        "name": "registration",
+                        "in": "body",
+                        "description": "User registration",
+                        "schema": {
+                            "$ref": "#/definitions/registration"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration is done successfully",
+                        "schema": {
+                            "$ref": "#/definitions/registration"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "name": "user login",
+                        "in": "body",
+                        "description": "User login",
+                        "schema": {
+                            "$ref": "#/definitions/login"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfuuly logged in !",
+                        "schema": {
+                            "$ref": "#/definitions/login"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "summary": "Recieve reset password link via email",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "body",
+                        "description": "Recieve reset password link via email",
+                        "schema": {
+                            "$ref": "#/definitions/forgotPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email has been sent",
+                        "schema": {
+                            "$ref": "#/definitions/forgotPassword"
+                        }
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "put": {
+                "summary": "Change password",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "token"
+                    },
+                    {
+                        "name": "newPassword",
+                        "in": "body",
+                        "description": "User with new password",
+                        "schema": {
+                            "$ref": "#/definitions/resetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password has been changed !",
+                        "schema": {
+                            "$ref": "#/definitions/resetPassword"
+                        }
+                    }
+                }
+            }
+        },
+        "/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Retrieve all the notes",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/notes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create new note",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Create new note",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created new note",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/notes/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note that is to be updated or deleted",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete note with given ID",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Delete note of user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note deleted",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update note with given ID",
+                "parameters": [
+                    {
+                        "name": "note",
+                        "in": "body",
+                        "description": "Note with new data",
+                        "schema": {
+                            "$ref": "#/definitions/updateNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note is updated",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/labels": {
+            "get": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Retrieve all the labels",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/labels"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Create new label",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Create new label",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created new label",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                }
+            }
+        },
+        "/labels/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the label that is to be updated or deleted",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Delete label with given ID",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Delete label of user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label deleted",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Labels"
+                ],
+                "summary": "Update label with given ID",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "body",
+                        "description": "Label with new data",
+                        "schema": {
+                            "$ref": "#/definitions/updateLabel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is updated",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    }
+                }
+            }
+        },
+
+        "/addLabelToNote/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note to which label will be addide",
+                    "type": "string"
+                }
+            ],
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Add Labels to Note",
+                "parameters": [
+                    {
+                        "name": "LabelId",
+                        "in": "body",
+                        "description": "Adding Labels to Note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is added to note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                }
+            }
+        },
+
+        "/removeLabelFromNote/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note to which label will be addide",
+                    "type": "string"
+                }
+            ],
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Remove Label from Note",
+                "parameters": [
+                    {
+                        "name": "labelId",
+                        "in": "body",
+                        "description": "Removing Label from Note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Label is removed from note",
+                        "schema": {
+                            "$ref": "#/definitions/labelsToNote"
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyEmail": {
+            "post": {
+                "summary": "Send email verification links to user's emailId",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "body",
+                        "description": "Sends email verification links to user's emailId",
+                        "schema": {
+                            "$ref": "#/definitions/verifyEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email has been sent ! Please verify your email address",
+                        "schema": {
+                            "$ref": "#/definitions/verifyEmail"
+                        }
+                    }
+                }
+            }
+        },
+        "/activateAccount": {
+            "put": {
+                "summary": "Activate account",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account has been activated  !",
+                        "schema": {
+                            "$ref": "#/definitions/activateAccount"
+                        }
+                    }
+                }
+            }
+        },
+
+        "/addCollaborator": {
+            "post": {
+                "summary": "Create collaborator",
+                "tags": [
+                    "Collaborator"
+                ],
+                "parameters": [
+                    {
+                        "name": "Collaborator",
+                        "in": "body",
+                        "description": "Creates collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/addCollaborator"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/removeCollaborator": {
+            "put": {
+                "tags": [
+                    "Collaborator"
+                ],
+                "summary": "Delete collaborator with given ID",
+                "parameters": [
+                    {
+                        "name": "collaborator",
+                        "in": "body",
+                        "description": "Remove collaborator",
+                        "schema": {
+                            "$ref": "#/definitions/removeCollaborator"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully removed collaborator from note",
+                        "schema": {
+                            "$ref": "#/definitions/note"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "email to be searched",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Retrieve all the users based on emailId",
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "registration": {
+            "required": [
+                "firstName",
+                "lastName",
+                "emailId",
+                "password"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "emailId": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "login": {
+            "required": [
+                "emailId",
+                "password"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "forgotPassword": {
+            "required": [
+                "emailId"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                }
+            }
+        },
+        "resetPassword": {
+            "required": [
+                "token",
+                "newPassword"
+            ],
+            "properties": {
+                "newPassword": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "note": {
+            "required": [
+                "title",
+                "description"
+            ],
+            "properties": {
+                "title": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "description": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "notes": {
+            "type": "array",
+            "$ref": "#/definitions/note"
+        },
+        "updateNote": {
+            "required": [
+                "title",
+                "description"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "label": {
+            "required": [
+               "name"
+            ],
+            "properties": {
+                "name": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "labels": {
+            "type": "array",
+            "$ref": "#/definitions/label"
+        },
+        "updateLabel": {
+            "required": [
+                "name"
+             ],
+             "properties": {
+                 "name": {
+                     "type": "string"
+                 }
+             }
+        },
+        "labelsToNote": {
+            "required": [
+                "labelId"
+             ],
+             "properties": {
+                 "labelId": {
+                     "type": "string"
+                 }
+             }
+        },
+        "verifyEmail": {
+            "required": [
+                "emailId"
+            ],
+            "properties": {
+                "emailId": {
+                    "type": "string"
+                }
+            }
+        },
+        "activateAccount": {
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "in": "path",
+                    "type": "string"
+                }
+            }
+        },
+        "addCollaborator": {
+            "required": [
+                "noteId",
+                "userId"
+            ],
+            "properties": {
+                "noteId": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "userId": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        },
+        "removeCollaborator": {
+            "required": [
+                "noteId",
+                "collaboratorId"
+            ],
+            "properties": {
+                "noteId": {
+                    "in": "body",
+                    "type": "string"
+                },
+                "collaboratorId": {
+                    "in": "body",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
