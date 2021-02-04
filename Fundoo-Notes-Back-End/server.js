@@ -77,8 +77,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  * @description listen for requests
  * @param process.env.PORT is the port number 3000
  */
-app.listen(process.env.PORT, () => {
+var server = app.listen(process.env.PORT, () => {
     logger.info("Server is listening on port ", process.env.PORT);
 })
 
-
+module.exports = server

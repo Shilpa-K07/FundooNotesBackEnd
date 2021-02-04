@@ -69,7 +69,7 @@ class Util {
      * @param next calls next middleware function
      * @method jwt.verify decodes token
      */
-    verifyToken = (req, res, next) => {console.log("util")
+    verifyToken = (req, res, next) => {
         logger.info('Verifying token')
         jwt.verify(req.headers.token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
             if (error) {
