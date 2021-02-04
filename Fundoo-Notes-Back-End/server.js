@@ -25,10 +25,7 @@ app.use(bodyParser.json())
 
 // require cors
 var cors = require('cors')
-app.use(cors(/* {
-    origin: ['http://localhost:8080'],
-    credentials: true,
-} */))
+app.use(cors())
 
 // Storing session
 /* const store = new mongoDbSession ({
