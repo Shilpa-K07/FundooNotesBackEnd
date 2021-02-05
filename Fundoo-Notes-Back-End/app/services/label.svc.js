@@ -17,8 +17,8 @@ class LabelService {
      * @description Create a new label 
      * @method labelModel.create calls model class method
      */
-    createLabel = (labelData) => {
-        return label.labelModel.create(labelData)
+    createLabel=(labelData) => {
+    	return label.labelModel.create(labelData)
     }
 
     /**
@@ -27,39 +27,36 @@ class LabelService {
      * @method labelModel.findById calls model class method
      */
     validateUser = (token) => {
-        const decodeData = util.verifyUser(token)
-        if(!decodeData){
-            logger.error('Could not able to decode token')
-            return
-        }
-        return label.labelModel.findById(decodeData)
+    	const decodeData = util.verifyUser(token)
+    	if(!decodeData){
+    		logger.error('Could not able to decode token')
+    		return
+    	}
+    	return label.labelModel.findById(decodeData)
     }
 
-     /**
+    /**
      * @description Retrieve all labels
      * @method labelModel.findAll calls model class method
      */
     findLabels = () => {
-        return label.labelModel.findAll()
+    	return label.labelModel.findAll()
     }
 
-     /**
-<<<<<<< HEAD
+    /**
      * @description Retrieve all labels based on UserId
      * @method labelModel.findAll calls model class method
      */
     findLabelsByUserId = (labelData) => {
-        return label.labelModel.findLabelByUser(labelData)
+    	return label.labelModel.findLabelByUser(labelData)
     }
 
-     /**
-=======
->>>>>>> e1e39d74caaf121d32525ef5f25d83454a6f685a
+    /**
      * @description Update label
      * @method labelModel.update calls model class method
      */
     updateLabel = (labelData) => {
-        return label.labelModel.update(labelData)
+    	return label.labelModel.update(labelData)
     }
 
     /**
@@ -67,7 +64,7 @@ class LabelService {
      * @method labelModel.delete calls model class method
      */
     deleteLabel = (labelData) => {
-        return label.labelModel.delete(labelData)
+    	return label.labelModel.delete(labelData)
     }
 }
 module.exports = new LabelService()
