@@ -4,22 +4,22 @@ let server = require('../server');
 chai.use(chaiHttp);
 
 describe('Registration', () => {
-	 it('given proper details should do user registration', (done) => {
-			let userData = {
-				firstName: "Shilpa",
-				lastName: "Kundapur",
-				emailId: "Shilpak0007@gmail.com",
-				password: "Abcd@123A"
-			}
-			chai.request(server)
-				.post('/registration')
-				.send(userData)
-				.end((err, res) => {
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					done()
-				})
-		})
+	it('given proper details should do user registration', (done) => {
+		let userData = {
+			firstName: "Shilpa",
+			lastName: "Kundapur",
+			emailId: "Shilpak0007@gmail.com",
+			password: "Abcd@123A"
+		}
+		chai.request(server)
+			.post('/registration')
+			.send(userData)
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				done()
+			})
+	})
 
 	it('given already exists emailId should not do register', (done) => {
 		let userData = {
@@ -118,7 +118,7 @@ describe('ForgotPassword', () => {
 	})
 })
 describe('Resetpassword', () => {
-	it.skip('given proper new password should do reset password', (done) => {
+	it('given proper new password should do reset password', (done) => {
 		let userData = {
 			newPassword: 'aabb@123AA',
 		}
@@ -133,7 +133,7 @@ describe('Resetpassword', () => {
 				done()
 			})
 	})
-	it.skip('given improper new password should not do reset password', (done) => {
+	it('given improper new password should not do reset password', (done) => {
 		let userData = {
 			newPassword: 'aab123AA',
 		}
@@ -146,6 +146,77 @@ describe('Resetpassword', () => {
 				res.should.have.status(400);
 				res.body.should.be.a('object');
 				done()
+			})
+	})
+})
+
+describe.only('/POST verify email address', () => {
+	it('given emailId should send verification link to user emailId', () => {
+		let userData = {
+			emailId: "shilpa07udupi@gmail.com"
+		}
+		chai.request(server)
+			.post('/verifyEmail')
+			.send(userData)
+			.end((err, res) => {console.log("res: "+JSON.stringify(res))
+				res.should.have.status(200)
+				res.body.should.be.a('object')
+				//done()
+			})
+	})
+
+	it('given emailId if not found should not send verification link', () => {
+		let userData = {
+			emailId: "shilpa9087udupi@gmail.com"
+		}
+		chai.request(server)
+			.post('/verifyEmail')
+			.send(userData)
+			.end((err, res) => {
+				res.should.have.status(401)
+				res.body.should.be.a('object')
+				//done()
+			})
+	})
+
+	it('given emailId is empty should not send verification link', () => {
+		let userData = {
+			emailId: ""
+		}
+		chai.request(server)
+			.post('/verifyEmail')
+			.send(userData)
+			.end((err, res) => {
+				res.should.have.status(400)
+				res.body.should.be.a('object')
+				//setTimeout(done, 2000)
+				//done()
+			})
+	})
+})
+
+describe('/PUT activate account', () => {
+	it('given token if verified should activate user account', (done) => {
+		let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
+		chai.request(server)
+			.put('/activateAccount')
+			.set('token', token)
+			.end((err, res) => {console.log("res: "+JSON.stringify(res))
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				//setTimeout(done, 5000)
+			})
+	})
+
+	it('given token if not verified should not activate user account', (done) => {
+		let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
+		chai.request(server)
+			.put('/activateAccount')
+			.set('token', token)
+			.end((err, res) => {
+				res.should.have.status(401);
+				res.body.should.be.a('object');
+				//setTimeout(done, 5000)
 			})
 	})
 })

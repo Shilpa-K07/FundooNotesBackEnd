@@ -79,7 +79,7 @@ class NoteController {
 
     /**
      * @description Retrieve all the notes
-     * @method noteService.findAll is service clss method for finding notes which later calls model
+     * @method noteService.findAll is service class method for finding notes which later calls model
      */
     findAll = (req, res) => {
     	try {
