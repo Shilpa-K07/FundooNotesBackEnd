@@ -39,20 +39,20 @@ app.use(cors())
  * @method uuid generates unique universal identifier which is used as session Id
  */
 app.use(session({
-    genid: (req) => {
-        return uuid()
-    },
-    secret: 'key to sign cookie',
-    resave: false,
-    saveUninitialized: false,
-    /* cookie: {
+	genid: (req) => {
+		return uuid()
+	},
+	secret: 'key to sign cookie',
+	resave: false,
+	saveUninitialized: false,
+	/* cookie: {
         'name': 'test',
         httpOnly: false,
         secure: false,
         maxAge: ((60 * 1000) * 60)
       } */
-    //name: 'fundooNotes',
-    // store: store
+	//name: 'fundooNotes',
+	// store: store
 }))
 
 // require user routes
@@ -67,10 +67,10 @@ const swaggerDocument = require('./app/lib/api-docs.json')
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
- // If no routes matches execute this 
- app.use('*/*',(req, res, next) => {
-   const response = {success:false, message:"Route Not found"}
-    res.status(404).send(response)
+// If no routes matches execute this 
+app.use('*/*',(req, res, next) => {
+	const response = {success:false, message:'Route Not found'}
+	res.status(404).send(response)
 })
 
 /**
@@ -78,7 +78,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  * @param process.env.PORT is the port number 3000
  */
 var server = app.listen(process.env.PORT, () => {
-    logger.info("Server is listening on port ", process.env.PORT);
+	logger.info('Server is listening on port ', process.env.PORT);
 })
 
 module.exports = server
