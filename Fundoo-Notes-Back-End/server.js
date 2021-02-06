@@ -20,8 +20,15 @@ const logger = require('./app/logger/logger')
 // create express app
 const app = express()
 
+require('./config').set(process.env.NODE_ENV, app);
+
 // parse requests of content type application/json
 app.use(bodyParser.json())
+
+// require user routes
+require('./app/routes/user.rt')(app)
+
+const config = require('./config').get();
 
 // require cors
 var cors = require('cors')
@@ -55,8 +62,7 @@ app.use(session({
 	// store: store
 }))
 
-// require user routes
-require('./app/routes/user.rt')(app)
+
 
 // Cookies for session management
 app.use(cookieParser())
@@ -77,8 +83,10 @@ app.use('*/*',(req, res, next) => {
  * @description listen for requests
  * @param process.env.PORT is the port number 3000
  */
-var server = app.listen(process.env.PORT, () => {
-	logger.info('Server is listening on port ', process.env.PORT);
+var server = app.listen(config.port, () => {
+	console.log('Server is listening on port ', config.port)
+	console.log('Server is listening on port ', config.isDevelopment)
+	//logger.info('Server is listening on port ', config.PORT);
 })
 
 module.exports = server
