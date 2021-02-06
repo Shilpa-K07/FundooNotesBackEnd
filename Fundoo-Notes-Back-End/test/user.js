@@ -1,6 +1,7 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../server');
+let should = chai.should();
 chai.use(chaiHttp);
 
 describe('Registration', () => {
@@ -158,14 +159,14 @@ describe.only('/POST verify email address', () => {
 		chai.request(server)
 			.post('/verifyEmail')
 			.send(userData)
-			.end((err, res) => {console.log("res: "+JSON.stringify(res))
+			.end((err, res) => {
 				res.should.have.status(200)
 				res.body.should.be.a('object')
-				//done()
+				done()
 			})
 	})
 
-	it('given emailId if not found should not send verification link', () => {
+	it('given emailId if not found should not send verification link', (done) => {
 		let userData = {
 			emailId: "shilpa9087udupi@gmail.com"
 		}
@@ -175,11 +176,11 @@ describe.only('/POST verify email address', () => {
 			.end((err, res) => {
 				res.should.have.status(401)
 				res.body.should.be.a('object')
-				//done()
+				done()
 			})
 	})
 
-	it('given emailId is empty should not send verification link', () => {
+	it('given emailId is empty should not send verification link', (done) => {
 		let userData = {
 			emailId: ""
 		}
@@ -189,8 +190,7 @@ describe.only('/POST verify email address', () => {
 			.end((err, res) => {
 				res.should.have.status(400)
 				res.body.should.be.a('object')
-				//setTimeout(done, 2000)
-				//done()
+				done()
 			})
 	})
 })
@@ -204,7 +204,7 @@ describe('/PUT activate account', () => {
 			.end((err, res) => {console.log("res: "+JSON.stringify(res))
 				res.should.have.status(200);
 				res.body.should.be.a('object');
-				//setTimeout(done, 5000)
+				done()
 			})
 	})
 
@@ -214,9 +214,9 @@ describe('/PUT activate account', () => {
 			.put('/activateAccount')
 			.set('token', token)
 			.end((err, res) => {
-				res.should.have.status(401);
-				res.body.should.be.a('object');
-				//setTimeout(done, 5000)
+				res.should.have.status(401)
+				res.body.should.be.a('object')
+				done()
 			})
 	})
 })
