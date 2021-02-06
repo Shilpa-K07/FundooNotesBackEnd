@@ -9,7 +9,8 @@
 **************************************************************************/
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 const saltRounds = 10;
 const FIRST_NAME_PATTERN = /[a-zA-Z]{2,}/
 const LAST_NAME_PATTERN = /[a-zA-Z]{1,}/

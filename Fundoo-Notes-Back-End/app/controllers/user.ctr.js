@@ -7,10 +7,11 @@
 * @since : 01/12/2020
 *
 **************************************************************************/
-const userService = require('../services/user.svc.js')
+const userService = require('../services/user.svc.js');
 const Joi = require('joi');
-const logger = require('../logger/logger')
-const publisher = require('../utility/publisher')
+const publisher = require('../utility/publisher');
+const config = require('../../config').get()
+const { logger } = config
 
 const emailPattern = Joi.string().trim()
 	.regex(/^([0-9A-Za-z])+([-+._][0-9A-Za-z]+)*@([0-9A-Za-z])+[.]([a-zA-Z])+([.][A-Za-z]+)*$/)
@@ -96,7 +97,7 @@ class UserController {
      * @description User login API
      * @method login is service class method
      */
-    login = (req, res) => {
+    login = (req, res) => {console.log("full-url: "+req.protocol + '://' + req.get('host'))
     	try {
     		const userLoginData = {
     			emailId: req.body.emailId,
@@ -128,7 +129,7 @@ class UserController {
     					name: data.firstName+ ' '+data.lastName
     				}
     				const response = { success: true, message: 'Login Successfull !', token: data.token, data: userData};
-    				logger.info('Login Successfull !')
+					logger.info('Login Successfull !')
     				req.session.isAuth = true
     				req.session.token = data.token
     				return res.status(200).send(response)

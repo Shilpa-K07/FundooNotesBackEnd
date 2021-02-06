@@ -1,3 +1,12 @@
+/*************************************************************************
+* Purpose : Index Configuration setup is required to run your server.
+*
+* @file : index.js
+* @author : Shilpa K <shilpa07udupi@gmail.com>
+* @version : 1.0
+* @since : 06/02/2021
+*
+**************************************************************************/
 
 let config;
 

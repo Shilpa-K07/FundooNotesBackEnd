@@ -14,8 +14,8 @@ require('./config/mongoDb.js')
 const uuid = require('uuid').v4
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const mongoDbSession = require('connect-mongodb-session')(session)
-const logger = require('./app/logger/logger')
+//const mongoDbSession = require('connect-mongodb-session')(session)
+//const logger = require('./app/logger/logger')
 
 // create express app
 const app = express()
@@ -25,21 +25,15 @@ require('./config').set(process.env.NODE_ENV, app);
 // parse requests of content type application/json
 app.use(bodyParser.json())
 
-// require user routes
-require('./app/routes/user.rt')(app)
-
+// get config
 const config = require('./config').get();
+
+// get logger from config
+const { logger } = config
 
 // require cors
 var cors = require('cors')
 app.use(cors())
-
-// Storing session
-/* const store = new mongoDbSession ({
-    url: 'mongodb://localhost:27017/fundoo-notes',
-    databaseName: 'fundoo-notes',
-    collection: 'sessions'
-}) */
 
 /**
  * @description creating session
@@ -52,17 +46,10 @@ app.use(session({
 	secret: 'key to sign cookie',
 	resave: false,
 	saveUninitialized: false,
-	/* cookie: {
-        'name': 'test',
-        httpOnly: false,
-        secure: false,
-        maxAge: ((60 * 1000) * 60)
-      } */
-	//name: 'fundooNotes',
-	// store: store
 }))
 
-
+// require user routes
+require('./app/routes/user.rt')(app)
 
 // Cookies for session management
 app.use(cookieParser())
@@ -75,18 +62,18 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // If no routes matches execute this 
 app.use('*/*',(req, res, next) => {
-	const response = {success:false, message:'Route Not found'}
-	res.status(404).send(response)
+	//const response = {success:false, message:'Route Not found'}
+	res.status(404).send({success:false, message:'Route Not found'})
 })
 
 /**
  * @description listen for requests
- * @param process.env.PORT is the port number 3000
+ * @param config.port is the port number 3000
  */
 var server = app.listen(config.port, () => {
 	console.log('Server is listening on port ', config.port)
-	console.log('Server is listening on port ', config.isDevelopment)
-	//logger.info('Server is listening on port ', config.PORT);
+	//console.log('Server is listening on port ', config.isDevelopment)
+	logger.info('Server is listening on port ', config.PORT);
 })
 
 module.exports = server

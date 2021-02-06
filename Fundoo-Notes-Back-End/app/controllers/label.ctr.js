@@ -8,8 +8,9 @@
 *
 **************************************************************************/
 const Joi = require('joi');
-const logger = require('../logger/logger')
 const labelService = require('../services/label.svc')
+const config = require('../../config').get()
+const { logger } = config
 
 const inputPattern = Joi.object({
 	name: Joi.string().required().messages({
