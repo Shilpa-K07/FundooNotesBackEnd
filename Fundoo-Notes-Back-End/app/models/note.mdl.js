@@ -9,7 +9,8 @@
 **************************************************************************/
 const mongoose = require('mongoose')
 const User = require('./user.mdl').User
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 
 const NoteSchema = mongoose.Schema({
 	title: {

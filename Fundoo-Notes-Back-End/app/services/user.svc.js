@@ -14,7 +14,9 @@ const util = require('../utility/util')
 const bcrypt = require('bcrypt')
 const consumer = require('../utility/subscriber')
 const redis = require('../utility/redisCache')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
+//const logger = require('../logger/logger')
 
 class UserService {
     /**

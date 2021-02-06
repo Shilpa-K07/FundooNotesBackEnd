@@ -8,7 +8,9 @@
 *
 **************************************************************************/
 const amqp = require('amqplib/callback_api')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
+
 class Publisher {
     /**
      * @description Pushes emailId to queue

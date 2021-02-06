@@ -9,7 +9,8 @@
 **************************************************************************/
 const redis = require('redis')
 const client = redis.createClient()
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 const maxAge = 1400
 
 class RedisCache{

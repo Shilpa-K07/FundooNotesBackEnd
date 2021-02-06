@@ -8,9 +8,10 @@
 * @since : 01/12/2020
 *
 **************************************************************************/
-const logger = require('../logger/logger')
 const label = require('../models/label.mdl')
 const util = require('../utility/util')
+const config = require('../../config').get()
+const { logger } = config
 
 class LabelService {
     /**

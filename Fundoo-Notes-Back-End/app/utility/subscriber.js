@@ -8,8 +8,10 @@
 *
 **************************************************************************/
 const amqp = require('amqplib/callback_api')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 
+//const logger = require('../logger/logger')
 class Subscriber {
 	/**
      * @description Consumes emailId to queue

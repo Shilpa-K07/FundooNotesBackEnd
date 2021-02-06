@@ -11,7 +11,8 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt');
 const ejs = require('ejs')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 
 class Util {
     /**

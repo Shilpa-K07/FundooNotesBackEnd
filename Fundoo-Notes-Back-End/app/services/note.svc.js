@@ -10,7 +10,8 @@
 **************************************************************************/
 const noteModel = require('../models/note.mdl').noteModel
 const util = require('../utility/util')
-const logger = require('../logger/logger')
+const config = require('../../config').get()
+const { logger } = config
 
 class NoteService {
     /**
