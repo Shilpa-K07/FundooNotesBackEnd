@@ -166,9 +166,16 @@ class NoteService {
      * @description create new collaborator
      * @method create calls model class method
      */
-    createCollaborator = (collaboratorData) => {
+   /*  createCollaborator = (collaboratorData) => {
         return noteModel.createCollaborator(collaboratorData);
-    }
+    } */
+    createCollaborator = (collaboratorData, callBack) => {
+		noteModel.createCollaborator(collaboratorData, (error, data) => {
+			if (error)
+				return callBack(error, null);
+			return callBack(null, data);
+		});
+	}
 
     /**
      * @description delete  collaborator

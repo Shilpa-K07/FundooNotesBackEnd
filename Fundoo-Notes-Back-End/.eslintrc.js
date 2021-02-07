@@ -20,13 +20,21 @@ module.exports = {
 	},
 	'parser': 'babel-eslint' */
 	env: {
-		es6: true,
+		'es6': true,
 		node: true,
 		commonjs: true,
 	},
 	'parser': 'babel-eslint',
-	extends: ['eslint:recommended'],
-	parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+	//extends: ['eslint:recommended'],
+	//parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+	'parserOptions': {
+        'ecmaVersion': 2017,
+        'sourceType': 'module',
+        'ecmaFeatures': {
+            'jsx': true,
+            'modules': true
+        }
+    },
 	ignorePatterns: ['./node_modules/', './.vscode/*', './logs/', './.git/*'],
 	rules: {
 		quotes: ['error', 'single'],

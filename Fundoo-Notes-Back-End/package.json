@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc mocha",
     "start": "nodemon server.js --exec \"npm run lint && node\"",
-    "start:dev" : "nodemon server.js NODE_ENV=devlopment",
+    "start:dev": "nodemon server.js NODE_ENV=devlopment",
     "start:prod": "nodemon server.js NODE_ENV=production",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix --ext .js,.jsx ."
@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.6.0",
+    "async": "^3.2.0",
     "babel-eslint": "^10.1.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",

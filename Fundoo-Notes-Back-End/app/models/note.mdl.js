@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const User = require('./user.mdl').User;
 const config = require('../../config').get();
 const { logger } = config;
+var async = require('async');
 
 const NoteSchema = mongoose.Schema({
 	title: {
@@ -65,7 +66,7 @@ class NoteModel {
 				logger.error('Error occurred while finding user');
 				return callBack(error, null);
 			}
-			else if(user){
+			else if (user) {
 				logger.error('user found');
 				const noteDetails = new Note({
 					title: noteData.title,
@@ -328,7 +329,7 @@ class NoteModel {
 	* @description Create new collaborator
 	* @method Note.find searches in note collection for specific noteId and userId
 	*/
-	createCollaborator = (collaboratorData) => {
+	/* createCollaborator = (collaboratorData) => {
 		return User.findOne({ _id: collaboratorData.noteCreatorId })
 			.then(data => {
 				if (data) {
@@ -343,6 +344,34 @@ class NoteModel {
 						});
 				}
 			});
+	} */
+
+	createCollaborator = (collaboratorData, callBack) => {
+		async.waterfall([
+			(next) => {
+				User.findOne({ _id: collaboratorData.noteCreatorId }, (error, user) => {
+					next(error, user);
+				});
+			},
+			(user, next) => {
+				logger.info('User found');
+				Note.find({ _id: collaboratorData.noteId, collaborator: collaboratorData.userId }, (error, note) => {
+					if (note.length == 0)
+						next(error, note);
+					else
+						return callBack(null, null);
+				});
+			},
+			(note, next) => {
+				logger.info('Note found creating collaborator');
+				Note.findByIdAndUpdate(collaboratorData.noteId, { $push: { collaborator: collaboratorData.userId } }, { new: true }).exec(next);
+			}
+		], (error, result) => {
+			return (error) ? callBack(error, null) : callBack(null, result);
+			/* if (error) 
+				return callBack(error, null);
+			return callBack(null, result); */
+		});
 	}
 
 	/**

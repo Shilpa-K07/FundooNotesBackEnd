@@ -97,12 +97,12 @@ class Util {
 	verifyUser = (req, res, next) => {
 		//console.log("session: "+req.session.token)
 		logger.info('Verifying user');
-		if (req.headers.token === undefined) {
+		if (req.session.token === undefined) {
 			logger.error('Incorrect token or token is expired');
 			const response = { success: false, message: 'Incotrrect token or token is expired' };
 			return res.status(401).send(response);
 		}
-		const token = req.headers.token;
+		const token = req.session.token;
 		return jwt.verify(token, process.env.RESET_PASSWORD_KEY, (error, decodeData) => {
 			if (error) {
 				logger.error('Incorrect token or token is expired');
