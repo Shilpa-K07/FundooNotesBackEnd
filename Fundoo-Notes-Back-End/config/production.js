@@ -8,8 +8,8 @@
 *
 **************************************************************************/
 
-const winston = require('winston')
-module.exports = config => {
+const winston = require('winston');
+module.exports = () => {
     return {
         name: process.env.NODE_ENV,
         port: process.env.PORT,
@@ -29,5 +29,5 @@ module.exports = config => {
         database: {
             dbURL: process.env.DB_URL
         },
-    }
-}
+    };
+};

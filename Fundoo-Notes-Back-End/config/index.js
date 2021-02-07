@@ -45,7 +45,7 @@ const setConfig = obj => {
 };
 
 // Return the config.
-getConfig = () => this.config;
+const getConfig = () => this.config;
 
 /**
  *  @exports : Exports the Config Environment based Configuration
@@ -58,10 +58,8 @@ module.exports = {
             this.config.isProduction = isProduction(this.config);
             this.config.isDevelopment = isDevelopement(this.config);
             this.ename = this.config.name ? this.config.name : '';
-            //this.config.domainURL = getDomainURL(this);
         }
         setConfig(this.config);
-       // return config;
     },
     get: () => getConfig()
-}
+};
