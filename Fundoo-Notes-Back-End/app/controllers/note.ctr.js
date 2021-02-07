@@ -355,7 +355,7 @@ class NoteController {
 				})
 				.catch(error => {
 					const response = { success: false, message: 'Some error occurred while removing label from note' };
-					logger.error('Some error occurred while removing label from note'+error);
+					logger.error('Some error occurred while removing label from note' + error);
 					return res.status(500).send(response);
 				});
 		}
@@ -386,7 +386,22 @@ class NoteController {
 				return res.status(400).send(response);
 			}
 
-			noteService.createCollaborator(collaboratorData)
+			noteService.createCollaborator(collaboratorData, (error, data) => {
+				if (error) {
+					logger.info('Some error occurred while creating collaborator');
+					const response = { success: false, message: 'Some error occurred while creating collaborator' };
+					return res.status(200).send(response);
+				}
+				if (!data) {
+					logger.error('Collaborator exists or Note not found');
+					const response = { success: false, message: 'Collaborator exists or Note not found' };
+					return res.status(409).send(response);
+				}
+				logger.info('Successfully created collaborator !');
+				const response = { success: true, message: 'Successfully created collaborator !', data: data };
+				return res.status(200).send(response);
+			});
+			/* noteService.createCollaborator(collaboratorData)
 				.then(data => {
 					if (!data) {
 						logger.error('Collaborator exists or Note not found');
@@ -402,7 +417,7 @@ class NoteController {
 					logger.info('Some error occurred while creating collaborator');
 					const response = { success: false, message: 'Some error occurred while creating collaborator' };
 					return res.status(200).send(response);
-				});
+				}); */
 		}
 		catch (error) {
 			const response = { success: false, message: 'Some error occurred' };
@@ -435,7 +450,7 @@ class NoteController {
 					return res.status(200).send(response);
 				})
 				.catch(error => {
-					logger.error('Some error occurred while deleting collaborator'+error);
+					logger.error('Some error occurred while deleting collaborator' + error);
 					const response = { success: false, message: 'Some error occurred while deleting collaborator' };
 					return res.status(200).send(response);
 				});

@@ -23,9 +23,6 @@ require('./config').set(process.env.NODE_ENV, app);
 // parse requests of content type application/json
 app.use(bodyParser.json());
 
-// define static file directory
-app.use(express.static('./public'));
-
 // get config
 const config = require('./config').get();
 
@@ -35,6 +32,9 @@ const { logger } = config;
 // require cors
 var cors = require('cors');
 app.use(cors());
+
+// define static file directory
+app.use(express.static('public'));
 
 /**
  * @description creating session
