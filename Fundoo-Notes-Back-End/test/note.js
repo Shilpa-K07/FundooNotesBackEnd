@@ -3,14 +3,15 @@ let chaiHttp = require('chai-http');
 let server = require('../server');
 let should = chai.should();
 chai.use(chaiHttp);
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1MzU4NDcsImV4cCI6MTYxMjUzNzA0N30.kHMvdhvmDY3Bz8gP30REZ6pBCcYoPey8gDxIOgxXkXg';
+let inputData = require('./note-test-sample.json')
 
 describe('/POST notes', () => {
     it.skip('given proper data should create note', (done) => {
         let noteData = {
-            title: '1st note..',
-            description: 'My first note..'
+            title: inputData['create-note'].title,
+            description: inputData['create-note'].description
         };
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .post('/notes')
             .send(noteData)
@@ -25,9 +26,10 @@ describe('/POST notes', () => {
 
     it('given empty title should not create note', (done) => {
         let noteData = {
-            title: '',
-            description: 'My first note..'
+            title: inputData['invalid-create-note-sample-1'].title,
+            description: inputData['invalid-create-note-sample-1'].description
         };
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .post('/notes')
             .send(noteData)
@@ -41,9 +43,10 @@ describe('/POST notes', () => {
 
     it('given empty description should not create note', (done) => {
         let noteData = {
-            title: '1st note',
-            description: ''
+            title: inputData['invalid-create-note-sample-2'].title,
+            description: inputData['invalid-create-note-sample-2'].description
         };
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .post('/notes')
             .send(noteData)
@@ -58,6 +61,7 @@ describe('/POST notes', () => {
 
 describe('/GET notes', () => {
     it('given request should get all the notes', () => {
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .get('/notes')
             .set('token', token)
@@ -68,7 +72,7 @@ describe('/GET notes', () => {
     });
 
     it('given request with invalid token should not get notes', (done) => {
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1MjM4NTAsImV4cCI6MTYxMjUyNTA1MH0.as4GvCZqjhk9ofdkKB8cQuwtJnHvI8dH8RlnmF5F7r0';
+        let token = inputData['invalid-token'].token;
         chai.request(server)
             .get('/notes')
             .set('token', token)
@@ -82,7 +86,8 @@ describe('/GET notes', () => {
 
 describe.only('/GET notes by label', () => {
     it('given request should get all the notes', () => {
-        let labelId = '600ff20ca9ab2734d80a38b3';
+        let labelId = inputData['get-notes-by-label'].labelId;
+        let token = inputData['valid-token'].token
         chai.request(server)
             .get('/notesByLabel/'+labelId)
             .set('token', token)
@@ -93,8 +98,8 @@ describe.only('/GET notes by label', () => {
     });
 
     it('given request with invalid token should not get notes', (done) => {
-        let labelId = '600ff20ca9ab2734d80a38b3';
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1MjM4NTAsImV4cCI6MTYxMjUyNTA1MH0.as4GvCZqjhk9ofdkKB8cQuwtJnHvI8dH8RlnmF5F7r0';
+        let labelId = inputData['get-notes-by-label'].labelId;
+        let token = inputData['invalid-token'].token;
         chai.request(server)
             .get('/notesByLabel/'+labelId)
             .set('token', token)
@@ -109,10 +114,11 @@ describe.only('/GET notes by label', () => {
 describe('/PUT notes', () => {
     it('given proper data should update note', (done) => {
         let noteData = {
-            title: '!st note..',
-            description: 'My first note..'
+            title: inputData['update-note'].title,
+            description: inputData['update-note'].description
         };
-        let noteId = '601d27b832e61107643cc693';
+        let noteId = inputData['update-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .put('/notes/'+noteId)
             .send(noteData)
@@ -126,10 +132,11 @@ describe('/PUT notes', () => {
 
     it('given empty title should not update note', (done) => {
         let noteData = {
-            title: '',
-            description: 'My first note..'
+            title: inputData['invalid-update-note-sample-1'].title,
+            description: inputData['invalid-update-note-sample-1'].description
         };
-        let noteId = '601d27b832e61107643cc693';
+        let noteId = inputData['invalid-update-note-sample-1'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .put('/notes/'+noteId)
             .send(noteData)
@@ -143,10 +150,11 @@ describe('/PUT notes', () => {
 
     it('given empty description should not update note', (done) => {
         let noteData = {
-            title: '1st note',
-            description: ''
+            title: inputData['invalid-update-note-sample-2'].title,
+            description: inputData['invalid-update-note-sample-2'].description
         };
-        let noteId = '601d27b832e61107643cc693';
+        let noteId = inputData['invalid-update-note-sample-2'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .put('/notes/'+noteId)
             .send(noteData)
@@ -161,7 +169,8 @@ describe('/PUT notes', () => {
 
 describe('/DELETE notes', () => {
     it('given id should delete note',(done) => {
-        let noteId = '600d0d9645b58e2c78fe66b1';
+        let noteId = inputData['delete-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .delete('/notes/'+noteId)
             .set('token', token)
@@ -173,7 +182,8 @@ describe('/DELETE notes', () => {
     });
 
     it('given non-exists id should not delete note',(done) => {
-        let noteId = '600d0d9645b58e2c78fe66b1';
+        let noteId = inputData['delete-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .delete('/notes/'+noteId)
             .set('token', token)
@@ -187,7 +197,8 @@ describe('/DELETE notes', () => {
 
 describe('/DELETE hard delete note', () => {
     it('given id should delete note',(done) => {
-        let noteId = '600c49c5580eb62c385aa213';
+        let noteId = inputData['delete-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .delete('/notes-h-delete/'+noteId)
             .set('token', token)
@@ -199,7 +210,8 @@ describe('/DELETE hard delete note', () => {
     });
 
     it('given non-exists should not delete note',(done) => {
-        let noteId = '600c49c5580eb62c385aa213';
+        let noteId = inputData['delete-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .delete('/notes-h-delete/'+noteId)
             .set('token', token)
@@ -213,7 +225,8 @@ describe('/DELETE hard delete note', () => {
 
 describe('/PUT restore note', () => {
     it('given id should restore note',(done) => {
-        let noteId = '600d0dbe45b58e2c78fe66b3';
+        let noteId = inputData['restore-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .put('/restoreNote/'+noteId)
             .set('token', token)
@@ -225,7 +238,8 @@ describe('/PUT restore note', () => {
     });
 
     it('given non-exists id should not restore note',(done) => {
-        let noteId = '600d0dbe45b58e2c78fe66b3';
+        let noteId = inputData['restore-note'].noteId;
+        let token = inputData['valid-token'].token;
         chai.request(server)
             .put('/restoreNote/'+noteId)
             .set('token', token)

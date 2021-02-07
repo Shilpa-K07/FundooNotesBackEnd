@@ -1,0 +1,55 @@
+{
+    "registration" :{
+        "firstName":"shilpa",
+        "lastName": "Kundapur",
+        "emailId": "Shilpak0027@gmail.com",
+        "password": "Abcd@123A"
+    },
+    "invalid-registration-sample1" : {
+        "firstName":"shilpa",
+        "lastName": "Kundapur",
+        "emailId": "Shilpak09@gmail.com",
+        "password": "Abcd@11DR"
+    },
+    "invalid-registration-sample2" : {
+        "firstName":"s",
+        "lastName": "k",
+        "emailId": "Shilpak09@gmail.com",
+        "password": "Abcd@11DR"
+    },
+    "login" : {
+        "emailId": "shilpa07udupi@gmail.com",
+        "password": "abcd@123A"
+    },
+    "invalid-login-sample1" : {
+        "emailId": "shilpa017udupi@gmail.com",
+        "password": "Abfcd@12345"
+    },
+    "forgot-password" : {
+        "emailId": "shilpa07udupi@gmail.com"
+    },
+    "invalid-forgot-password" : {
+        "emailId": "shilpa012udupi@gmail.com"
+    },
+    "reset-password" : {
+        "newPassword": "aabb@123AA"
+    },
+    "invalid-reset-password" : {
+        "newPassword": "aab123AA"
+    },
+    "verify-email" : {
+        "emailId": "shilpa07udupi@gmail.com"
+    },
+    "invalid-verify-email" : {
+        "emailId": "shilpa9087udupi@gmail.com"
+    },
+    "invalid-verify-email-1" : {
+        "emailId": ""
+    },
+    "activate-account" : {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
+    },
+    "invalid-activate-account" : {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
+    }
+}
