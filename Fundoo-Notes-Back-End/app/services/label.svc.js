@@ -8,18 +8,18 @@
 * @since : 01/12/2020
 *
 **************************************************************************/
-const label = require('../models/label.mdl')
-const util = require('../utility/util')
-const config = require('../../config').get()
-const { logger } = config
+const label = require('../models/label.mdl');
+const util = require('../utility/util');
+const config = require('../../config').get();
+const { logger } = config;
 
 class LabelService {
     /**
      * @description Create a new label 
      * @method labelModel.create calls model class method
      */
-    createLabel=(labelData) => {
-    	return label.labelModel.create(labelData)
+    createLabel = (labelData) => {
+        return label.labelModel.create(labelData);
     }
 
     /**
@@ -28,12 +28,12 @@ class LabelService {
      * @method labelModel.findById calls model class method
      */
     validateUser = (token) => {
-    	const decodeData = util.verifyUser(token)
-    	if(!decodeData){
-    		logger.error('Could not able to decode token')
-    		return
-    	}
-    	return label.labelModel.findById(decodeData)
+        const decodeData = util.verifyUser(token);
+        if (!decodeData) {
+            logger.error('Could not able to decode token');
+            return;
+        }
+        return label.labelModel.findById(decodeData);
     }
 
     /**
@@ -41,7 +41,7 @@ class LabelService {
      * @method labelModel.findAll calls model class method
      */
     findLabels = () => {
-    	return label.labelModel.findAll()
+        return label.labelModel.findAll();
     }
 
     /**
@@ -49,7 +49,7 @@ class LabelService {
      * @method labelModel.findAll calls model class method
      */
     findLabelsByUserId = (labelData) => {
-    	return label.labelModel.findLabelByUser(labelData)
+        return label.labelModel.findLabelByUser(labelData);
     }
 
     /**
@@ -57,7 +57,7 @@ class LabelService {
      * @method labelModel.update calls model class method
      */
     updateLabel = (labelData) => {
-    	return label.labelModel.update(labelData)
+        return label.labelModel.update(labelData);
     }
 
     /**
@@ -65,7 +65,7 @@ class LabelService {
      * @method labelModel.delete calls model class method
      */
     deleteLabel = (labelData) => {
-    	return label.labelModel.delete(labelData)
+        return label.labelModel.delete(labelData);
     }
 }
-module.exports = new LabelService()
+module.exports = new LabelService();
