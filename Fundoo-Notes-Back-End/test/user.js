@@ -3,14 +3,15 @@ let chaiHttp = require('chai-http');
 let server = require('../server');
 let should = chai.should();
 chai.use(chaiHttp);
+let inputData = require('./user-test-samples.json')
 
 describe('Registration', () => {
-	it('given proper details should do user registration', (done) => {
+	it.skip('given proper details should do user registration', (done) => {
 		let userData = {
-			firstName: 'Shilpa',
-			lastName: 'Kundapur',
-			emailId: 'Shilpak0007@gmail.com',
-			password: 'Abcd@123A'
+			firstName: inputData.registration.firstName,
+			lastName: inputData.registration.lastName,
+			emailId: inputData.registration.emailId,
+			password: inputData.registration.password
 		};
 		chai.request(server)
 			.post('/registration')
@@ -22,12 +23,12 @@ describe('Registration', () => {
 			});
 	});
 
-	it('given already exists emailId should not do register', (done) => {
+	it.only('given already exists emailId should not do register', (done) => {
 		let userData = {
-			firstName: 'Shilpa',
-			lastName: 'K',
-			emailId: 'Shilpak09@gmail.com',
-			password: 'Abcd@11DR'
+			firstName: inputData['invalid-registration-sample1'].firstName,
+			lastName: inputData['invalid-registration-sample1'].lastName,
+			emailId: inputData['invalid-registration-sample1'].emailId,
+			password: inputData['invalid-registration-sample1'].password
 		};
 		chai.request(server)
 			.post('/registration')
@@ -41,11 +42,11 @@ describe('Registration', () => {
 
 	it('given improper name should not do register', (done) => {
 		let userData = {
-			firstName: 'S',
-			lastName: 'K',
-			emailId: 'Shilpak09@gmail.com',
-			password: 'Abcd@11DR'
-		};
+			firstName: inputData['invalid-registration-sample2'].firstName,
+			lastName: inputData['invalid-registration-sample2'].lastName,
+			emailId: inputData['invalid-registration-sample2'].emailId,
+			password: inputData['invalid-registration-sample2'].password
+		}
 		chai.request(server)
 			.post('/registration')
 			.send(userData)
@@ -60,9 +61,9 @@ describe('Registration', () => {
 describe('Login', () => {
 	it('given proper crendentials should do login', (done) => {
 		let userData = {
-			emailId: 'shilpa07udupi@gmail.com',
-			password: 'abcd@123A'
-		};
+			emailId: inputData.login.emailId,
+			password: inputData.login.password
+		}
 		chai.request(server)
 			.post('/login')
 			.send(userData)
@@ -75,8 +76,8 @@ describe('Login', () => {
 
 	it('given improper credentials should not do login', (done) => {
 		let userData = {
-			emailId: 'shilpa017udupi@gmail.com',
-			password: 'Abfcd@12345'
+			emailId: inputData['invalid-login-sample1'].emailId,
+			password: inputData['invalid-login-sample1'].password
 		};
 		chai.request(server)
 			.post('/login')
@@ -92,7 +93,7 @@ describe('Login', () => {
 describe('ForgotPassword', () => {
 	it('given proper emailId should send password reset link', (done) => {
 		let userData = {
-			emailId: 'shilpa07udupi@gmail.com',
+			emailId: inputData['forgot-password'].emailId,
 		};
 		chai.request(server)
 			.post('/forgot-password')
@@ -106,7 +107,7 @@ describe('ForgotPassword', () => {
 
 	it('given non-exists emailId should not send password reset link', (done) => {
 		let userData = {
-			emailId: 'shilpa012udupi@gmail.com',
+			emailId: inputData['invalid-forgot-password'].emailId,
 		};
 		chai.request(server)
 			.post('/forgot-password')
@@ -121,7 +122,7 @@ describe('ForgotPassword', () => {
 describe('Resetpassword', () => {
 	it('given proper new password should do reset password', (done) => {
 		let userData = {
-			newPassword: 'aabb@123AA',
+			newPassword: inputData['reset-password'].newPassword,
 		};
 		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI0NTk0NDYsImV4cCI6MTYxMjQ2MDY0Nn0.Jfaws6NTjNbzM4-bZwZf0Re2yuHnl65LlEU2yyucaHU';
 		chai.request(server)
@@ -136,7 +137,7 @@ describe('Resetpassword', () => {
 	});
 	it('given improper new password should not do reset password', (done) => {
 		let userData = {
-			newPassword: 'aab123AA',
+			newPassword: inputData['invalid-reset-password'].newPassword,
 		};
 		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI0NTk0NDYsImV4cCI6MTYxMjQ2MDY0Nn0.Jfaws6NTjNbzM4-bZwZf0Re2yuHnl65LlEU2yyucaHU';
 		chai.request(server)
@@ -151,10 +152,10 @@ describe('Resetpassword', () => {
 	});
 });
 
-describe.only('/POST verify email address', () => {
+describe('/POST verify email address', () => {
 	it('given emailId should send verification link to user emailId', () => {
 		let userData = {
-			emailId: 'shilpa07udupi@gmail.com'
+			emailId: inputData['verify-email'].emailId
 		};
 		chai.request(server)
 			.post('/verifyEmail')
@@ -168,7 +169,7 @@ describe.only('/POST verify email address', () => {
 
 	it('given emailId if not found should not send verification link', (done) => {
 		let userData = {
-			emailId: 'shilpa9087udupi@gmail.com'
+			emailId: inputData['invalid-verify-email'].emailId
 		};
 		chai.request(server)
 			.post('/verifyEmail')
@@ -182,7 +183,7 @@ describe.only('/POST verify email address', () => {
 
 	it('given emailId is empty should not send verification link', (done) => {
 		let userData = {
-			emailId: ''
+			emailId: inputData['invalid-verify-email-1'].emailId
 		};
 		chai.request(server)
 			.post('/verifyEmail')
@@ -197,7 +198,7 @@ describe.only('/POST verify email address', () => {
 
 describe('/PUT activate account', () => {
 	it('given token if verified should activate user account', (done) => {
-		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo';
+		let token = inputData['activate-account'].token
 		chai.request(server)
 			.put('/activateAccount')
 			.set('token', token)
@@ -209,7 +210,7 @@ describe('/PUT activate account', () => {
 	});
 
 	it('given token if not verified should not activate user account', (done) => {
-		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo';
+		let token = inputData['invalid-activate-account'].token
 		chai.request(server)
 			.put('/activateAccount')
 			.set('token', token)

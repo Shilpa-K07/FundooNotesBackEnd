@@ -1,0 +1,44 @@
+{
+    "valid-token": {
+        "token" :""
+    },
+    "invalid-token": {
+        "token" :""
+    },
+    "create-note" : {
+        "title": "1st note..",
+        "description": "My first note.." 
+    },
+    "invalid-create-note-sample-1" : {
+        "title": "",
+        "description": "My first note.." 
+    },
+    "invalid-create-note-sample-2" : {
+        "title": "1st note",
+        "description": "" 
+    },
+    "get-notes-by-label": {
+        "labelId": "600ff20ca9ab2734d80a38b3"
+    },
+    "update-note": {
+        "title": "1st note..",
+        "description": "My first note.." ,
+        "noteId": "601d27b832e61107643cc693"
+    },
+    "invalid-update-note-sample-1" : {
+        "title": "",
+        "description": "My first note..",
+        "noteId": "601d27b832e61107643cc693"
+    },
+    "invalid-update-note-sample-2" : {
+        "title": "1st note",
+        "description": "",
+        "noteId": "601d27b832e61107643cc693"
+    },
+    "delete-note": {
+        "noteId": "600d0d9645b58e2c78fe66b1"
+    },
+    "restore-note": {
+        "noteId": "600d0dbe45b58e2c78fe66b3"
+    }
+}
