@@ -1,0 +1,30 @@
+{
+    "valid-token": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI3NTc4MTYsImV4cCI6MTYxMjc1OTAxNn0.B2p77rpRWmGwk3lymV5b3S6NPPi2rLFpwniGcMhDOhY"
+    },
+    "invalid-token": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1MzE4NDcsImV4cCI6MTYxMjUzMzA0N30.FDDmECm1hE8H1ya-NokUC_y94mikByDZNmgIJBBnNWA"
+    },
+    "create-label": {
+        "name": "label21"
+    },
+    "invalid-create-label": {
+        "name": ""
+    },
+    "update-label": {
+        "labelId": "5fe4ac0fe8129b38c8b6b8b8",
+        "name": "label22"
+    },
+    "invalid-update-label": {
+        "labelId": "5fe4ac0fe8129b38c8b6b8b8",
+        "name": ""
+    },
+    "add-label-to-note": {
+        "labelId": "5fe4ad7f5167332d38056d47",
+        "noteId": "600d0dbe45b58e2c78fe66b3"
+    },
+    "invalid-add-label-to-note": {
+        "labelId": "5fe4ad7f5167332d38056d47",
+        "noteId": "600c49c5580eb62c385aa213"
+    }
+}

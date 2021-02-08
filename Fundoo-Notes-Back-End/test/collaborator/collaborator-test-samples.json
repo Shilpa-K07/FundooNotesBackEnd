@@ -1,0 +1,13 @@
+{
+    "valid-token": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI3NTc4MTYsImV4cCI6MTYxMjc1OTAxNn0.B2p77rpRWmGwk3lymV5b3S6NPPi2rLFpwniGcMhDOhY"
+    },
+    "create-collaborator": {
+        "noteId": "600d0d9645b58e2c78fe66b1",
+        "userId": "5fe32aeb2c6d752298503627"
+    },
+    "invalid-create-collaborator": {
+        "noteId": "600c49c5580eb62c385aa213",
+        "userId": "5fe32aeb2c6d752298503627"
+    }
+}

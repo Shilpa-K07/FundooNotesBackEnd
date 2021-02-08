@@ -68,10 +68,9 @@ app.use('*',(req, res) => {
 
 /**
  * @description listen for requests
- * @param config.port is the port number 3000
+ * @param config.port is the port on which server is listening
  */
 var server = app.listen(config.port, () => {
-	console.log('Server is listening on port '+config.port);
 	logger.info('Server is listening on port '+config.port);
 });
 

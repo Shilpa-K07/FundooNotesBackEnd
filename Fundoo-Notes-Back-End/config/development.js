@@ -11,8 +11,7 @@
 const winston = require('winston');
 module.exports = () => {
     return {
-        name: process.env.NODE_ENV,
-        port: process.env.PORT,
+        port: process.env.DEV_APP_PORT || 3000,
         logger:
             winston.createLogger({
                 format: winston.format.json(),
