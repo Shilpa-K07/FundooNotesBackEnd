@@ -3,7 +3,7 @@ let chaiHttp = require('chai-http');
 let server = require('../server');
 let should = chai.should();
 chai.use(chaiHttp);
-let inputData = require('./note-test-sample.json')
+let inputData = require('./note-test-samples.json')
 
 describe('/POST notes', () => {
     it.skip('given proper data should create note', (done) => {
@@ -84,7 +84,7 @@ describe('/GET notes', () => {
     });
 });
 
-describe.only('/GET notes by label', () => {
+describe('/GET notes by label', () => {
     it('given request should get all the notes', () => {
         let labelId = inputData['get-notes-by-label'].labelId;
         let token = inputData['valid-token'].token
@@ -202,7 +202,7 @@ describe('/DELETE hard delete note', () => {
         chai.request(server)
             .delete('/notes-h-delete/'+noteId)
             .set('token', token)
-            .end((err, res) => {console.log('res: '+JSON.stringify(res));
+            .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 done();
@@ -230,7 +230,7 @@ describe('/PUT restore note', () => {
         chai.request(server)
             .put('/restoreNote/'+noteId)
             .set('token', token)
-            .end((err, res) => {console.log('res: '+JSON.stringify(res));
+            .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 done();

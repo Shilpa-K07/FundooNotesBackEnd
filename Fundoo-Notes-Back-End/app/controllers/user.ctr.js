@@ -149,7 +149,7 @@ class UserController {
 	 * @param req holds user email id
 	 * @method forgotPassword is service class method
 	 */
-	forgotPassword = (req, res) => {
+	forgotPassword = (req, res) => {console.log('forgot');
 		try {
 			const userData = { emailId: req.body.emailId };
 
@@ -268,7 +268,7 @@ class UserController {
 	 * @description Sends email verification links to user's emailId
 	 * @param req holds emailId of user
 	 */
-	emailVerification = (req, res) => {
+	emailVerification = (req, res) => {console.log('ctr');
 		try {
 			const userData = { emailId: req.body.emailId };
 

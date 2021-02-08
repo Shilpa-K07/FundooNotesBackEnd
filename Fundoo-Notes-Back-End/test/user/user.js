@@ -1,12 +1,12 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../server');
+let server = require('../../server');
 let should = chai.should();
 chai.use(chaiHttp);
 let inputData = require('./user-test-samples.json')
 
 describe('Registration', () => {
-	it.skip('given proper details should do user registration', (done) => {
+	it('given proper details should do user registration', (done) => {
 		let userData = {
 			firstName: inputData.registration.firstName,
 			lastName: inputData.registration.lastName,
@@ -23,7 +23,7 @@ describe('Registration', () => {
 			});
 	});
 
-	it.only('given already exists emailId should not do register', (done) => {
+	it('given already exists emailId should not do register', (done) => {
 		let userData = {
 			firstName: inputData['invalid-registration-sample1'].firstName,
 			lastName: inputData['invalid-registration-sample1'].lastName,
@@ -124,7 +124,7 @@ describe('Resetpassword', () => {
 		let userData = {
 			newPassword: inputData['reset-password'].newPassword,
 		};
-		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI0NTk0NDYsImV4cCI6MTYxMjQ2MDY0Nn0.Jfaws6NTjNbzM4-bZwZf0Re2yuHnl65LlEU2yyucaHU';
+		let token = inputData['reset-password'].token;
 		chai.request(server)
 			.put('/reset-password')
 			.send(userData)
@@ -139,7 +139,7 @@ describe('Resetpassword', () => {
 		let userData = {
 			newPassword: inputData['invalid-reset-password'].newPassword,
 		};
-		let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI0NTk0NDYsImV4cCI6MTYxMjQ2MDY0Nn0.Jfaws6NTjNbzM4-bZwZf0Re2yuHnl65LlEU2yyucaHU';
+		let token = inputData['reset-password'].token;
 		chai.request(server)
 			.put('/reset-password')
 			.send(userData)
@@ -153,7 +153,7 @@ describe('Resetpassword', () => {
 });
 
 describe('/POST verify email address', () => {
-	it('given emailId should send verification link to user emailId', () => {
+	it('given emailId should send verification link to user emailId', (done) => {
 		let userData = {
 			emailId: inputData['verify-email'].emailId
 		};
@@ -202,7 +202,7 @@ describe('/PUT activate account', () => {
 		chai.request(server)
 			.put('/activateAccount')
 			.set('token', token)
-			.end((err, res) => {console.log('res: '+JSON.stringify(res));
+			.end((err, res) => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				done();

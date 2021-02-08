@@ -32,7 +32,8 @@
         "emailId": "shilpa012udupi@gmail.com"
     },
     "reset-password" : {
-        "newPassword": "aabb@123AA"
+        "newPassword": "aabb@123AA",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI3NTczMTIsImV4cCI6MTYxMjc1ODUxMn0.kKy0oolb6s84goaSUYwH-vCfr0jbwwjYerfDIEy4kTk"
     },
     "invalid-reset-password" : {
         "newPassword": "aab123AA"
@@ -47,7 +48,7 @@
         "emailId": ""
     },
     "activate-account" : {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI3NTc0MDAsImV4cCI6MTYxMjc1ODYwMH0.9lWgkLLkvXwu0Z61maKfKidygjobY9A8KcXNv3vgliU"
     },
     "invalid-activate-account" : {
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbElkIjoic2hpbHBhMDd1ZHVwaUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZmUzMjNhYTA5ZmI0MjM2MWM3NDhjMmIiLCJpYXQiOjE2MTI1NDIwNDksImV4cCI6MTYxMjU0MzI0OX0.NGgHNdyag3vZjYosJ42kVPndaevHoW6QEXoMSqYcMUo"
